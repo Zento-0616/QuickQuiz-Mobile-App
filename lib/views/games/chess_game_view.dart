@@ -27,12 +27,10 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
   ChessMode _gameMode = ChessMode.vsAi;
   ChessDifficulty _aiDifficulty = ChessDifficulty.medium;
 
-  // Head-to-Head win/loss record
   HeadToHeadRecord? _h2hRecord;
 
-  // Lobby State
   bool _hasGameStarted = false;
-  int _pvpSubMode = 0; // 0 = Find Online Match, 1 = Invite Scholar, 2 = Pass & Play
+  int _pvpSubMode = 0;
   bool _isSearchingMatch = false;
   UserModel? _matchedScholar;
   List<UserModel> _availableScholars = [];
@@ -257,17 +255,14 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
 
     final isSimulatedOpponent = _gameMode == ChessMode.vsAi || (_gameMode == ChessMode.pvp && _pvpSubMode != 2);
 
-    // If waiting for opponent turn in simulated/AI modes
     if (isSimulatedOpponent && _board.currentTurn != 1) return;
 
-    // Check if tapped a legal move for selected tile
     final matchedMove = _currentLegalMoves.firstWhere(
       (m) => m.toRow == r && m.toCol == c,
       orElse: () => const ChessMove(fromRow: -1, fromCol: -1, toRow: -1, toCol: -1),
     );
 
     if (matchedMove.fromRow != -1) {
-      // Check if move requires pawn promotion selection
       final piece = _board.getPiece(matchedMove.fromRow, matchedMove.fromCol);
       final isPromoRow = (piece?.player == 1 && r == 0) || (piece?.player == 2 && r == 7);
       if (piece?.type == ChessPieceType.pawn && isPromoRow) {
@@ -278,7 +273,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
       return;
     }
 
-    // Select piece if it belongs to current player
     final piece = _board.getPiece(r, c);
     if (piece != null && piece.player == _board.currentTurn) {
       setState(() {
@@ -396,7 +390,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
       setState(() => _statusBannerText = null);
     }
 
-    // Deadlock / "Run & Hide" impossible to beat check
     if (!_board.isGameOver &&
         _board.isDeadlockOrRunAndHide() &&
         (!_hasPromptedDeadlock || _board.moveHistory.length >= _deadlockCooldownMoveCount)) {
@@ -409,7 +402,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
       });
     }
 
-    // Trigger AI / Simulated Opponent Turn if needed
     final isSimulatedOpponent = _gameMode == ChessMode.vsAi || (_gameMode == ChessMode.pvp && _pvpSubMode != 2);
     if (isSimulatedOpponent && _board.currentTurn == 2 && !_board.isGameOver) {
       _triggerAiTurn();
@@ -690,9 +682,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
     );
   }
 
-  // ==========================================
-  // SCREEN 1: MODERN LOBBY & MATCH SETUP
-  // ==========================================
   Widget _buildLobbyScreen() {
     return Scaffold(
       backgroundColor: const Color(0xFF070B14),
@@ -715,7 +704,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           children: [
-            // Top Hero Banner
             Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
@@ -781,7 +769,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
             ),
             const SizedBox(height: 20),
 
-            // Mode Selector Tabs: vs AI Bot | PvP
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
@@ -1000,7 +987,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
           ),
           const SizedBox(height: 18),
 
-          // Sub-Mode 0: Find Online Match
           if (_pvpSubMode == 0) ...[
             Container(
               width: double.infinity,
@@ -1095,7 +1081,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
             ),
           ],
 
-          // Sub-Mode 1: Invite Scholar
           if (_pvpSubMode == 1) ...[
             TextField(
               onChanged: (val) => setState(() => _scholarSearchQuery = val),
@@ -1147,7 +1132,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
             ),
           ],
 
-          // Sub-Mode 2: Pass & Play
           if (_pvpSubMode == 2) ...[
             Container(
               padding: const EdgeInsets.all(18),
@@ -1211,9 +1195,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
     );
   }
 
-  // ==========================================
-  // SCREEN 2: MODERN INTERACTIVE CHESSBOARD
-  // ==========================================
   Widget _buildChessboardScreen() {
     final user = context.watch<AuthViewModel>().currentUser;
     final opponentNick = _gameMode == ChessMode.vsAi
@@ -1283,7 +1264,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
       body: SafeArea(
         child: Column(
           children: [
-            // Head-to-Head Score Bar
             if (_h2hRecord != null)
               Container(
                 margin: const EdgeInsets.fromLTRB(16, 6, 16, 4),
@@ -1314,7 +1294,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
                   ],
                 ),
               ),
-            // Status Banner / Check indicator with animated pulse
             if (_statusBannerText != null)
               AnimatedBuilder(
                 animation: _pulseController,
@@ -1348,7 +1327,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
                 },
               ),
 
-            // Opponent Tray (Black - Player 2)
             _buildPlayerTray(
               playerNumber: 2,
               name: opponentNick,
@@ -1359,7 +1337,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
 
             const SizedBox(height: 6),
 
-            // 8x8 Chessboard Chassis
             Expanded(
               child: Center(
                 child: AspectRatio(
@@ -1414,7 +1391,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
 
             const SizedBox(height: 6),
 
-            // User Tray (White - Player 1)
             _buildPlayerTray(
               playerNumber: 1,
               name: user?.effectiveNickname ?? 'Scholar (White)',
@@ -1423,7 +1399,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
               isAi: false,
             ),
 
-            // Bottom Actions Bar (Move count, Draw, Resign)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Row(
@@ -1522,7 +1497,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
       ),
       child: Row(
         children: [
-          // Avatar crown token
           Container(
             width: 32,
             height: 32,
@@ -1555,7 +1529,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
           ),
           const SizedBox(width: 10),
 
-          // Player name and status
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1577,7 +1550,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
                     ),
                     const SizedBox(width: 8),
 
-                    // Active turn indicator badge
                     if (isTurn) ...[
                       AnimatedBuilder(
                         animation: _pulseController,
@@ -1631,7 +1603,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
                   ],
                 ),
 
-                // Captured pieces & Material Advantage Badge
                 if (capturedPieces.isNotEmpty || advantage > 0) ...[
                   const SizedBox(height: 3),
                   Row(
@@ -1673,7 +1644,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
 
   Widget _buildChessTile(int r, int c) {
     final isDarkTile = (r + c) % 2 == 1;
-    // Cyber-Scholar Palette: Satin Titanium Slate (light) vs Deep Obsidian Slate (dark)
     final tileColor = isDarkTile ? const Color(0xFF131C2E) : const Color(0xFF2C3C58);
 
     final piece = _board.getPiece(r, c);
@@ -1699,7 +1669,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Moving box radiant light effect (Source and Destination)
             if (isLastMoveTile && !isSelected)
               Positioned.fill(
                 child: AnimatedBuilder(
@@ -1737,7 +1706,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
                 ),
               ),
 
-            // Selected tile radiant glow
             if (isSelected)
               Positioned.fill(
                 child: Container(
@@ -1745,7 +1713,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
                 ),
               ),
 
-            // King in check dramatic red glow
             if (isKingInCheckTile)
               Positioned.fill(
                 child: Container(
@@ -1761,7 +1728,6 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
                 ),
               ),
 
-            // Coordinate labels on edges
             if (c == 0)
               Positioned(
                 top: 2,
@@ -1789,11 +1755,9 @@ class _ChessGameViewState extends State<ChessGameView> with SingleTickerProvider
                 ),
               ),
 
-            // Piece Widget
             if (piece != null)
               _buildPieceWidget(piece, isSelected: isSelected),
 
-            // Modern Legal Move Indicators
             if (isLegalMove)
               Center(
                 child: piece == null

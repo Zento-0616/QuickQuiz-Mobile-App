@@ -13,8 +13,6 @@ import '../../viewmodels/auth_viewmodel.dart';
 import '../../viewmodels/quiz_viewmodel.dart';
 import '../../widgets/submit_quiz_dialog.dart';
 
-/// Professional exam screen with live timer, question palette, review flags,
-/// smooth animated transitions, and styled option selectors.
 class QuizView extends StatelessWidget {
   final QuizModel? quiz;
   const QuizView({super.key, this.quiz});
@@ -193,7 +191,6 @@ class _QuizBodyState extends State<_QuizBody>
     final question = viewModel.currentQuestion;
     final theme = Theme.of(context);
 
-    // Trigger slide animation when question changes
     if (viewModel.currentIndex != _lastIndex) {
       _lastIndex = viewModel.currentIndex;
       _showHint = false;
@@ -297,7 +294,6 @@ class _QuizBodyState extends State<_QuizBody>
           ],
         ),
         actions: [
-          // Live Exam Timer Pill
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
@@ -340,7 +336,6 @@ class _QuizBodyState extends State<_QuizBody>
           ),
           const SizedBox(width: 8),
 
-          // Question Palette Grid Button
           IconButton(
             tooltip: 'Question Palette',
             icon: Stack(
@@ -370,7 +365,6 @@ class _QuizBodyState extends State<_QuizBody>
       body: SafeArea(
         child: Column(
           children: [
-            // Progress bar
             TweenAnimationBuilder<double>(
               tween: Tween(begin: 0, end: viewModel.progress),
               duration: const Duration(milliseconds: 350),
@@ -383,7 +377,6 @@ class _QuizBodyState extends State<_QuizBody>
               ),
             ),
 
-            // Animated question area
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnim,
@@ -394,7 +387,6 @@ class _QuizBodyState extends State<_QuizBody>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Tag Header row: Difficulty + Question Type + Flag Button
                         Row(
                           children: [
                             Container(
@@ -416,7 +408,6 @@ class _QuizBodyState extends State<_QuizBody>
                             ),
                             const Spacer(),
 
-                            // Flag for Review Button
                             InkWell(
                               onTap: () => viewModel.toggleFlagCurrentQuestion(),
                               borderRadius: BorderRadius.circular(12),
@@ -468,7 +459,6 @@ class _QuizBodyState extends State<_QuizBody>
 
                         const SizedBox(height: 16),
 
-                        // Question card
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(22),
@@ -494,7 +484,6 @@ class _QuizBodyState extends State<_QuizBody>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Question number badge
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
@@ -524,7 +513,6 @@ class _QuizBodyState extends State<_QuizBody>
                           ),
                         ),
 
-                        // MCQ Hint: Strictly on Easy and Medium difficulty only
                         if (difficulty != QuizDifficulty.hard &&
                             question.difficulty != QuizDifficulty.hard) ...[
                           const SizedBox(height: 14),
@@ -551,7 +539,6 @@ class _QuizBodyState extends State<_QuizBody>
                             },
                           ),
                         ] else ...[
-                          // Answer options for Multiple Choice
                           ...List.generate(question.options.length, (index) {
                             final letter = String.fromCharCode(65 + index);
                             final selected = question.selectedAnswerIndex == index;
@@ -602,7 +589,6 @@ class _QuizBodyState extends State<_QuizBody>
               ),
             ),
 
-            // Navigation footer
             Container(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               decoration: BoxDecoration(
@@ -642,7 +628,6 @@ class _QuizBodyState extends State<_QuizBody>
                       ),
                     ),
                     const SizedBox(width: 10),
-                    // Palette shortcut button
                     SizedBox(
                       width: 48,
                       height: 48,
@@ -714,8 +699,6 @@ class _QuizBodyState extends State<_QuizBody>
   }
 }
 
-/// Question Palette Sheet that displays all question numbers in a grid
-/// with their answer/flag status and allows instant navigation.
 class _QuestionPaletteSheet extends StatelessWidget {
   final QuizViewModel viewModel;
   final ValueChanged<int> onSelectQuestion;
@@ -785,7 +768,6 @@ class _QuestionPaletteSheet extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // Grid of questions
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 280),
             child: SingleChildScrollView(
@@ -880,7 +862,6 @@ class _QuestionPaletteSheet extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // Legend
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -904,7 +885,6 @@ class _QuestionPaletteSheet extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // Submit Exam button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
@@ -1088,7 +1068,6 @@ class _AnswerTile extends StatelessWidget {
   }
 }
 
-/// Interactive Hint Card exclusively available on Easy & Medium questions.
 class _HintCard extends StatelessWidget {
   final String hint;
   final bool isExpanded;

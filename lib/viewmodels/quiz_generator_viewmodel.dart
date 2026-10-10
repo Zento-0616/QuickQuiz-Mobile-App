@@ -9,7 +9,6 @@ import '../services/local_storage_service.dart';
 import 'auth_viewmodel.dart';
 import 'base_viewmodel.dart';
 
-/// The rotating loading copy shown while a quiz is prepared with Gemini AI.
 const List<String> _generationSteps = [
   'Analyzing document concepts...',
   'Extracting key subject topics...',
@@ -19,8 +18,6 @@ const List<String> _generationSteps = [
   'Almost ready...',
 ];
 
-/// Manages quiz settings (question count, difficulty, and category),
-/// the free‑quiz / sign‑in gate, and dynamic question generation with Google Gemini.
 class QuizGeneratorViewModel extends BaseViewModel {
   final QuizRepository _repository;
   final AuthViewModel _authViewModel;
@@ -76,8 +73,6 @@ class QuizGeneratorViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  /// Serves questions dynamically by querying Google AI Studio (Gemini)
-  /// or cloud functions based on user-selected criteria.
   Future<bool> generateQuiz(DocumentModel document) async {
     if (isLoading) return false;
 

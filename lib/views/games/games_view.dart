@@ -16,10 +16,6 @@ import '../../widgets/main_bottom_nav.dart';
 import '../../widgets/pre_quiz_confirmation_dialog.dart';
 import '../../widgets/quick_quiz_top_bar.dart';
 
-/// Gamified Games view featuring:
-/// 1. Quiz Arena: Admin-published MCQ decks with topic tags & EXP multipliers
-/// 2. Leaderboards: Global & Weekly Top Scholars
-/// 3. Daily Streak & Login Rewards
 class GamesView extends StatefulWidget {
   const GamesView({super.key});
 
@@ -92,7 +88,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
           bottom: false,
           child: Column(
             children: [
-              // Tab Header
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 decoration: BoxDecoration(
@@ -119,7 +114,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                 ),
               ),
 
-              // Tab Views
               Expanded(
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator())
@@ -140,9 +134,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
     );
   }
 
-  // -------------------------------------------------------------------
-  // 1. Quiz Arena
-  // -------------------------------------------------------------------
 
   Widget _buildQuizArena(BuildContext context, AuthViewModel auth) {
     final visibleQuizzes = _publishedQuizzes.where((q) => !q.isHiddenDueToExpiration).toList();
@@ -215,7 +206,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Top Badges Row
                     Row(
                       children: [
                         if (quiz.isGlobal) ...[
@@ -292,7 +282,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                         ),
                         const Spacer(),
 
-                        // Status pill on the right
                         if (isStopped)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
@@ -351,7 +340,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                     ),
                     const SizedBox(height: 10),
 
-                    // Title
                     Text(
                       quiz.title,
                       style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15, height: 1.2),
@@ -360,7 +348,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                     ),
                     const SizedBox(height: 4),
 
-                    // Topic
                     Text(
                       quiz.topicTags.isNotEmpty ? quiz.topicTags.first : quiz.category,
                       style: TextStyle(
@@ -373,7 +360,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                     ),
                     const SizedBox(height: 10),
 
-                    // Bottom info & action
                     Row(
                       children: [
                         Expanded(
@@ -432,7 +418,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                         ),
                         const SizedBox(width: 12),
 
-                        // Action Button
                         if (isStopped)
                           IconButton(
                             icon: const Icon(Icons.leaderboard_rounded, color: Colors.blueGrey, size: 22),
@@ -500,7 +485,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 104),
       children: [
-        // Section Header
         Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
@@ -569,7 +553,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
         const Text('Available Games', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
         const SizedBox(height: 10),
 
-        // Game Card 1: Scholar Dama (Checkers)
         _buildPermanentGameCard(
           context: context,
           title: 'Scholar Dama (8x8 Checkers)',
@@ -590,7 +573,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
         ),
         const SizedBox(height: 14),
 
-        // Game Card 2: Scholar Chess
         _buildPermanentGameCard(
           context: context,
           title: 'Scholar Chess',
@@ -611,7 +593,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
         ),
         const SizedBox(height: 14),
 
-        // Game Card 3: Word Grid Arena (Future Game Slot)
         _buildPermanentGameCard(
           context: context,
           title: 'Word Grid Arena',
@@ -708,9 +689,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
     );
   }
 
-  // -------------------------------------------------------------------
-  // 2. Global Quiz Leaderboard with Top 1 & Top 5 Details
-  // -------------------------------------------------------------------
 
   void _showGuestRestrictedDialog(BuildContext context) {
     showDialog(
@@ -753,7 +731,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
       playedScholars.sort((a, b) => b.exp.compareTo(a.exp));
       return playedScholars.take(5).toList();
     }
-    // Strictly do NOT generate mock scholars. Only real scholars who completed the quiz are shown.
     return [];
   }
 
@@ -1125,7 +1102,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
 
     return Column(
       children: [
-        // Sub-selector: Quizzes vs Top Scholars vs Top 3v3 Squads
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           padding: const EdgeInsets.all(4),
@@ -1189,7 +1165,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
           ),
         ),
 
-        // Body content
         Expanded(
           child: _globalQuizSubTab == 0
               ? _buildQuizCardsList(context, auth)
@@ -1328,7 +1303,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                     ),
                   ),
                   const SizedBox(width: 12),
-                  // Top 1 Scholar Profile Picture on the Right
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -1456,11 +1430,11 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
 
         Color? rankColor;
         if (rank == 1) {
-          rankColor = const Color(0xFFFFD700); // Gold
+          rankColor = const Color(0xFFFFD700);
         } else if (rank == 2) {
-          rankColor = const Color(0xFFC0C0C0); // Silver
+          rankColor = const Color(0xFFC0C0C0);
         } else if (rank == 3) {
-          rankColor = const Color(0xFFCD7F32); // Bronze
+          rankColor = const Color(0xFFCD7F32);
         }
 
         return Card(
@@ -1591,9 +1565,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
 
 
 
-  // -------------------------------------------------------------------
-  // 3. Daily Rewards & Streaks
-  // -------------------------------------------------------------------
 
   Widget _buildRewardsTab(BuildContext context, AuthViewModel auth) {
     final user = auth.currentUser;
@@ -1604,7 +1575,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Streak Banner
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
@@ -1691,7 +1661,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
           ),
           const SizedBox(height: 12),
 
-          // 7 Days Grid
           Builder(builder: (context) {
             const dayNames = {
               1: 'Mon',
@@ -1773,7 +1742,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
 
           const SizedBox(height: 24),
 
-          // Claim Button
           SizedBox(
             width: double.infinity,
             height: 54,

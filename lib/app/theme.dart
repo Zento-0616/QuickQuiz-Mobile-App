@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Central place for QuickQuiz's modern design system.
-/// Primary: Electric Indigo (#4F46E5), Secondary: Deep Violet (#7C3AED), Accent: Vibrant Pink (#EC4899)
 class AppTheme {
   AppTheme._();
 
@@ -12,7 +10,6 @@ class AppTheme {
   static const Color successColor = Color(0xFF10B981);
   static const Color warningColor = Color(0xFFF59E0B);
 
-  // Modern linear gradient for hero components & buttons
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
     begin: Alignment.topLeft,

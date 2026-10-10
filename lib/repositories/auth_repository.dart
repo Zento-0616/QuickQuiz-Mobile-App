@@ -3,9 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 
-/// Clean boundary between ViewModels and AuthService. Converts Firebase's
-/// `User` into our own `UserModel` so nothing above this layer needs to
-/// know Firebase Auth exists.
 class AuthRepository {
   final AuthService _authService;
 

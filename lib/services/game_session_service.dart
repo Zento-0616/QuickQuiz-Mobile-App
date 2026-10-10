@@ -30,15 +30,10 @@ class GameSessionService {
     }
   }
 
-  // Fallback in-memory stores for offline / unit tests
   static final Map<String, GameMatchModel> fallbackMatches = {};
   static final Map<String, Map<String, dynamic>> fallbackQueue = {};
 
-  // ---------------------------------------------------------------------------
-  // Challenge & Invitation
-  // ---------------------------------------------------------------------------
 
-  /// Sends a live match invitation to an opponent scholar
   Future<GameMatchModel> sendChallenge({
     required UserModel host,
     required UserModel opponent,
@@ -60,7 +55,7 @@ class GameSessionService {
       opponentAvatar: opponent.photoUrl,
       opponentLevel: opponent.level,
       status: GameMatchStatus.pending,
-      currentTurn: 1, // Host is White/Light pieces, moves first
+      currentTurn: 1,
       isGameOver: false,
       isDraw: false,
       isDirectInvite: isDirectInvite,
@@ -83,7 +78,6 @@ class GameSessionService {
     return match;
   }
 
-  /// Streams incoming pending direct challenges targeted to [userId]
   Stream<List<GameMatchModel>> streamIncomingChallenges(String userId) {
     if (userId.isEmpty) {
       return Stream.value(const []);
@@ -113,7 +107,6 @@ class GameSessionService {
     });
   }
 
-  /// Streams live updates of a specific match
   Stream<GameMatchModel?> streamMatch(String matchId) {
     if (matchId.isEmpty) {
       return Stream.value(null);
@@ -138,7 +131,6 @@ class GameSessionService {
     });
   }
 
-  /// Responds to an incoming challenge (accept or decline)
   Future<void> respondToChallenge({
     required String matchId,
     required bool accept,
@@ -168,7 +160,6 @@ class GameSessionService {
     } catch (_) {}
   }
 
-  /// Cancels a pending challenge before opponent answers
   Future<void> cancelChallenge(String matchId) async {
     final now = DateTime.now();
     final current = fallbackMatches[matchId];
@@ -193,11 +184,7 @@ class GameSessionService {
     } catch (_) {}
   }
 
-  // ---------------------------------------------------------------------------
-  // Live Game Moves & Actions
-  // ---------------------------------------------------------------------------
 
-  /// Broadcasts a validated player move to the shared game session
   Future<void> sendMove({
     required String matchId,
     required Map<String, dynamic> moveData,
@@ -216,7 +203,7 @@ class GameSessionService {
         winnerId: winnerId,
         isDraw: isDraw,
         status: isGameOver ? GameMatchStatus.completed : GameMatchStatus.playing,
-        drawOfferedBy: null, // Clear any pending draw offer on move
+        drawOfferedBy: null,
         updatedAt: now,
       );
     }
@@ -241,7 +228,6 @@ class GameSessionService {
     } catch (_) {}
   }
 
-  /// Sends a draw proposal to the remote opponent
   Future<void> offerDraw({
     required String matchId,
     required String fromUserId,
@@ -269,7 +255,6 @@ class GameSessionService {
     } catch (_) {}
   }
 
-  /// Responds to a draw offer
   Future<void> respondToDraw({
     required String matchId,
     required bool accept,
@@ -307,7 +292,6 @@ class GameSessionService {
     } catch (_) {}
   }
 
-  /// Concludes match via resignation
   Future<void> resignMatch({
     required String matchId,
     required String winnerUserId,
@@ -339,12 +323,7 @@ class GameSessionService {
     } catch (_) {}
   }
 
-  // ---------------------------------------------------------------------------
-  // Matchmaking Queue
-  // ---------------------------------------------------------------------------
 
-  /// Enters matchmaking queue: pairs with another waiting scholar if present,
-  /// or creates a waiting ticket.
   Future<GameMatchModel?> enterMatchmaking({
     required UserModel user,
     String gameType = 'dama',
@@ -354,7 +333,6 @@ class GameSessionService {
 
     if (_customDb != null || _isFirebaseAvailable) {
       try {
-        // 1. Search for an existing waiting ticket from another user
         final querySnap = await _db
             .collection('game_matchmaking')
             .where('gameType', isEqualTo: gameType)
@@ -367,7 +345,6 @@ class GameSessionService {
           final data = doc.data();
           final otherUid = data['userId'] as String? ?? '';
           if (otherUid.isNotEmpty && otherUid != user.uid) {
-            // Found a waiting scholar! Pair together.
             final otherUser = UserModel(
               uid: otherUid,
               name: data['userName'] as String? ?? 'Scholar',
@@ -378,7 +355,6 @@ class GameSessionService {
               createdAt: now,
             );
 
-            // Create match directly in playing status (no challenge notification sent)
             final matchId = 'match_${_uuid.v4().substring(0, 8)}';
             final match = GameMatchModel(
               id: matchId,
@@ -392,7 +368,7 @@ class GameSessionService {
               opponentAvatar: user.photoUrl,
               opponentLevel: user.level,
               status: GameMatchStatus.playing,
-              currentTurn: 1, // Host moves first
+              currentTurn: 1,
               isGameOver: false,
               isDraw: false,
               isDirectInvite: false,
@@ -404,7 +380,6 @@ class GameSessionService {
 
             await _db.collection('game_matches').doc(matchId).set(match.toJson()).timeout(const Duration(seconds: 4));
 
-            // Clean up other ticket and notify waiting player
             await doc.reference.update({
               'status': 'paired',
               'matchId': match.id,
@@ -414,7 +389,6 @@ class GameSessionService {
           }
         }
 
-        // 2. No other scholar waiting in queue: create a waiting ticket
         await _db.collection('game_matchmaking').doc(ticketId).set({
           'ticketId': ticketId,
           'gameType': gameType,
@@ -428,7 +402,6 @@ class GameSessionService {
         });
       } catch (_) {}
     } else {
-      // Fallback in-memory pairing
       for (final entry in fallbackQueue.entries) {
         final data = entry.value;
         if (data['gameType'] == gameType &&
@@ -486,7 +459,6 @@ class GameSessionService {
     return null;
   }
 
-  /// Streams ticket status while waiting in matchmaking queue
   Stream<String?> streamMatchmakingTicket(String userId) {
     final ticketId = 'queue_$userId';
 
@@ -514,7 +486,6 @@ class GameSessionService {
     });
   }
 
-  /// Cancels matchmaking ticket
   Future<void> leaveMatchmaking(String userId) async {
     final ticketId = 'queue_$userId';
     fallbackQueue.remove(ticketId);

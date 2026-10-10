@@ -15,13 +15,6 @@ import '../../utils/toast_helper.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 import '../../widgets/gemini_api_key_dialog.dart';
 
-/// Full-featured AI Quiz Generator Studio modal for Administrators.
-///
-/// Features:
-/// 1. Document Drop Zone: Accepts PDF, PPTX, and TXT files for AI analysis.
-/// 2. AI MCQ Generator Controls: Title, Description, Topic Category, Difficulty Tiers,
-///    Level Requirement Gate (minLevel), and EXP Multiplier.
-/// 3. Admin Review Step: Preview, edit, regenerate, or add/delete questions before publishing.
 class AiQuizStudioModal extends StatefulWidget {
   final VoidCallback onPublished;
 
@@ -45,14 +38,11 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
   final QuizRepository _quizRepo = QuizRepository();
   final FirestoreService _firestoreService = FirestoreService();
 
-  // Wizard Steps: 0 = Upload & Controls, 1 = Admin Review Step
   int _step = 0;
 
-  // Controllers
   final _titleCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
 
-  // Settings
   DocumentModel? _uploadedDoc;
   bool _isExtractingText = false;
   bool _isGeneratingQuiz = false;
@@ -72,7 +62,7 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
 
   QuizDifficulty _difficulty = QuizDifficulty.medium;
   int _minLevel = 1;
-  int _expReward = 100; // 1 - 1000 EXP reward
+  int _expReward = 100;
   int _questionCount = 5;
   bool _isGlobal = true;
   bool _isUnlimitedPlay = false;
@@ -80,7 +70,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
   int _expirationDays = 7;
   String _quizScheduleType = 'standard';
 
-  // Review questions
   List<QuestionModel> _reviewQuestions = [];
   int? _regeneratingIndex;
 
@@ -91,15 +80,11 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
     super.dispose();
   }
 
-  // -------------------------------------------------------------------
-  // Document Drop Zone Actions
-  // -------------------------------------------------------------------
 
   Future<void> _handleFilePick() async {
     try {
       final picked = await _docRepo.pickFile();
 
-      // Check allowed extensions (PDF, PPTX, TXT, DOCX)
       final ext = picked.extension.toLowerCase();
       if (ext != 'pdf' && ext != 'pptx' && ext != 'txt' && ext != 'docx') {
         if (mounted) {
@@ -116,14 +101,12 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
       final parsed = await _docRepo.extractText(picked);
 
       if (mounted) {
-        // Automatic Topic Extraction from document analysis
         String detectedCat = 'General';
         if (parsed.detectedSubject != null && parsed.detectedSubject!.trim().isNotEmpty) {
           detectedCat = parsed.detectedSubject!.trim();
         } else if (parsed.keyTopics != null && parsed.keyTopics!.isNotEmpty) {
           detectedCat = parsed.keyTopics!.first.trim();
         } else {
-          // Content-based keyword heuristics
           final content = '${picked.fileName} ${parsed.extractedText ?? ''}'.toLowerCase();
           if (content.contains('crypt') || content.contains('secur') || content.contains('code') ||
               content.contains('network') || content.contains('software') || content.contains('comput') ||
@@ -150,7 +133,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           }
         }
 
-        // Capitalize and register category in dropdown if new
         if (detectedCat.isNotEmpty) {
           detectedCat = detectedCat[0].toUpperCase() + detectedCat.substring(1);
           if (!_categories.contains(detectedCat)) {
@@ -179,9 +161,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
     }
   }
 
-  // -------------------------------------------------------------------
-  // AI Generation
-  // -------------------------------------------------------------------
 
   Future<void> _handleGenerateQuestions() async {
     if (_titleCtrl.text.trim().isEmpty) {
@@ -189,7 +168,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
       return;
     }
 
-    // Verify Gemini API key configuration before generation
     final geminiService = GeminiService();
     final hasKey = await geminiService.isConfiguredAsync;
     if (!hasKey) {
@@ -219,7 +197,7 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
         setState(() {
           _reviewQuestions = quiz.questions.map((q) => q.randomizeAnswers()).toList();
           _isGeneratingQuiz = false;
-          _step = 1; // Transition to Admin Review Step
+          _step = 1;
         });
         showSuccessToast(context, 'Generated ${_reviewQuestions.length} randomized MCQs from document.');
       }
@@ -235,9 +213,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
     }
   }
 
-  // -------------------------------------------------------------------
-  // Admin Review Actions
-  // -------------------------------------------------------------------
 
   Future<void> _regenerateQuestion(int index) async {
     if (_regeneratingIndex != null) return;
@@ -358,9 +333,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
     }
   }
 
-  // -------------------------------------------------------------------
-  // UI Builder
-  // -------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -375,7 +347,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
       ),
       child: Column(
         children: [
-          // Drag handle
           Center(
             child: Container(
               margin: const EdgeInsets.only(top: 12, bottom: 8),
@@ -388,7 +359,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
             ),
           ),
 
-          // Modal Header
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Row(
@@ -429,7 +399,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const Divider(height: 1),
 
-          // Body Step
           Expanded(
             child: _step == 0 ? _buildConfigStep(context) : _buildReviewStep(context),
           ),
@@ -438,9 +407,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
     );
   }
 
-  // -------------------------------------------------------------------
-  // Step 0: Document Upload & AI Configuration
-  // -------------------------------------------------------------------
 
   Widget _buildConfigStep(BuildContext context) {
     return SingleChildScrollView(
@@ -448,7 +414,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Document Drop Zone
           const Text(
             '1. Document Drop Zone',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
@@ -463,14 +428,12 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           _buildDropZone(context),
           const SizedBox(height: 24),
 
-          // 2. AI MCQ Generator Controls
           const Text(
             '2. Quiz Configuration & Gating',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 12),
 
-          // Title
           TextField(
             controller: _titleCtrl,
             decoration: InputDecoration(
@@ -482,7 +445,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 14),
 
-          // Description
           TextField(
             controller: _descCtrl,
             maxLines: 2,
@@ -495,7 +457,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 16),
 
-          // Category & Question Count Row
           Row(
             children: [
               Expanded(
@@ -540,7 +501,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 16),
 
-          // Difficulty Tiers
           const Text('Difficulty Tier:', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
           const SizedBox(height: 8),
           SegmentedButton<QuizDifficulty>(
@@ -554,7 +514,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 18),
 
-          // Level Requirement Gate (Overflow-Protected)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -579,7 +538,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 8),
 
-          // Horizontal scroll wrapper prevents 122px overflow across screen widths
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -601,7 +559,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 18),
 
-          // EXP Reward (1 - 1000 EXP)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -641,7 +598,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 18),
 
-          // Quiz Schedule & Recurrence (Standard / Daily / Weekly)
           Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -717,7 +673,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
                   Divider(height: 1, color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
                   const SizedBox(height: 14),
 
-                  // Quiz Duration & Auto-Close Timer
                   Row(
                     children: [
                       const Icon(Icons.timer_outlined, size: 18, color: Color(0xFFD97706)),
@@ -776,7 +731,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 14),
 
-          // Global Quiz, Unlimited Quiz & Repeat EXP Toggles
           Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -853,7 +807,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
           const SizedBox(height: 24),
 
-          // Generate Action Button
           SizedBox(
             width: double.infinity,
             height: 52,
@@ -973,9 +926,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
     );
   }
 
-  // -------------------------------------------------------------------
-  // Step 1: Admin Review Step
-  // -------------------------------------------------------------------
 
   Widget _buildReviewStep(BuildContext context) {
     final theme = Theme.of(context);
@@ -983,7 +933,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
 
     return Column(
       children: [
-        // Refinement & Navigation Chips Bar (SingleChildScrollView prevents right overflow)
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -1002,7 +951,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: [
-                // Lock status chip
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
@@ -1027,7 +975,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Total count chip
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
@@ -1044,7 +991,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Quick question index chips
                 ...List.generate(_reviewQuestions.length, (idx) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 6),
@@ -1073,7 +1019,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
         ),
 
-        // Questions list
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
@@ -1101,7 +1046,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
           ),
         ),
 
-        // Bottom Action Bar (Protected against right overflow on all screens)
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -1194,7 +1138,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header row with question number and action buttons (Overflow protected)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -1268,7 +1211,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
             ),
             const SizedBox(height: 12),
 
-            // Question Text Input
             TextFormField(
               initialValue: question.question,
               decoration: InputDecoration(
@@ -1282,7 +1224,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
             ),
             const SizedBox(height: 14),
 
-            // Options Header
             Row(
               children: [
                 const Icon(Icons.lock_outline_rounded, size: 14, color: Color(0xFF10B981)),
@@ -1299,7 +1240,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
             ),
             const SizedBox(height: 8),
 
-            // Options with AI locked correct key
             ...List.generate(question.options.length, (optIdx) {
               final isCorrect = question.correctAnswerIndex == optIdx;
               final optionLetter = String.fromCharCode(65 + optIdx);
@@ -1308,7 +1248,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(
                   children: [
-                    // Letter badge (A, B, C, D)
                     Container(
                       width: 28,
                       height: 28,
@@ -1329,19 +1268,17 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
                     ),
                     const SizedBox(width: 4),
 
-                    // Radio selector locked for correct answer
                     Radio<int>(
                       value: optIdx,
                       groupValue: question.correctAnswerIndex,
                       activeColor: const Color(0xFF10B981),
-                      onChanged: null, // LOCKED: Cannot accidentally unselect or change key
+                      onChanged: null,
                     ),
 
-                    // Option Input (Locked for correct answer)
                     Expanded(
                       child: TextFormField(
                         initialValue: question.options[optIdx],
-                        readOnly: isCorrect, // LOCKED: Protected against accidental overwrite
+                        readOnly: isCorrect,
                         decoration: InputDecoration(
                           hintText: 'Option $optionLetter',
                           isDense: true,
@@ -1380,7 +1317,6 @@ class _AiQuizStudioModalState extends State<AiQuizStudioModal> {
 
             const SizedBox(height: 8),
 
-            // Explanation
             TextFormField(
               initialValue: question.explanation,
               decoration: InputDecoration(

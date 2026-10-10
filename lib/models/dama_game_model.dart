@@ -4,7 +4,7 @@ enum DamaMode { pvp, vsAi }
 enum DamaDifficulty { easy, medium, hard }
 
 class DamaPiece {
-  final int player; // 1: Player 1 (Blue/Cyan), 2: Player 2 (Rose/Red)
+  final int player;
   bool isKing;
 
   DamaPiece({
@@ -43,16 +43,15 @@ class DamaMove {
 class DamaBoard {
   static const int size = 8;
   late List<List<DamaPiece?>> grid;
-  int currentTurn = 1; // 1: Player 1, 2: Player 2
+  int currentTurn = 1;
   int capturedByP1 = 0;
   int capturedByP2 = 0;
   bool isGameOver = false;
-  int? winner; // 1, 2, or null
+  int? winner;
   bool isDraw = false;
   int consecutiveNonCaptureMoves = 0;
   final List<DamaMove> moveHistory = [];
 
-  /// Tracks the active piece mid-combo during consecutive chained captures
   Point<int>? multiCapturePiece;
 
   DamaBoard() {
@@ -71,7 +70,6 @@ class DamaBoard {
     moveHistory.clear();
     multiCapturePiece = null;
 
-    // Player 2 (Rose/Red) at top (rows 0, 1, 2) on dark squares
     for (int r = 0; r < 3; r++) {
       for (int c = 0; c < size; c++) {
         if ((r + c) % 2 == 1) {
@@ -80,7 +78,6 @@ class DamaBoard {
       }
     }
 
-    // Player 1 (Blue/Cyan) at bottom (rows 5, 6, 7) on dark squares
     for (int r = 5; r < size; r++) {
       for (int c = 0; c < size; c++) {
         if ((r + c) % 2 == 1) {
@@ -99,7 +96,6 @@ class DamaBoard {
     return grid[r][c];
   }
 
-  /// Calculates all atomic capture jumps possible from [r, c]
   List<DamaMove> getCaptureMovesForPiece(int r, int c) {
     final piece = getPiece(r, c);
     if (piece == null) return [];
@@ -113,7 +109,6 @@ class DamaBoard {
     ];
 
     if (piece.isKing) {
-      // Flying King: slides diagonally, jumps over 1 enemy piece into any empty tile behind
       for (final d in directions) {
         int scanR = r + d.x;
         int scanC = c + d.y;
@@ -133,10 +128,9 @@ class DamaBoard {
               ));
             }
           } else if (target.player != piece.player) {
-            if (enemyPos != null) break; // Cannot jump over multiple pieces in single hop
+            if (enemyPos != null) break;
             enemyPos = Point(scanR, scanC);
           } else {
-            // Blocked by friendly piece
             break;
           }
           scanR += d.x;
@@ -144,7 +138,6 @@ class DamaBoard {
         }
       }
     } else {
-      // Regular piece: 1 diagonal jump over enemy to adjacent empty square
       for (final d in directions) {
         final midR = r + d.x;
         final midC = c + d.y;
@@ -176,14 +169,10 @@ class DamaBoard {
     return captures;
   }
 
-  /// Returns legal moves for piece at [r, c] adhering to dama rules:
-  /// - If mid-chain capture is active, only the active piece may move and must capture.
-  /// - Mandatory capture: If any capture exists on the board, non-capture moves are disallowed.
   List<DamaMove> getLegalMoves(int r, int c) {
     final piece = getPiece(r, c);
     if (piece == null || piece.player != currentTurn) return [];
 
-    // 1. If mid-chain jump is active, only the active piece can move
     if (multiCapturePiece != null) {
       if (multiCapturePiece!.x == r && multiCapturePiece!.y == c) {
         return getCaptureMovesForPiece(r, c);
@@ -191,7 +180,6 @@ class DamaBoard {
       return [];
     }
 
-    // 2. Mandatory capture check: does any piece of current player have captures?
     bool playerHasCaptures = false;
     for (int row = 0; row < size; row++) {
       for (int col = 0; col < size; col++) {
@@ -206,11 +194,9 @@ class DamaBoard {
     }
 
     if (playerHasCaptures) {
-      // Must capture!
       return getCaptureMovesForPiece(r, c);
     }
 
-    // 3. Regular non-capture moves
     final simpleMoves = <DamaMove>[];
     final directions = piece.isKing
         ? const [Point(-1, -1), Point(-1, 1), Point(1, -1), Point(1, 1)]
@@ -254,7 +240,6 @@ class DamaBoard {
     return simpleMoves;
   }
 
-  /// Returns all legal moves available for the specified player
   List<DamaMove> getAllLegalMoves(int player) {
     if (multiCapturePiece != null && currentTurn == player) {
       return getCaptureMovesForPiece(multiCapturePiece!.x, multiCapturePiece!.y);
@@ -271,9 +256,6 @@ class DamaBoard {
     return moves;
   }
 
-  /// Executes an atomic move on the board.
-  /// Updates captured count, handles King promotion, checks consecutive chained captures,
-  /// and switches turn or declares game over.
   bool makeMove(DamaMove move) {
     if (isGameOver) return false;
 
@@ -285,10 +267,8 @@ class DamaBoard {
     if (piece == null || piece.player != currentTurn) return false;
     if (grid[move.toRow][move.toCol] != null) return false;
 
-    // Remove piece from origin
     grid[move.fromRow][move.fromCol] = null;
 
-    // Remove captured pieces & increment score
     for (final cap in move.capturedTiles) {
       final removed = grid[cap.x][cap.y];
       if (removed != null) {
@@ -298,7 +278,6 @@ class DamaBoard {
       grid[cap.x][cap.y] = null;
     }
 
-    // King promotion check
     bool promoted = piece.isKing;
     if (piece.player == 1 && move.toRow == 0) promoted = true;
     if (piece.player == 2 && move.toRow == size - 1) promoted = true;
@@ -315,30 +294,23 @@ class DamaBoard {
       becameKing: promoted && !piece.isKing,
     ));
 
-    // Multi-jump consecutive capture logic:
-    // If this move was a capture, check if the piece at (toRow, toCol) has further captures
     if (move.isCapture) {
       final chainedCaptures = getCaptureMovesForPiece(move.toRow, move.toCol);
       if (chainedCaptures.isNotEmpty) {
-        // Continue chained capturing sequence
         multiCapturePiece = Point(move.toRow, move.toCol);
-        // Do NOT switch turn yet!
         return true;
       }
     }
 
-    // Turn complete: clear chained piece and switch turn
     multiCapturePiece = null;
     currentTurn = currentTurn == 1 ? 2 : 1;
 
-    // Track consecutive non-capture moves for run-and-hide deadlock detection
     if (move.isCapture) {
       consecutiveNonCaptureMoves = 0;
     } else {
       consecutiveNonCaptureMoves++;
     }
 
-    // Check game over
     _checkGameOver();
 
     return true;
@@ -398,8 +370,6 @@ class DamaBoard {
     return copy;
   }
 
-  /// Detects if the game has reached an impossible-to-beat or evasive deadlock
-  /// ("run and hide" loop where pieces evade without any captures).
   bool isRunAndHideDeadlock() {
     if (isGameOver) return false;
 
@@ -413,12 +383,10 @@ class DamaBoard {
       }
     }
 
-    // When both sides have reduced forces (<= 2 pieces each) and no captures for 10 moves
     if (p1Pieces <= 2 && p2Pieces <= 2 && consecutiveNonCaptureMoves >= 10) {
       return true;
     }
 
-    // 20 consecutive moves without any capture at all (evasive stalemate)
     if (consecutiveNonCaptureMoves >= 20) {
       return true;
     }
@@ -426,7 +394,6 @@ class DamaBoard {
     return false;
   }
 
-  /// Evaluates board position from the perspective of [forPlayer].
   int evaluateBoard(int forPlayer) {
     if (isGameOver) {
       if (winner == forPlayer) return 100000;
@@ -451,33 +418,25 @@ class DamaBoard {
         final baseVal = p.isKing ? 260 : 100;
         int posVal = 0;
 
-        // Center dominance
         if ((r == 3 || r == 4) && (c == 3 || c == 4)) {
           posVal += 18;
         } else if ((r >= 2 && r <= 5) && (c >= 2 && c <= 5)) {
           posVal += 10;
         }
 
-        // Edge protection (pieces on border cannot be flanked/jumped from outer edge)
         if (c == 0 || c == size - 1) {
           posVal += 10;
         }
 
-        // Row advancement for normal pieces
         if (!p.isKing) {
           if (p.player == 2) {
-            // Player 2 advances downwards towards row 7
             posVal += r * 7;
-            // Guard back row (row 0) to block P1 promotions
             if (r == 0) posVal += 35;
           } else {
-            // Player 1 advances upwards towards row 0
             posVal += (7 - r) * 7;
-            // Guard back row (row 7) to block P2 promotions
             if (r == 7) posVal += 35;
           }
         } else {
-          // Kings are highly active
           posVal += 25;
         }
 
@@ -493,11 +452,9 @@ class DamaBoard {
       }
     }
 
-    // Material differential multiplier
     score += (myPieces - oppPieces) * 40;
     score += (myKings - oppKings) * 60;
 
-    // Mobility difference
     final myMoves = getAllLegalMoves(forPlayer).length;
     final oppMoves = getAllLegalMoves(opponent).length;
     score += (myMoves - oppMoves) * 6;
@@ -505,7 +462,6 @@ class DamaBoard {
     return score;
   }
 
-  /// Minimax search with Alpha-Beta pruning for tactical lookahead
   int _minimax({
     required DamaBoard board,
     required int depth,
@@ -525,7 +481,6 @@ class DamaBoard {
       return isMaximizing ? -100000 + depth : 100000 - depth;
     }
 
-    // Move ordering heuristic: search captures first for higher alpha-beta pruning cutoffs
     legalMoves.sort((a, b) {
       if (a.isCapture != b.isCapture) {
         return a.isCapture ? -1 : 1;
@@ -560,7 +515,7 @@ class DamaBoard {
         );
         maxEval = max(maxEval, eval);
         alpha = max(alpha, eval);
-        if (beta <= alpha) break; // Alpha-beta cutoff
+        if (beta <= alpha) break;
       }
       return maxEval;
     } else {
@@ -587,16 +542,12 @@ class DamaBoard {
         );
         minEval = min(minEval, eval);
         beta = min(beta, eval);
-        if (beta <= alpha) break; // Alpha-beta cutoff
+        if (beta <= alpha) break;
       }
       return minEval;
     }
   }
 
-  /// AI move evaluation for vs AI mode:
-  /// - Easy: Casual random moves with capture priority
-  /// - Medium: 2-ply tactical lookahead
-  /// - Hard (Grandmaster): 4-ply Minimax with Alpha-Beta pruning, king defense, and multi-jump lookahead
   DamaMove? getAiMove(DamaDifficulty difficulty) {
     if (isGameOver) return null;
 
@@ -613,13 +564,11 @@ class DamaBoard {
       return pool[Random().nextInt(pool.length)];
     }
 
-    // Depth 4 for Grandmaster (Hard), Depth 2 for Scholar (Medium)
     final depth = difficulty == DamaDifficulty.hard ? 4 : 2;
 
     DamaMove bestMove = legalMoves.first;
     int bestScore = -999999;
 
-    // Move ordering
     legalMoves.sort((a, b) {
       if (a.isCapture != b.isCapture) return a.isCapture ? -1 : 1;
       if (a.becameKing != b.becameKing) return a.becameKing ? -1 : 1;
@@ -647,7 +596,6 @@ class DamaBoard {
         aiPlayer: currentTurn,
       );
 
-      // Add tactical bonuses
       if (move.isCapture) score += 20;
       if (move.becameKing) score += 25;
 

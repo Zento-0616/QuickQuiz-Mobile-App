@@ -19,7 +19,7 @@ class TournamentModel {
   final int teamSize;
   final List<String> registeredScholarIds;
   final DateTime createdAt;
-  final String gameType; // 'clash_of_minds' or 'dama'
+  final String gameType;
   final String? documentSourceText;
   final List<Map<String, dynamic>>? customQuestions;
   final String? winningTeamName;

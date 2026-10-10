@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../app/theme.dart';
 import '../utils/toast_helper.dart';
 
-/// Service managing device-level push notification permissions on mobile devices.
 class PhoneNotificationService {
   static final PhoneNotificationService _instance = PhoneNotificationService._internal();
   factory PhoneNotificationService() => _instance;
@@ -14,7 +13,6 @@ class PhoneNotificationService {
 
   static const String _promptedKey = 'has_requested_device_notifications';
 
-  /// Returns true if push notification permission is granted by the OS.
   Future<bool> isPermissionGranted() async {
     if (kIsWeb) return true;
     try {
@@ -25,7 +23,6 @@ class PhoneNotificationService {
     }
   }
 
-  /// Requests the cellphone OS notification permission directly.
   Future<bool> requestPermission({BuildContext? context}) async {
     if (kIsWeb) return true;
     try {
@@ -49,7 +46,6 @@ class PhoneNotificationService {
     }
   }
 
-  /// Checks if the app should prompt for notification permissions on initial launch / login.
   Future<void> checkAndPromptInitial(BuildContext context) async {
     if (kIsWeb) return;
     try {

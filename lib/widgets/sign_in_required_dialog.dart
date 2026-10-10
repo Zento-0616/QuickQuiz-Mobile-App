@@ -5,7 +5,6 @@ import '../app/theme.dart';
 import '../utils/toast_helper.dart';
 import '../viewmodels/auth_viewmodel.dart';
 
-/// Modern dialog displayed when a guest user exhausts free quiz limit.
 Future<bool?> showSignInRequiredDialog(BuildContext context) {
   return showDialog<bool>(
     context: context,

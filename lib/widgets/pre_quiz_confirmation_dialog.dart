@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import '../app/theme.dart';
 import '../models/quiz_settings_model.dart';
 
-/// Dynamic confirmation modal displayed before launching a quiz.
-///
-/// Summarizes exam rules based on the selected difficulty:
-/// - Easy: Unlimited time, hints allowed, answers can be changed freely.
-/// - Medium: Dynamic countdown timer, hints allowed, answers can be changed.
-/// - Hard (Strict Mode): Strict countdown timer, no hints, answers PERMANENTLY locked once selected.
 class PreQuizConfirmationDialog extends StatelessWidget {
   final QuizDifficulty difficulty;
   final String quizTitle;
@@ -22,7 +16,6 @@ class PreQuizConfirmationDialog extends StatelessWidget {
     this.timeLimitSeconds,
   });
 
-  /// Displays the modal and returns `true` if the player confirms to start.
   static Future<bool> show({
     required BuildContext context,
     required QuizDifficulty difficulty,
@@ -72,7 +65,6 @@ class PreQuizConfirmationDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Icon & Mode Badge
             Row(
               children: [
                 Container(
@@ -124,7 +116,6 @@ class PreQuizConfirmationDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Dynamic Rules List
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
@@ -165,7 +156,6 @@ class PreQuizConfirmationDialog extends StatelessWidget {
             ),
             const SizedBox(height: 14),
 
-            // Warning Callout Box
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(

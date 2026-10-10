@@ -24,15 +24,11 @@ class SocialService {
     }
   }
 
-  // In-memory fallback stores for offline/test environments
   static final List<FriendRequestModel> _fallbackRequests = [];
   static final Map<String, Set<String>> _fallbackFriends = {};
   static final List<ChatRoomModel> _fallbackRooms = [];
   static final Map<String, List<MessageModel>> _fallbackMessages = {};
 
-  // -------------------------------------------------------------------
-  // Friend Search & Status
-  // -------------------------------------------------------------------
 
   Future<List<UserModel>> searchUsers(String query, String currentUserId) async {
     final cleanQuery = query.trim().toLowerCase();
@@ -63,13 +59,11 @@ class SocialService {
   Future<FriendshipState> getFriendshipStatus(String currentUserId, String targetUserId) async {
     if (currentUserId == targetUserId) return FriendshipState.none;
 
-    // Check fallback first for testing/offline
     if (_fallbackFriends[currentUserId]?.contains(targetUserId) == true) {
       return FriendshipState.friends;
     }
 
     try {
-      // 1. Check accepted friendships
       final friendDoc = await _db
           .collection('friends')
           .doc('${currentUserId}_$targetUserId')
@@ -78,7 +72,6 @@ class SocialService {
 
       if (friendDoc.exists) return FriendshipState.friends;
 
-      // 2. Check pending requests sent
       final sentDoc = await _db
           .collection('friend_requests')
           .where('senderId', isEqualTo: currentUserId)
@@ -90,7 +83,6 @@ class SocialService {
 
       if (sentDoc.docs.isNotEmpty) return FriendshipState.pendingSent;
 
-      // 3. Check pending requests received
       final recvDoc = await _db
           .collection('friend_requests')
           .where('senderId', isEqualTo: targetUserId)
@@ -103,7 +95,6 @@ class SocialService {
       if (recvDoc.docs.isNotEmpty) return FriendshipState.pendingReceived;
     } catch (_) {}
 
-    // In-memory fallback check
     for (final req in _fallbackRequests) {
       if (req.status == FriendRequestStatus.pending) {
         if (req.senderId == currentUserId && req.receiverId == targetUserId) {
@@ -118,9 +109,6 @@ class SocialService {
     return FriendshipState.none;
   }
 
-  // -------------------------------------------------------------------
-  // Friend Request Lifecycle
-  // -------------------------------------------------------------------
 
   Future<void> sendFriendRequest({
     required UserModel currentUser,
@@ -152,7 +140,6 @@ class SocialService {
   Future<void> acceptFriendRequest(FriendRequestModel request) async {
     final updated = request.copyWith(status: FriendRequestStatus.accepted);
 
-    // Fallback store update
     _fallbackRequests.removeWhere((r) => r.id == request.id);
     _fallbackRequests.add(updated);
 
@@ -166,7 +153,6 @@ class SocialService {
         {'status': 'accepted'},
       );
 
-      // Mutual friendship entries
       batch.set(_db.collection('friends').doc('${request.senderId}_${request.receiverId}'), {
         'userId1': request.senderId,
         'userId2': request.receiverId,
@@ -239,7 +225,6 @@ class SocialService {
       return [];
     }
 
-    // Resolve user models
     final friends = <UserModel>[];
     for (final uid in friendUids) {
       try {
@@ -265,19 +250,11 @@ class SocialService {
     return friends;
   }
 
-  // -------------------------------------------------------------------
-  // Strict 1-on-1 and Group Messaging
-  // -------------------------------------------------------------------
 
-  /// Opens or creates a 1-on-1 chat room with [friendUser].
-  ///
-  /// STRICT PRIVACY LOCK: Users CANNOT message any player who is not on
-  /// their accepted Friends list. Throws an exception if privacy lock is violated.
   Future<ChatRoomModel> getOrCreateOneOnOneChat({
     required UserModel currentUser,
     required UserModel friendUser,
   }) async {
-    // 1. Verify Friendship Status (Admins can direct-message any scholar)
     final isAdminInvolved = currentUser.isAdmin || friendUser.isAdmin;
     if (!isAdminInvolved) {
       final status = await getFriendshipStatus(currentUser.uid, friendUser.uid);
@@ -290,7 +267,6 @@ class SocialService {
 
     final roomId = _getOneOnOneRoomId(currentUser.uid, friendUser.uid);
 
-    // Check existing in fallback
     final existingFallback = _fallbackRooms.where((r) => r.id == roomId);
     if (existingFallback.isNotEmpty) {
       return existingFallback.first;
@@ -325,22 +301,16 @@ class SocialService {
     return newRoom;
   }
 
-  /// Creates a group chat room capped at a maximum of 5 players per room.
-  ///
-  /// FRIEND-ONLY INVITATIONS: Group hosts can ONLY add or invite users
-  /// from their accepted Friends list.
   Future<ChatRoomModel> createGroupChat({
     required UserModel currentUser,
     required String groupName,
     required List<UserModel> invitedFriends,
   }) async {
-    // 1. Enforce max 5 players
     final totalPlayers = invitedFriends.length + 1;
     if (totalPlayers > 5) {
       throw Exception('Group chats cannot exceed 5 players (current selection: $totalPlayers).');
     }
 
-    // 2. Enforce Friend-Only Invitations
     for (final friend in invitedFriends) {
       final status = await getFriendshipStatus(currentUser.uid, friend.uid);
       if (status != FriendshipState.friends) {
@@ -412,9 +382,6 @@ class SocialService {
     );
   }
 
-  // -------------------------------------------------------------------
-  // Messages & In-Chat Challenge
-  // -------------------------------------------------------------------
 
   Future<List<MessageModel>> getMessages(String chatRoomId) async {
     try {
@@ -475,14 +442,12 @@ class SocialService {
       expGiftClaimed: expGiftClaimed,
     );
 
-    // Fallback store
     _fallbackMessages.putIfAbsent(chatRoomId, () => []).add(message);
 
     final previewText = isExpGift
         ? '🎁 EXP Gift: +$expGiftAmount EXP'
         : (isQuizChallenge ? '⚡ Quiz Challenge: ${quizChallengeData?['title'] ?? 'MCQ'}' : text);
 
-    // Update last message in room
     final roomIdx = _fallbackRooms.indexWhere((r) => r.id == chatRoomId);
     if (roomIdx != -1) {
       _fallbackRooms[roomIdx] = _fallbackRooms[roomIdx].copyWith(
@@ -570,9 +535,6 @@ class SocialService {
     } catch (_) {}
   }
 
-  // -------------------------------------------------------------------
-  // Leaderboards
-  // -------------------------------------------------------------------
 
   Future<List<UserModel>> getLeaderboard({bool weekly = false}) async {
     if (_customDb == null && !_isFirebaseAvailable) return [];
@@ -596,7 +558,6 @@ class SocialService {
     return [];
   }
 
-  /// Fetches real registered community scholars for multiplayer arenas without mock players.
   Future<List<UserModel>> getActiveCommunityScholars({int limit = 20, String? excludeUserId}) async {
     try {
       if (_customDb != null || _isFirebaseAvailable) {
@@ -621,7 +582,6 @@ class SocialService {
     return [];
   }
 
-  /// Fetches scholars who are strictly currently online for live PvP matchmaking.
   Future<List<UserModel>> getActiveOnlineScholars({int limit = 20, String? excludeUserId}) async {
     try {
       if (_customDb != null || _isFirebaseAvailable) {
@@ -637,7 +597,6 @@ class SocialService {
               .where((u) => !u.isAdmin && u.role != 'admin' && (excludeUserId == null || u.uid != excludeUserId))
               .toList();
 
-          // Strictly filter for genuinely active online scholars only (within 5 minutes)
           final online = users.where((u) => u.isCurrentlyOnline).toList();
           online.sort((a, b) => (b.lastActive ?? b.lastLoginDate ?? DateTime.now())
               .compareTo(a.lastActive ?? a.lastLoginDate ?? DateTime.now()));

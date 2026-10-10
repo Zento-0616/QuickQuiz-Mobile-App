@@ -13,19 +13,16 @@ import '../models/user_model.dart';
 import '../utils/constants.dart';
 import 'local_storage_service.dart';
 
-/// Thrown for Firestore failures the ViewModel should show as a friendly message.
 class FirestoreServiceException implements Exception {
   final String message;
   const FirestoreServiceException(this.message);
 }
 
-/// Firestore service with automated local offline storage fallback.
 class FirestoreService {
   final FirebaseFirestore? _customDb;
   final LocalStorageService _localStorage;
   final fb_auth.FirebaseAuth? _customAuth;
 
-  // In-memory fallback stores for offline/test environments
   static final List<QuizModel> _fallbackPublishedQuizzes = [];
   static final List<QuizResultModel> _fallbackQuizResults = [];
   static final List<FeedbackModel> _fallbackFeedback = [];
@@ -65,9 +62,6 @@ class FirestoreService {
   CollectionReference<Map<String, dynamic>> get _broadcastsCollection =>
       _db.collection('broadcasts');
 
-  // -------------------------------------------------------------------
-  // Default Admin Account Seeding
-  // -------------------------------------------------------------------
 
   Future<void> seedDefaultAdminAccount() async {
     try {
@@ -99,9 +93,6 @@ class FirestoreService {
   }
 
 
-  // -------------------------------------------------------------------
-  // User Profile
-  // -------------------------------------------------------------------
 
   Future<void> upsertUserProfile(UserModel user) async {
     try {
@@ -110,7 +101,6 @@ class FirestoreService {
 
       if (existing.exists) {
         final data = existing.data() ?? {};
-        // Merge without wiping progression fields
         await docRef.set({
           'name': user.name,
           'email': user.email,
@@ -124,7 +114,6 @@ class FirestoreService {
         await docRef.set(user.toJson());
       }
     } catch (_) {
-      // Non-fatal fallback
     }
   }
 
@@ -187,9 +176,6 @@ class FirestoreService {
     return [];
   }
 
-  // -------------------------------------------------------------------
-  // Published Quizzes (Admin Deck Studio & Games Screen)
-  // -------------------------------------------------------------------
 
   Future<List<QuizModel>> getPublishedQuizzes() async {
     if (_customDb == null && !_isFirebaseAvailable) {
@@ -213,7 +199,6 @@ class FirestoreService {
   }
 
   Future<void> savePublishedQuiz(QuizModel quiz, {UserModel? user}) async {
-    // Role verification: ensure only admin accounts can publish quizzes
     if (user != null && !user.isAdmin) {
       throw const FirestoreServiceException('Unauthorized: Only accounts with role="admin" can publish quizzes.');
     }
@@ -246,7 +231,6 @@ class FirestoreService {
     final allQuizzes = await getPublishedQuizzes();
     var filtered = List<QuizModel>.from(allQuizzes);
 
-    // 1. Text search query (title, category, or tags)
     if (query != null && query.trim().isNotEmpty) {
       final q = query.trim().toLowerCase();
       filtered = filtered.where((quiz) {
@@ -257,7 +241,6 @@ class FirestoreService {
       }).toList();
     }
 
-    // 2. Status filter (Active, Done, Draft, Archived)
     if (status != null && status.isNotEmpty && status.toLowerCase() != 'all') {
       filtered = filtered.where((quiz) {
         if (status.toLowerCase() == 'done') {
@@ -270,7 +253,6 @@ class FirestoreService {
       }).toList();
     }
 
-    // 3. Date range filter
     if (dateRange != null) {
       final start = DateTime(dateRange.start.year, dateRange.start.month, dateRange.start.day);
       final end = DateTime(dateRange.end.year, dateRange.end.month, dateRange.end.day, 23, 59, 59);
@@ -312,7 +294,6 @@ class FirestoreService {
     }
   }
 
-  /// Archive all completed/done quizzes (both global and normal quizzes).
   Future<int> archiveAllDoneQuizzes() async {
     final allQuizzes = await getPublishedQuizzes();
     int count = 0;
@@ -329,7 +310,6 @@ class FirestoreService {
     return count;
   }
 
-  /// Auto-mark quizzes past their expiration date as Done.
   Future<void> autoMarkExpiredQuizzesAsDone() async {
     final allQuizzes = await getPublishedQuizzes();
     final now = DateTime.now();
@@ -340,9 +320,6 @@ class FirestoreService {
     }
   }
 
-  // -------------------------------------------------------------------
-  // Live Metrics Bar & Platform Stats
-  // -------------------------------------------------------------------
 
   Future<AdminLiveMetrics> getAdminLiveMetrics() async {
     int onlineCount = 0;
@@ -355,12 +332,9 @@ class FirestoreService {
       final nonAdmins = allUsers.where((u) => !u.isAdmin && u.role != 'admin').toList();
       totalScholars = nonAdmins.length;
 
-      // Count strictly genuine active scholars who reported activity within the last 5 minutes.
-      // Do not count stale database entries or administrator accounts.
       final activeOnlineScholars = nonAdmins.where((u) => u.isCurrentlyOnline).toList();
       onlineCount = activeOnlineScholars.length;
 
-      // Calculate accuracy across scholars
       int totalCorrectSum = 0;
       int totalQuestionsSum = 0;
       for (final u in nonAdmins) {
@@ -370,10 +344,9 @@ class FirestoreService {
       if (totalQuestionsSum > 0) {
         avgAccuracy = (totalCorrectSum / totalQuestionsSum) * 100;
       } else {
-        avgAccuracy = 82.5; // Platform baseline default
+        avgAccuracy = 82.5;
       }
 
-      // Count quizzes created since 00:00 UTC today
       final nowUtc = DateTime.now().toUtc();
       final startOfTodayUtc = DateTime.utc(nowUtc.year, nowUtc.month, nowUtc.day);
       final startOfTodayIso = startOfTodayUtc.toIso8601String();
@@ -388,7 +361,6 @@ class FirestoreService {
         } catch (_) {}
       }
 
-      // Count in-memory/local created quizzes created since 00:00 UTC today
       final localCreatedToday = _fallbackPublishedQuizzes.where((q) {
         final qUtc = q.createdAt.toUtc();
         return qUtc.isAfter(startOfTodayUtc) || qUtc.isAtSameMomentAs(startOfTodayUtc);
@@ -409,9 +381,6 @@ class FirestoreService {
     );
   }
 
-  // -------------------------------------------------------------------
-  // Scholar Feedback Operations
-  // -------------------------------------------------------------------
 
   Future<void> submitFeedback(FeedbackModel feedback) async {
     _fallbackFeedback.insert(0, feedback);
@@ -476,7 +445,6 @@ class FirestoreService {
     }
   }
 
-  /// Real-time metrics across all scholar feedback (received, resolved, pending)
   Future<FeedbackMetrics> getFeedbackMetrics() async {
     final allFeedback = await getFeedbackList();
 
@@ -491,12 +459,8 @@ class FirestoreService {
     );
   }
 
-  /// Backward-compatible alias for getFeedbackMetrics
   Future<FeedbackMetrics7Days> getFeedbackMetrics7Days() => getFeedbackMetrics();
 
-  // -------------------------------------------------------------------
-  // Broadcast Announcement Alerts
-  // -------------------------------------------------------------------
 
   Future<void> sendBroadcastAlert(BroadcastAlertModel alert) async {
     _fallbackBroadcasts.insert(0, alert);
@@ -539,7 +503,6 @@ class FirestoreService {
   Future<void> markAnnouncementRead(String alertId, String userId) async {
     if (alertId.isEmpty || userId.isEmpty) return;
 
-    // Update in fallback
     final idx = _fallbackBroadcasts.indexWhere((a) => a.id == alertId);
     if (idx >= 0) {
       final currentAlert = _fallbackBroadcasts[idx];
@@ -560,9 +523,6 @@ class FirestoreService {
     }
   }
 
-  // -------------------------------------------------------------------
-  // Quiz Deep-Dive Inspection View (Analytics Modal Data)
-  // -------------------------------------------------------------------
 
   Future<QuizAnalyticsData> getQuizPerformanceAnalytics(
     String quizId, {
@@ -584,7 +544,6 @@ class FirestoreService {
       }
     } catch (_) {}
 
-    // Include local and in-memory results strictly matching quizId
     final localHistory = await _localStorage.getQuizHistoryLocally();
     final combinedHistory = [..._fallbackQuizResults, ...localHistory];
     for (final res in combinedHistory) {
@@ -598,10 +557,8 @@ class FirestoreService {
       return QuizAnalyticsData.empty(quizId: quizId, quizTitle: title);
     }
 
-    // Sort by createdAt descending
     results.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    // Calculate player records
     final records = <PlayerScoreRecord>[];
     int passCount = 0;
     int failCount = 0;
@@ -640,7 +597,6 @@ class FirestoreService {
       );
     }
 
-    // Top player: highest score, then fastest completion time
     final sortedRecords = List<PlayerScoreRecord>.from(records)
       ..sort((a, b) {
         final cmp = b.score.compareTo(a.score);
@@ -665,9 +621,6 @@ class FirestoreService {
     );
   }
 
-  // -------------------------------------------------------------------
-  // Quiz Results & History
-  // -------------------------------------------------------------------
 
   Future<void> saveQuizResult(QuizResultModel result) async {
     var resolvedResult = result;
@@ -731,7 +684,6 @@ class FirestoreService {
   }
 
   Future<void> syncGuestHistoryToUser(String userId) async {
-    // Guest activity is intentionally not recorded; no sync required.
     return;
   }
 
@@ -745,12 +697,7 @@ class FirestoreService {
     } catch (_) {}
   }
 
-  // -------------------------------------------------------------------
-  // System Refresh & Scholar Data Purge Operations
-  // -------------------------------------------------------------------
 
-  /// Purges all generated quizzes and attempt records from Firestore (`quizzes` collection)
-  /// and local storage. Leaves the `users` collection completely untouched.
   Future<int> clearAllGeneratedQuizDocuments() async {
     int deletedCount = _fallbackQuizResults.length;
     _fallbackQuizResults.clear();
@@ -778,8 +725,6 @@ class FirestoreService {
     return deletedCount;
   }
 
-  /// Purges all generated quiz attempts and records belonging to a specific scholar.
-  /// Preserves the scholar's profile and account in the `users` collection.
   Future<int> clearScholarQuizDocuments(String userId) async {
     if (userId.isEmpty) return 0;
     int deletedCount = _fallbackQuizResults.where((q) => q.userId == userId).length;
@@ -811,14 +756,11 @@ class FirestoreService {
     return deletedCount;
   }
 
-  /// Permanently deletes a scholar's user profile, statistics, and all associated quiz attempts.
   Future<void> deleteScholarAccount(String userId) async {
     if (userId.isEmpty) return;
 
-    // 1. Purge their quiz attempts & history
     await clearScholarQuizDocuments(userId);
 
-    // 2. Remove from Firestore users collection
     try {
       if (_customDb != null || _isFirebaseAvailable) {
         await _usersCollection.doc(userId).delete().timeout(const Duration(seconds: 6));

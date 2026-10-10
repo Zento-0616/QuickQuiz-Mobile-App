@@ -7,7 +7,6 @@ import '../../models/question_model.dart';
 import '../../models/quiz_result_model.dart';
 import '../../utils/nav_payloads.dart';
 
-/// Modern Answer Review screen.
 class ReviewView extends StatelessWidget {
   final QuizResultPayload? payload;
   const ReviewView({super.key, this.payload});
@@ -165,7 +164,6 @@ class _ReviewCard extends StatelessWidget {
             const SizedBox(height: 16),
 
             if (question.isFillInBlank) ...[
-              // Fill-in-the-Blank review view
               Container(
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.all(14),
@@ -272,7 +270,6 @@ class _ReviewCard extends StatelessWidget {
                 ),
               ],
             ] else ...[
-              // Options list with highlights for Multiple Choice
               ...List.generate(question.options.length, (idx) {
                 final isUserChoice = question.selectedAnswerIndex == idx;
                 final isCorrectChoice = question.correctAnswerIndex == idx;

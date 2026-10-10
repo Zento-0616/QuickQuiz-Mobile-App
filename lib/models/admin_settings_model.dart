@@ -4,13 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Data model and persistent manager for Admin EXP and Game Control settings.
-/// Supports day-by-day EXP caps (Day 1 Monday to Day 7 Sunday) synchronized
-/// across all scholar devices via Firestore with local SharedPreferences cache.
 class AdminSettingsModel {
   final bool repeatQuizExpEnabled;
-  final Map<int, int> dailyExpCaps; // 1 = Monday, ..., 7 = Sunday
-  final Map<int, int> dailyLoginRewards; // 1 = Monday, ..., 7 = Sunday
+  final Map<int, int> dailyExpCaps;
+  final Map<int, int> dailyLoginRewards;
 
   AdminSettingsModel({
     this.repeatQuizExpEnabled = false,
@@ -41,7 +38,6 @@ class AdminSettingsModel {
               7: 250,
             };
 
-  /// Legacy dailyExpCap getter returning today's active cap
   int get dailyExpCap => getDailyCapForDay(DateTime.now().weekday);
 
   int getDailyCapForDay(int weekday) {
@@ -137,10 +133,7 @@ class AdminSettingsModel {
     );
   }
 
-  /// Loads admin settings from Firestore first for true multi-device sync,
-  /// falling back to local persistent storage.
   static Future<AdminSettingsModel> loadSettings() async {
-    // 1. Try Firestore remote fetch first
     try {
       if (Firebase.apps.isNotEmpty) {
         final doc = await FirebaseFirestore.instance
@@ -151,7 +144,6 @@ class AdminSettingsModel {
 
         if (doc.exists && doc.data() != null) {
           final settings = AdminSettingsModel.fromJson(doc.data()!);
-          // Cache locally
           await settings._saveLocally();
           return settings;
         }
@@ -160,7 +152,6 @@ class AdminSettingsModel {
       debugPrint('[AdminSettingsModel] Remote settings load fallback: $e');
     }
 
-    // 2. Local SharedPreferences fallback
     try {
       final prefs = await SharedPreferences.getInstance();
       final repeat = prefs.getBool(_keyRepeatExp) ?? false;
@@ -208,7 +199,6 @@ class AdminSettingsModel {
     }
   }
 
-  /// Persists admin settings both locally and to Firestore for instant global sync.
   Future<void> saveSettings() async {
     await _saveLocally();
 

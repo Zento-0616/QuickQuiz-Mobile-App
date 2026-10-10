@@ -30,14 +30,11 @@ class RewardCelebrationPayload {
   Color? get badgeColor => accentColor;
 }
 
-/// Service that triggers celebratory visual animations (confetti, sparkles, floating badge)
-/// whenever a user earns or receives a reward, ensuring no duplicate triggers.
 class RewardEffectService {
   static final RewardEffectService _instance = RewardEffectService._internal();
   factory RewardEffectService() => _instance;
   RewardEffectService._internal();
 
-  /// Set of unique reward IDs that have already played to prevent duplicate animations.
   final Set<String> _awardedIds = {};
 
   bool isAlreadyAwarded(String id) => _awardedIds.contains(id);
@@ -46,9 +43,7 @@ class RewardEffectService {
 
   void clearHistory() => _awardedIds.clear();
 
-  /// Displays the reward celebration overlay immediately if not already awarded.
   bool showCelebration(BuildContext context, RewardCelebrationPayload payload) {
-    // 1. Deduplication check: prevent triggering multiple times for the same reward
     if (payload.id != null && payload.id!.isNotEmpty) {
       if (_awardedIds.contains(payload.id)) {
         debugPrint('[RewardEffectService] Ignored duplicate celebration for ID: ${payload.id}');
@@ -57,12 +52,10 @@ class RewardEffectService {
       _awardedIds.add(payload.id!);
     }
 
-    // 2. Play subtle haptic feedback
     try {
       HapticFeedback.mediumImpact();
     } catch (_) {}
 
-    // 3. Show celebration overlay
     showRewardCelebrationOverlay(context, payload);
     return true;
   }

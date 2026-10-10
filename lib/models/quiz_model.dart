@@ -5,8 +5,6 @@ import 'quiz_settings_model.dart';
 
 const _uuid = Uuid();
 
-/// A generated or admin-published quiz: metadata about its source/settings
-/// plus the list of questions.
 class QuizModel {
   final String id;
   final String title;
@@ -17,11 +15,11 @@ class QuizModel {
   final int? timeLimitSeconds;
   final List<String> topicTags;
   final double expMultiplier;
-  final int? expReward; // Simple 1-1000 EXP reward
+  final int? expReward;
   final bool isPublished;
   final bool isGlobal;
   final bool isUnlimitedPlay;
-  final bool allowRepeatExp; // Per-quiz toggle for re-earning EXP on replay
+  final bool allowRepeatExp;
   final String? authorId;
   final String? authorName;
   final int playCount;
@@ -29,9 +27,9 @@ class QuizModel {
   final int minLevel;
   final String category;
   final String status;
-  final String quizScheduleType; // 'standard', 'daily', 'weekly'
-  final DateTime? expiresAt; // Time until quiz closes
-  final DateTime? closedAt; // When quiz was marked done/closed
+  final String quizScheduleType;
+  final DateTime? expiresAt;
+  final DateTime? closedAt;
 
   QuizModel({
     String? id,
@@ -107,7 +105,6 @@ class QuizModel {
     return (100 * expMultiplier).round().clamp(1, 1000);
   }
 
-  /// Parses the top-level `{"questions": [...]}` response from the backend.
   factory QuizModel.fromApiResponse({
     required Map<String, dynamic> json,
     required String sourceFileName,
@@ -263,7 +260,6 @@ class QuizModel {
     );
   }
 
-  /// Replaces the question at [index] with an updated copy with selected answer index.
   QuizModel updateAnswer(int index, int selectedAnswerIndex) {
     final updated = List<QuestionModel>.from(questions);
     updated[index] = updated[index].copyWith(
@@ -272,7 +268,6 @@ class QuizModel {
     return copyWith(questions: updated);
   }
 
-  /// Updates the user's typed text answer for Fill-in-the-Blank questions at [index].
   QuizModel updateTextAnswer(int index, String text) {
     final updated = List<QuestionModel>.from(questions);
     updated[index] = updated[index].copyWith(
@@ -281,7 +276,6 @@ class QuizModel {
     return copyWith(questions: updated);
   }
 
-  /// Toggles the review flag on the question at [index].
   QuizModel toggleFlag(int index) {
     final updated = List<QuestionModel>.from(questions);
     updated[index] = updated[index].copyWith(
@@ -294,7 +288,6 @@ class QuizModel {
 
   int get flaggedCount => questions.where((q) => q.isFlagged).length;
 
-  /// Returns a copy of this quiz with every answer and flag cleared.
   QuizModel resetAnswers() {
     final cleared = questions
         .map((q) => q.copyWith(clearSelection: true, isFlagged: false))

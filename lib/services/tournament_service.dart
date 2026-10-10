@@ -39,10 +39,8 @@ class TournamentService {
         gameType: 'dama',
       );
 
-  // In-memory active tournament lists - empty until created by Admin
   static final List<TournamentModel> _fallbackTournaments = [];
 
-  // Fallback in-memory list for finished Clash of Minds tournaments
   static final List<TournamentModel> _fallbackFinishedTournaments = [
     TournamentModel(
       id: 'finished_siege_season_1',
@@ -82,7 +80,6 @@ class TournamentService {
     ),
   ];
 
-  // Fallback in-memory list for Dama tournaments - empty until created by Admin
   static final List<TournamentModel> _fallbackDamaTournaments = [];
 
   Future<List<TournamentModel>> getTournaments({String gameType = 'dama'}) async {
@@ -144,7 +141,6 @@ class TournamentService {
     return streamTournaments(gameType: 'dama');
   }
 
-  // Finished Clash of Minds tournaments stream
   Stream<List<TournamentModel>> streamFinishedTournaments() {
     try {
       final col = _finishedCollection;
@@ -226,7 +222,6 @@ class TournamentService {
       completedAt: DateTime.now(),
     );
 
-    // Remove from active list and add to finished
     if (finished.isDama) {
       _fallbackDamaTournaments.removeWhere((t) => t.id == tournament.id);
     } else {
@@ -237,7 +232,6 @@ class TournamentService {
     try {
       final col = _collection;
       if (col != null) {
-        // Delete from active tournaments collection so it no longer appears as active
         await col.doc(tournament.id).delete().timeout(const Duration(seconds: 4));
       }
 

@@ -1,4 +1,3 @@
-/// Represents an authenticated QuickQuiz user with gamification and social metadata.
 class UserModel {
   final String uid;
   final String name;
@@ -7,7 +6,7 @@ class UserModel {
   final DateTime createdAt;
   final int age;
   final String nickname;
-  final String role; // 'user' or 'admin'
+  final String role;
   final int level;
   final int exp;
   final int dailyStreak;
@@ -77,9 +76,6 @@ class UserModel {
 
   bool get isGuest => uid.startsWith('guest_') || role == 'guest';
 
-  /// Returns true only if the user has an active online flag AND reported
-  /// activity within the last 5 minutes (preventing stale Firestore documents
-  /// from appearing online).
   bool get isCurrentlyOnline {
     if (!isOnline) return false;
     final active = lastActive ?? lastLoginDate;
@@ -123,7 +119,6 @@ class UserModel {
   String get damaRecord =>
       '${damaWins}W - ${damaLosses}L${damaDraws > 0 ? " - ${damaDraws}D" : ""}';
 
-  /// Builds a [UserModel] from a Firestore document map or local cache.
   factory UserModel.fromJson(Map<String, dynamic> json) {
     final rawName = json['name'] as String? ?? 'Student';
     return UserModel(

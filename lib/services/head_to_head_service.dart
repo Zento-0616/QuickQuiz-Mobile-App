@@ -74,9 +74,6 @@ class HeadToHeadRecord {
   }
 }
 
-/// Service managing persistent head-to-head win/loss scoring between scholars.
-/// Caches records in local SharedPreferences for fast, offline-first access
-/// and synchronizes with Cloud Firestore when network connectivity is available.
 class HeadToHeadService {
   static final HeadToHeadService _instance = HeadToHeadService._internal();
   factory HeadToHeadService() => _instance;
@@ -94,7 +91,6 @@ class HeadToHeadService {
 
   String _cacheKey(String userId, String opponentId) => 'h2h_${userId}_$opponentId';
 
-  /// Synchronously gets cached record if already loaded into memory
   HeadToHeadRecord getCachedRecord({
     required String userId,
     required String opponentId,
@@ -113,7 +109,6 @@ class HeadToHeadService {
         );
   }
 
-  /// Retrieves the head-to-head record between [userId] and [opponentId]
   Future<HeadToHeadRecord> getRecord({
     required String userId,
     required String opponentId,
@@ -136,7 +131,6 @@ class HeadToHeadService {
       return _memoryCache[key]!;
     }
 
-    // 1. Try reading from SharedPreferences
     try {
       final prefs = await SharedPreferences.getInstance();
       final raw = prefs.getString(key);
@@ -150,7 +144,6 @@ class HeadToHeadService {
       debugPrint('[HeadToHeadService] Local read error: $e');
     }
 
-    // 2. Try reading from Firestore
     if (_isFirebaseAvailable) {
       try {
         final doc = await FirebaseFirestore.instance
@@ -172,7 +165,6 @@ class HeadToHeadService {
       }
     }
 
-    // 3. Fallback blank record
     final initial = HeadToHeadRecord(
       userId: userId,
       opponentId: opponentId,
@@ -186,7 +178,6 @@ class HeadToHeadService {
     return initial;
   }
 
-  /// Records a completed match outcome (win, loss, or draw) against [opponentId]
   Future<HeadToHeadRecord> recordMatchOutcome({
     required String userId,
     required String opponentId,
@@ -220,10 +211,8 @@ class HeadToHeadService {
     final key = _cacheKey(userId, opponentId);
     _memoryCache[key] = updated;
 
-    // Persist locally
     await _saveToLocal(key, updated);
 
-    // Sync to Firestore
     if (_isFirebaseAvailable) {
       try {
         await FirebaseFirestore.instance

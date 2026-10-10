@@ -7,7 +7,6 @@ import '../services/firestore_service.dart';
 import '../utils/toast_helper.dart';
 import '../viewmodels/auth_viewmodel.dart';
 
-/// Modal dialog allowing Scholars to submit platform suggestions or issue reports.
 class ScholarFeedbackDialog extends StatefulWidget {
   const ScholarFeedbackDialog({super.key});
 
@@ -28,7 +27,7 @@ class _ScholarFeedbackDialogState extends State<ScholarFeedbackDialog> {
   final _messageCtrl = TextEditingController();
   final _firestoreService = FirestoreService();
 
-  String _type = 'suggestion'; // 'suggestion' | 'issue_report'
+  String _type = 'suggestion';
   bool _isSubmitting = false;
 
   @override
@@ -96,7 +95,6 @@ class _ScholarFeedbackDialogState extends State<ScholarFeedbackDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                // Header
                 Row(
                   children: [
                     Container(
@@ -132,7 +130,6 @@ class _ScholarFeedbackDialogState extends State<ScholarFeedbackDialog> {
                 ),
                 const SizedBox(height: 18),
 
-                // Feedback Type Segmented Selector
                 Row(
                   children: [
                     Expanded(
@@ -158,7 +155,6 @@ class _ScholarFeedbackDialogState extends State<ScholarFeedbackDialog> {
                 ),
                 const SizedBox(height: 16),
 
-                // Title field
                 TextFormField(
                   controller: _titleCtrl,
                   decoration: InputDecoration(
@@ -178,7 +174,6 @@ class _ScholarFeedbackDialogState extends State<ScholarFeedbackDialog> {
                 ),
                 const SizedBox(height: 14),
 
-                // Details field
                 TextFormField(
                   controller: _messageCtrl,
                   maxLines: 4,
@@ -202,7 +197,6 @@ class _ScholarFeedbackDialogState extends State<ScholarFeedbackDialog> {
                 ),
                 const SizedBox(height: 20),
 
-                // Action buttons wrapped to prevent horizontal overflow on narrow displays
                 Wrap(
                   alignment: WrapAlignment.end,
                   crossAxisAlignment: WrapCrossAlignment.center,

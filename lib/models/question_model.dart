@@ -26,9 +26,6 @@ enum QuestionType {
   }
 }
 
-/// A single question (MCQ or Fill-in-the-Blank) within a generated quiz.
-///
-/// Supports rich metadata including category, difficulty, question type, and relevant tags.
 class QuestionModel {
   final String? id;
   final String question;
@@ -40,18 +37,14 @@ class QuestionModel {
   final List<String> tags;
   final QuestionType type;
 
-  /// Accepted alias spellings or variants for Fill-in-the-Blank questions
   final List<String> acceptableAnswers;
 
   final String? hint;
 
-  /// The option index the user picked (for multiple choice).
   final int? selectedAnswerIndex;
 
-  /// The text string the user entered (for Fill-in-the-Blank).
   final String? userTextAnswer;
 
-  /// Whether the user marked this question for later review during an exam.
   final bool isFlagged;
 
   const QuestionModel({
@@ -100,13 +93,11 @@ class QuestionModel {
     final cleanInput = normalizeAnswerText(answer);
     if (cleanInput.isEmpty) return false;
 
-    // Check against primary target
     final primaryTarget = normalizeAnswerText(effectiveCorrectAnswerText);
     if (primaryTarget.isNotEmpty && cleanInput == primaryTarget) {
       return true;
     }
 
-    // Check against accepted alternatives
     for (final alt in acceptableAnswers) {
       if (normalizeAnswerText(alt) == cleanInput) {
         return true;
@@ -124,8 +115,6 @@ class QuestionModel {
         .trim();
   }
 
-  /// Returns the hint, or derives a smart educational clue without revealing
-  /// the direct answer if no explicit hint was set.
   String get effectiveHint {
     if (hint != null && hint!.trim().isNotEmpty) {
       return hint!.trim();
@@ -147,7 +136,6 @@ class QuestionModel {
     return 'Focus on core principles related to $tagClue.';
   }
 
-  /// Parses one question object and throws a [FormatException] if the shape is invalid.
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     final questionText = json['question'];
     final options = json['options'];
@@ -190,7 +178,6 @@ class QuestionModel {
       optionStrings = options.map((o) => o.toString()).toList();
     }
 
-    // Resolve correct answer index or text
     int? parsedIndex;
     if (rawCorrectIndex is int) {
       parsedIndex = rawCorrectIndex;
@@ -209,7 +196,6 @@ class QuestionModel {
     }
 
     if (type == QuestionType.fillInBlank) {
-      // For fill in the blank, option list can be minimal or just the correct answer
       if (optionStrings.isEmpty && parsedCorrectText != null && parsedCorrectText.isNotEmpty) {
         optionStrings = [parsedCorrectText];
         parsedIndex = 0;
@@ -236,7 +222,6 @@ class QuestionModel {
         ? TextSanitizer.sanitizeText(explanation)
         : 'Conceptual analysis based on study material.';
 
-    // For multiple choice, deduplicate and ensure aligned index
     List<String> finalOptions = optionStrings;
     int finalIndex = parsedIndex ?? 0;
 
@@ -324,8 +309,6 @@ class QuestionModel {
     );
   }
 
-  /// Randomly distributes the correct answer across indices 0, 1, 2, 3 (A, B, C, D)
-  /// ensuring it never predictably defaults to option A for multiple choice questions.
   QuestionModel randomizeAnswers({Random? rng}) {
     if (isFillInBlank || options.length < 2) return this;
     final r = rng ?? Random();
@@ -350,7 +333,6 @@ class QuestionModel {
     );
   }
 
-  /// Formats the question in the standard structured layout
   String formatStructuredLayout([int? questionNumber]) {
     final prefix = questionNumber != null ? '$questionNumber. ' : '';
     if (isFillInBlank) {

@@ -5,7 +5,6 @@ import '../../app/routes.dart';
 import '../../app/theme.dart';
 import '../../services/local_storage_service.dart';
 
-/// Full modern 3-slide interactive onboarding experience.
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
 

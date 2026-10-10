@@ -13,11 +13,6 @@ import '../widgets/ai_provider_logo.dart';
 import '../widgets/gemini_api_key_dialog.dart';
 import '../widgets/scholar_feedback_dialog.dart';
 
-/// Top Navigation Bar adhering to QuickQuiz UI guidelines:
-/// - Official QuickQuiz icon placed directly beside the "QuickQuiz" title text.
-/// - AI Key connection button showing active provider logo and key status.
-/// - Feedback button allowing scholars to submit suggestions or issue reports.
-/// - Clickable User Profile avatar button positioned in the top-right corner.
 class QuickQuizTopBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? extraActions;
   final bool showBackButton;
@@ -61,7 +56,6 @@ class QuickQuizTopBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Official QuickQuiz logo directly beside title text
             ClipRRect(
               borderRadius: BorderRadius.circular(9),
               child: Image.asset(
@@ -104,7 +98,6 @@ class QuickQuizTopBar extends StatelessWidget implements PreferredSizeWidget {
             tooltip: 'Scholar Feedback',
             onPressed: () => ScholarFeedbackDialog.show(context),
           ),
-        // Clickable user profile avatar button in top-right corner
         Padding(
           padding: const EdgeInsets.only(right: 10, left: 2),
           child: InkWell(
@@ -144,7 +137,6 @@ class QuickQuizTopBar extends StatelessWidget implements PreferredSizeWidget {
                         : _DefaultAvatar(initials: _getInitials(user?.name ?? 'Q')),
                   ),
                 ),
-                // Level badge chip
                 if (auth.isAuthenticated && user != null)
                   Positioned(
                     bottom: 0,

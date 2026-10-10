@@ -7,7 +7,6 @@ import '../../app/theme.dart';
 import '../../models/document_model.dart';
 import '../../viewmodels/upload_viewmodel.dart';
 
-/// Modern Upload screen: select study material, preview document, and proceed to settings.
 class UploadView extends StatelessWidget {
   const UploadView({super.key});
 
@@ -65,7 +64,6 @@ class _UploadBody extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // File count and limit indicator
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -163,7 +161,6 @@ class _UploadBody extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // Supported formats badge list
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -490,7 +487,6 @@ class _FileCard extends StatelessWidget {
   }
 }
 
-/// Visual animated loading indicator card displayed while analyzing document text.
 class _DocumentAnalysisLoadingAnimation extends StatefulWidget {
   final String? message;
   const _DocumentAnalysisLoadingAnimation({this.message});

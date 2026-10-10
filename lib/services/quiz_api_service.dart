@@ -5,19 +5,11 @@ import '../models/quiz_model.dart';
 import '../models/quiz_settings_model.dart';
 import '../utils/constants.dart';
 
-/// Thrown for any quiz-generation failure the ViewModel should show as a
-/// friendly message.
 class QuizGenerationException implements Exception {
   final String message;
   const QuizGenerationException(this.message);
 }
 
-/// Calls the `generateQuiz` Cloud Function. This is the ONLY place the
-/// app talks to the AI backend — no AI provider API key ever exists in
-/// this codebase. The actual prompt and provider call live server-side
-/// in `functions/index.js`.
-///
-///   Flutter app -> generateQuiz Cloud Function -> AI provider -> JSON -> app
 class QuizApiService {
   final FirebaseFunctions? _customFunctions;
 
@@ -39,8 +31,6 @@ class QuizApiService {
     final HttpsCallable callable = _functions.httpsCallable(
       AppConstants.generateQuizFunctionName,
       options: HttpsCallableOptions(
-        // Generation can legitimately take a while for 50 questions —
-        // give it real room before treating it as a network failure.
         timeout: const Duration(seconds: 90),
       ),
     );
@@ -72,9 +62,6 @@ class QuizApiService {
         expectedQuestionCount: questionCount,
       );
     } on FormatException catch (e) {
-      // The function is expected to validate this itself, but the client
-      // re-validates independently — never trust and render unvalidated
-      // AI output.
       debugPrint('[QuizApiService] Invalid quiz format received: $e');
       throw const QuizGenerationException(
         'We received an invalid quiz from the server. Please try again.',

@@ -43,7 +43,6 @@ class _ChatRoomViewState extends State<ChatRoomView> {
     _msgSub = _socialService.streamMessages(widget.chatRoom.id).listen((newMessages) {
       if (!mounted) return;
       final currentUserId = context.read<AuthViewModel>().currentUser?.uid;
-      // In-app alert if new message arrived from peer
       if (_messages.isNotEmpty && newMessages.length > _messages.length) {
         final latest = newMessages.last;
         if (latest.senderId != currentUserId) {
@@ -356,7 +355,6 @@ class _ChatRoomViewState extends State<ChatRoomView> {
       body: SafeArea(
         child: Column(
           children: [
-            // Messages List
             Expanded(
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -384,7 +382,6 @@ class _ChatRoomViewState extends State<ChatRoomView> {
                         ),
             ),
 
-            // Chat Input Bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
@@ -616,7 +613,6 @@ class _ChatRoomViewState extends State<ChatRoomView> {
           currentUser.completedOfficialQuizIds.contains(quiz.id);
       final isDeletedByAdmin = _publishedLoaded && !_publishedQuizIds.contains(quiz.id);
 
-      // Auto-erase challenge if deleted by admin or if finished
       if (isDeletedByAdmin || isCompleted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _socialService.deleteMessage(widget.chatRoom.id, msg.id);

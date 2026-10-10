@@ -9,12 +9,6 @@ import '../../services/profanity_filter_service.dart';
 import '../../utils/toast_helper.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 
-/// Comprehensive Authentication view supporting:
-/// - Native Email/Password Registration (Real Name, Age, Email, Password, Nickname)
-/// - Native Email/Password Login
-/// - Google Sign-In
-/// - Password Reset & Email Verification flow
-/// - Guest mode fallback
 class AuthView extends StatefulWidget {
   const AuthView({super.key});
 
@@ -26,12 +20,10 @@ class _AuthViewState extends State<AuthView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  // Sign In controllers
   final _signInEmailCtrl = TextEditingController();
   final _signInPassCtrl = TextEditingController();
   bool _obscureSignInPass = true;
 
-  // Register controllers
   final _regNameCtrl = TextEditingController();
   final _regAgeCtrl = TextEditingController(text: '18');
   final _regNicknameCtrl = TextEditingController();
@@ -213,7 +205,6 @@ class _AuthViewState extends State<AuthView>
     return Scaffold(
       body: Stack(
         children: [
-          // Background Gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -235,7 +226,6 @@ class _AuthViewState extends State<AuthView>
                 children: [
                   const SizedBox(height: 12),
 
-                  // Official Logo beside App Title
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -277,7 +267,6 @@ class _AuthViewState extends State<AuthView>
 
                   const SizedBox(height: 24),
 
-                  // Auth Tabs: Sign In vs Create Account
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.14),
@@ -316,7 +305,6 @@ class _AuthViewState extends State<AuthView>
 
                   const SizedBox(height: 20),
 
-                  // Error Banner
                   if (auth.hasError) ...[
                     Container(
                       width: double.infinity,
@@ -347,7 +335,6 @@ class _AuthViewState extends State<AuthView>
                     ),
                   ],
 
-                  // Tab Views Content Container (Enhanced Glassmorphism)
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(22),
@@ -376,7 +363,6 @@ class _AuthViewState extends State<AuthView>
 
                   const SizedBox(height: 20),
 
-                  // Google Sign-In Button with Authentic Logo & Elevated Surface
                   Container(
                     width: double.infinity,
                     height: 52,
@@ -421,7 +407,6 @@ class _AuthViewState extends State<AuthView>
 
                   const SizedBox(height: 12),
 
-                  // Guest Mode Button
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -457,10 +442,6 @@ class _AuthViewState extends State<AuthView>
       ),
     );
   }
-
-  // -------------------------------------------------------------------
-  // Tab 1: Sign In
-  // -------------------------------------------------------------------
 
   Widget _buildSignInTab(BuildContext context, AuthViewModel auth) {
     return Column(
@@ -574,15 +555,10 @@ class _AuthViewState extends State<AuthView>
     );
   }
 
-  // -------------------------------------------------------------------
-  // Tab 2: Create Account
-  // -------------------------------------------------------------------
-
   Widget _buildRegisterTab(BuildContext context, AuthViewModel auth) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Real Name & Age Row
         Row(
           children: [
             Expanded(
@@ -631,7 +607,6 @@ class _AuthViewState extends State<AuthView>
         ),
         const SizedBox(height: 12),
 
-        // Initial Nickname (Profanity filtered)
         const Text('Nickname (Display Name)',
             style: TextStyle(
                 color: Colors.white,
@@ -646,7 +621,6 @@ class _AuthViewState extends State<AuthView>
         ),
         const SizedBox(height: 12),
 
-        // Email
         const Text('Email Address',
             style: TextStyle(
                 color: Colors.white,
@@ -662,7 +636,6 @@ class _AuthViewState extends State<AuthView>
         ),
         const SizedBox(height: 12),
 
-        // Password
         const Text('Password (min 6 characters)',
             style: TextStyle(
                 color: Colors.white,
@@ -690,7 +663,6 @@ class _AuthViewState extends State<AuthView>
         ),
         const SizedBox(height: 12),
 
-        // Confirm Password
         const Text('Confirm Password',
             style: TextStyle(
                 color: Colors.white,
@@ -805,7 +777,6 @@ class _AuthViewState extends State<AuthView>
   }
 }
 
-/// Official Multi-Color Google "G" Vector Logo
 class _GoogleLogo extends StatelessWidget {
   const _GoogleLogo();
 

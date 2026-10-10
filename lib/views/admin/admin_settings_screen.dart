@@ -4,10 +4,6 @@ import '../../app/theme.dart';
 import '../../models/admin_settings_model.dart';
 import '../../utils/toast_helper.dart';
 
-/// Admin Daily Scholar EXP Cap configuration screen.
-///
-/// Provides fine-grained control over the daily scholar EXP caps and login calendar
-/// rewards from Day 1 (Monday) to Day 7 (Sunday), syncing directly across all scholar devices.
 class AdminSettingsScreen extends StatefulWidget {
   const AdminSettingsScreen({super.key});
 
@@ -130,7 +126,6 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
       children: [
-        // Daily Scholar EXP Cap & Rewards (Day 1 to Day 7)
         Card(
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -183,7 +178,6 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // 7-Day Interactive Grid (Scholar Design UI)
                 LayoutBuilder(
                   builder: (context, constraints) {
                     final isCompact = constraints.maxWidth < 360;
@@ -290,7 +284,6 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                 ),
                 const SizedBox(height: 14),
 
-                // Day editor header & apply to all button (Wrap prevents any overflow on small screens)
                 Wrap(
                   alignment: WrapAlignment.spaceBetween,
                   crossAxisAlignment: WrapCrossAlignment.center,
@@ -314,7 +307,6 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                 ),
                 const SizedBox(height: 8),
 
-                // TextField
                 TextField(
                   controller: _capCtrl,
                   keyboardType: TextInputType.number,
@@ -337,7 +329,6 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // Quick Presets
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -355,7 +346,6 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
         ),
         const SizedBox(height: 24),
 
-        // Enhanced Save Action Button with Hero Glow
         Container(
           width: double.infinity,
           height: 52,

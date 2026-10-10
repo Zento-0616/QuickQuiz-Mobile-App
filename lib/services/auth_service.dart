@@ -3,8 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-/// Thrown for auth failures we want the ViewModel layer to handle with a
-/// specific, friendly message rather than a raw Firebase exception.
 class AuthException implements Exception {
   final String message;
   final bool userCancelled;
@@ -14,7 +12,6 @@ class AuthException implements Exception {
   String toString() => message;
 }
 
-/// The boundary file that imports firebase_auth / google_sign_in directly.
 class AuthService {
   final fb_auth.FirebaseAuth? _customAuth;
   final GoogleSignIn _googleSignIn;
@@ -52,9 +49,6 @@ class AuthService {
     }
   }
 
-  // -------------------------------------------------------------------
-  // Native Email & Password Authentication
-  // -------------------------------------------------------------------
 
   Future<fb_auth.User> registerWithEmailPassword({
     required String email,
@@ -74,12 +68,10 @@ class AuthService {
         throw const AuthException('Registration failed. Please try again.');
       }
 
-      // Update user display name with nickname / real name
       try {
         await user.updateDisplayName(nickname.isNotEmpty ? nickname : realName);
       } catch (_) {}
 
-      // Attempt to send email verification
       try {
         await user.sendEmailVerification();
       } catch (_) {}
@@ -169,13 +161,9 @@ class AuthService {
         password: 'admin123',
       );
     } catch (_) {
-      // Admin account already exists or offline
     }
   }
 
-  // -------------------------------------------------------------------
-  // Google Sign-In
-  // -------------------------------------------------------------------
 
   Future<fb_auth.User> signInWithGoogle() async {
     try {

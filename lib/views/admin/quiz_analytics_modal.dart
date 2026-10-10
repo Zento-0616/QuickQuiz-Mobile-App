@@ -4,8 +4,6 @@ import '../../models/admin_analytics_model.dart';
 import '../../models/quiz_model.dart';
 import '../../services/firestore_service.dart';
 
-/// Detailed Quiz Performance Analytics modal presenting top scorer,
-/// pass/fail ratio, and a full Scholar Breakdown Table.
 class QuizAnalyticsModal extends StatefulWidget {
   final QuizModel quiz;
 
@@ -77,7 +75,6 @@ class _QuizAnalyticsModalState extends State<QuizAnalyticsModal> {
       ),
       child: Column(
         children: [
-          // Drag handle
           Center(
             child: Container(
               margin: const EdgeInsets.only(top: 12, bottom: 8),
@@ -90,7 +87,6 @@ class _QuizAnalyticsModalState extends State<QuizAnalyticsModal> {
             ),
           ),
 
-          // Header
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Row(
@@ -179,7 +175,6 @@ class _QuizAnalyticsModalState extends State<QuizAnalyticsModal> {
           ),
           const Divider(height: 1),
 
-          // Content body
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -230,7 +225,6 @@ class _QuizAnalyticsModalState extends State<QuizAnalyticsModal> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Top Player / High Scorer Showcase
           if (topPlayer != null) ...[
             Container(
               padding: const EdgeInsets.all(16),
@@ -322,7 +316,6 @@ class _QuizAnalyticsModalState extends State<QuizAnalyticsModal> {
             const SizedBox(height: 16),
           ],
 
-          // 2. Metrics Overview Row
           Row(
             children: [
               Expanded(
@@ -355,7 +348,6 @@ class _QuizAnalyticsModalState extends State<QuizAnalyticsModal> {
           ),
           const SizedBox(height: 16),
 
-          // 3. Pass/Fail Progress Bar
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -401,7 +393,6 @@ class _QuizAnalyticsModalState extends State<QuizAnalyticsModal> {
           ),
           const SizedBox(height: 24),
 
-          // 4. Scholar Breakdown Table
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -535,7 +526,6 @@ class _QuizAnalyticsModalState extends State<QuizAnalyticsModal> {
   }
 
   void _showScholarAnswerReview(BuildContext context, PlayerScoreRecord record) {
-    // Collect questions either from the record's answer sheet or the quiz itself
     final questions = record.questions.isNotEmpty
         ? record.questions
         : (record.result?.questions.isNotEmpty ?? false)

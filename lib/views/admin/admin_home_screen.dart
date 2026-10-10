@@ -22,14 +22,6 @@ import 'ai_quiz_studio_modal.dart';
 import 'quiz_analytics_modal.dart';
 import 'dama_tournament_modal.dart';
 
-/// Redesigned, Ad-Free Admin Dashboard with 5 Dedicated Navigation Tabs:
-/// 1. Home: Live scholar counters, platform overview, active user metrics, and quick actions.
-/// 2. Created Quizzes: Filterable list of all admin-published quizzes, date-range picker, top scorer per quiz,
-///    average completion rates, and individual scholar attempt details.
-/// 3. Scholars: Global top scholars list, detailed scholar profiles (EXP, level, accuracy rate, join date),
-///    and account moderation options.
-/// 4. Messages: Admin chat panel for direct messaging with scholars and support requests.
-/// 5. Settings: Change Admin Password, sound/haptic toggles, dark theme toggle, and system preferences.
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
 
@@ -41,10 +33,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
   final FirestoreService _firestoreService = FirestoreService();
   final SocialService _socialService = SocialService();
 
-  // Navigation State
   AdminTab _currentTab = AdminTab.home;
 
-  // Data State
   AdminLiveMetrics _metrics = AdminLiveMetrics.initial();
   List<QuizModel> _quizzes = [];
   List<UserModel> _scholars = [];
@@ -54,23 +44,18 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
   bool _isLoading = true;
   Timer? _liveMetricsTimer;
 
-  // Quizzes Filter state
   final TextEditingController _searchCtrl = TextEditingController();
   String _selectedStatus = 'All';
   String _dateFilterLabel = 'All Time';
   DateTimeRange? _selectedDateRange;
 
-  // Scholars Filter state
   final TextEditingController _scholarSearchCtrl = TextEditingController();
 
-  // Feedback Filter state
   String _feedbackFilter = 'All';
 
-  // Settings State
   bool _soundEnabled = true;
   bool _hapticsEnabled = true;
 
-  // Pulse animation for Active Players indicator
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
@@ -88,7 +73,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
 
     _loadDashboardData();
 
-    // Auto-refresh live presence & metrics every 30 seconds
     _liveMetricsTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       _refreshMetricsSilently();
     });
@@ -240,9 +224,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     }
   }
 
-  // -------------------------------------------------------------------
-  // Quick Dialogs
-  // -------------------------------------------------------------------
 
   void _showFeedbackManagementDialog() {
     showDialog(
@@ -278,7 +259,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Real-time metrics card
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -641,16 +621,12 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     );
   }
 
-  // -------------------------------------------------------------------
-  // Main Builder
-  // -------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthViewModel>();
     final user = auth.currentUser;
 
-    // RBAC: Verify administrator permissions
     if (user == null || !user.isAdmin) {
       return Scaffold(
         appBar: AppBar(title: const Text('Access Restricted')),
@@ -831,23 +807,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     }
   }
 
-  // ===================================================================
-  // TAB 1: HOME (Live Metrics Bar & Quick Actions Hub)
-  // ===================================================================
 
   Widget _buildHomeTab(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // 1. Live Metrics Bar
         _buildLiveMetricsBar(context),
         const SizedBox(height: 20),
 
-        // 2. Quick Actions Hub
         _buildQuickActionsHub(context),
         const SizedBox(height: 20),
 
-        // 3. Quick Recent Quizzes Overview
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -1015,7 +985,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
         ),
         const SizedBox(height: 14),
 
-        // Dedicated Real-Time Scholar Feedback Tracker Widget
         InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: _showFeedbackManagementDialog,
@@ -1097,9 +1066,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     );
   }
 
-  // ===================================================================
-  // TAB 2: CREATED QUIZZES (Dedicated Filterable List & Deep Dive)
-  // ===================================================================
 
   Widget _buildQuizzesTab(BuildContext context) {
     return ListView(
@@ -1307,7 +1273,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Premium Global Header Banner if Global Challenge
               if (isGlobal) ...[
                 Container(
                   margin: const EdgeInsets.only(bottom: 10),
@@ -1411,7 +1376,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
                               ),
                             ),
 
-                            // Time Remaining / Closed indicator
                             if (quiz.isClosed) ...[
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -1613,14 +1577,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     );
   }
 
-  // ===================================================================
-  // TAB 3: SCHOLARS (Global Users List & Account Moderation)
-  // ===================================================================
 
   Widget _buildScholarsTab(BuildContext context) {
     final query = _scholarSearchCtrl.text.trim().toLowerCase();
 
-    // Deduplicate admin accounts: keep only ONE canonical Admin
     UserModel? canonicalAdmin;
     final regularScholars = <UserModel>[];
 
@@ -1629,7 +1589,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
         if (canonicalAdmin == null) {
           canonicalAdmin = s;
         } else {
-          // Prefer canonical with username 'Admin' or highest level
           if (s.effectiveNickname.toLowerCase() == 'admin' || s.level > canonicalAdmin.level) {
             canonicalAdmin = s;
           }
@@ -1639,16 +1598,13 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
       }
     }
 
-    // Sort regular scholars alphabetically (A-Z) by effective nickname
     regularScholars.sort((a, b) => a.effectiveNickname.toLowerCase().compareTo(b.effectiveNickname.toLowerCase()));
 
-    // Pin Admin on the very top, followed by alphabetically sorted scholars
     final allScholarsOrdered = [
       if (canonicalAdmin != null) canonicalAdmin,
       ...regularScholars,
     ];
 
-    // Filter by search query
     final scholars = allScholarsOrdered.where((s) {
       if (query.isEmpty) return true;
       return s.effectiveNickname.toLowerCase().contains(query) ||
@@ -2305,9 +2261,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     );
   }
 
-  // ===================================================================
-  // TAB 4: MESSAGES (Admin Support & Direct Messaging)
-  // ===================================================================
 
   Widget _buildMessagesTab(BuildContext context) {
     return ListView(
@@ -2500,15 +2453,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     );
   }
 
-  // ===================================================================
-  // TAB 5: FEEDBACK (Scholar Feedback Management Hub)
-  // ===================================================================
 
   Widget _buildFeedbackTab(BuildContext context) {
     final theme = Theme.of(context);
     final metrics = _feedbackMetrics;
 
-    // Filter feedback list
     final filtered = _feedbackList.where((item) {
       if (_feedbackFilter == 'Pending') return !item.isResolved;
       if (_feedbackFilter == 'Resolved') return item.isResolved;
@@ -2522,7 +2471,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
         children: [
-          // Real-Time Metrics Bar
           Row(
             children: [
               Expanded(
@@ -2555,7 +2503,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
           ),
           const SizedBox(height: 16),
 
-          // Filter Segment Chips - Visible & cleanly wrapped across rows
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -2569,7 +2516,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
           ),
           const SizedBox(height: 16),
 
-          // Feedback List Cards
           if (filtered.isEmpty)
             Center(
               child: Padding(
@@ -2604,7 +2550,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header: Type Icon, Title, and Status Chip
                       Row(
                         children: [
                           Icon(
@@ -2654,14 +2599,12 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
                       ),
                       const SizedBox(height: 8),
 
-                      // Message Body
                       Text(
                         item.message,
                         style: const TextStyle(fontSize: 13, height: 1.4),
                       ),
                       const SizedBox(height: 12),
 
-                      // Footer Row with Sender info & Status Action
                       Row(
                         children: [
                           Expanded(
@@ -2673,7 +2616,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
                             ),
                           ),
                           const SizedBox(width: 8),
-                          // Once marked resolved, keep it Fixed / Done without reopening
                           if (isResolved)
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
@@ -2815,9 +2757,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     );
   }
 
-  // ===================================================================
-  // TAB 6: SETTINGS (Security, Preferences & System Hygiene)
-  // ===================================================================
 
   Widget _buildSettingsTab(BuildContext context, UserModel admin) {
     final themeProvider = context.watch<ThemeProvider>();
@@ -2825,7 +2764,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Admin Profile Card
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -2880,7 +2818,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
         ),
         const SizedBox(height: 24),
 
-        // Security Preferences
         const Text('Security & Credentials', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
         const SizedBox(height: 8),
 
@@ -2896,7 +2833,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
         ),
         const SizedBox(height: 20),
 
-        // Appearance & System
         const Text('Appearance & App Preferences', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
         const SizedBox(height: 8),
 
@@ -2932,7 +2868,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
         ),
         const SizedBox(height: 20),
 
-        // Database Maintenance & Refresh Section
         const Text('Database Maintenance & Refresh', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
         const SizedBox(height: 8),
 
@@ -2978,7 +2913,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
                 const Divider(height: 1),
                 const SizedBox(height: 14),
 
-                // Action 1: System Refresh
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -3027,7 +2961,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
                 ),
                 const SizedBox(height: 10),
 
-                // Action 2: Purge Specific Scholar
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -3080,7 +3013,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
         ),
         const SizedBox(height: 20),
 
-        // Hygiene Checklist
         const Text('Platform Hygiene & Policy', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
         const SizedBox(height: 8),
 
@@ -3106,7 +3038,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
         ),
         const SizedBox(height: 24),
 
-        // Sign Out Button
         SizedBox(
           width: double.infinity,
           height: 48,
@@ -3130,9 +3061,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> with SingleTickerProv
   }
 }
 
-// -------------------------------------------------------------------
-// Helper Components
-// -------------------------------------------------------------------
 
 class _MetricCard extends StatelessWidget {
   final String label;

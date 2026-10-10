@@ -30,23 +30,20 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
   DamaMode _gameMode = DamaMode.vsAi;
   DamaDifficulty _aiDifficulty = DamaDifficulty.medium;
 
-  // Head-to-Head win/loss record against the current opponent
   HeadToHeadRecord? _h2hRecord;
 
-  // Lobby State (Settings screen appears first before playing)
   bool _hasGameStarted = false;
-  int _pvpSubMode = 0; // 0 = Find Online Match, 1 = Invite Scholar, 2 = Pass & Play
+  int _pvpSubMode = 0;
   bool _isSearchingMatch = false;
   UserModel? _matchedScholar;
   List<UserModel> _availableScholars = [];
   String _scholarSearchQuery = '';
   bool _noOnlineFound = false;
 
-  // Real Online Multiplayer State
   GameMatchModel? _activeMatch;
   StreamSubscription<GameMatchModel?>? _matchSub;
   StreamSubscription<String?>? _ticketSub;
-  int _myPlayerNumber = 1; // 1 = White/Light pieces, 2 = Red/Dark pieces
+  int _myPlayerNumber = 1;
   bool get _isOnlinePvP => _gameMode == DamaMode.pvp && _pvpSubMode != 2 && _activeMatch != null;
   bool get _isBoardFlipped => _isOnlinePvP && _myPlayerNumber == 2;
   bool _isWaitingOpponent = false;
@@ -186,7 +183,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
       if (!mounted || match == null) return;
       _activeMatch = match;
 
-      // Handle match declined
       if (match.status == GameMatchStatus.declined) {
         if (_isWaitingOpponent) {
           setState(() {
@@ -199,7 +195,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
         return;
       }
 
-      // Handle match cancelled
       if (match.status == GameMatchStatus.cancelled) {
         if (_hasGameStarted && !_board.isGameOver) {
           showWarningToast(context, 'Opponent left the match.');
@@ -207,7 +202,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
         return;
       }
 
-      // Handle match accepted / started
       if ((_isWaitingOpponent || !_hasGameStarted) &&
           (match.status == GameMatchStatus.playing || match.status == GameMatchStatus.accepted)) {
         setState(() {
@@ -219,7 +213,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
         showSuccessToast(context, '🎮 Live match started with ${_matchedScholar?.effectiveNickname ?? "opponent"}!');
       }
 
-      // Handle Remote Moves
       if (match.lastMove != null) {
         final lastMoveMap = match.lastMove!;
         final byPlayer = (lastMoveMap['byPlayer'] as num?)?.toInt() ?? 0;
@@ -257,7 +250,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
         }
       }
 
-      // Handle Incoming Draw Offer
       final currentUid = context.read<AuthViewModel>().currentUser?.uid;
       if (match.drawOfferedBy != null &&
           match.drawOfferedBy != currentUid &&
@@ -267,7 +259,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
         _showIncomingDrawOfferDialog(match);
       }
 
-      // Handle Remote Game Over (e.g. Resignation or Draw)
       if (match.isGameOver && !_board.isGameOver) {
         setState(() {
           _board.isGameOver = true;
@@ -360,20 +351,18 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
     });
 
     try {
-      // 1. Enter matchmaking queue to find an instant waiting match
       final instantMatch = await GameSessionService().enterMatchmaking(
         user: user,
         gameType: 'dama',
       );
 
       if (instantMatch != null) {
-        // Paired with someone who was already in queue!
         setState(() {
           _isSearchingMatch = false;
           _isWaitingOpponent = false;
           _waitingMessage = null;
           _activeMatch = instantMatch;
-          _myPlayerNumber = 2; // Joined existing host
+          _myPlayerNumber = 2;
           _resultRecorded = false;
           _matchedScholar = UserModel(
             uid: instantMatch.hostId,
@@ -394,7 +383,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
         return;
       }
 
-      // 2. No instant match: wait in pure matchmaking queue for another player to search
       setState(() {
         _waitingMessage = 'In matchmaking queue... Waiting for another player searching for a match.';
       });
@@ -462,7 +450,7 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
 
       setState(() {
         _activeMatch = challenge;
-        _myPlayerNumber = 1; // Host (White)
+        _myPlayerNumber = 1;
         _matchedScholar = scholar;
         _isWaitingOpponent = true;
         _waitingMessage = 'Challenge sent to ${scholar.effectiveNickname}! Waiting for response...';
@@ -514,7 +502,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
   void _onTileTap(int r, int c) {
     if (_board.isGameOver || _isAiThinking) return;
 
-    // If mid-chain jump is active, player MUST continue capturing with that specific piece
     if (_board.multiCapturePiece != null) {
       final matchedMove = _currentLegalMoves.firstWhere(
         (m) => m.toRow == r && m.toCol == c,
@@ -529,7 +516,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
       return;
     }
 
-    // Normal piece selection
     final piece = _board.getPiece(r, c);
     if (piece != null && piece.player == _board.currentTurn) {
       if (_isOnlinePvP && piece.player != _myPlayerNumber) {
@@ -549,7 +535,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
       return;
     }
 
-    // Destination tap
     if (_selectedTile != null) {
       final matchedMove = _currentLegalMoves.firstWhere(
         (m) => m.toRow == r && m.toCol == c,
@@ -592,7 +577,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
     setState(() {
       _lastMove = move;
       if (_board.multiCapturePiece != null) {
-        // Continue chained jump
         _selectedTile = _board.multiCapturePiece;
         _currentLegalMoves = _board.getLegalMoves(
           _board.multiCapturePiece!.x,
@@ -612,7 +596,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
       _showGameOverDialog();
     }
 
-    // Broadcast move to remote opponent if in live online PvP match
     if (_isOnlinePvP && _activeMatch != null) {
       final auth = context.read<AuthViewModel>();
       final myUid = auth.currentUser?.uid ?? '';
@@ -650,7 +633,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
       return;
     }
 
-    // Deadlock / "Run & Hide" impossible to beat check
     if (!_board.isGameOver &&
         _board.isRunAndHideDeadlock() &&
         (!_hasPromptedDeadlock || _board.moveHistory.length >= _deadlockCooldownMoveCount)) {
@@ -663,7 +645,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
       });
     }
 
-    // STRICT: Only trigger AI moves if in vsAi mode! Never in PvP!
     if (_gameMode == DamaMode.vsAi && _board.currentTurn == 2) {
       _triggerAiMove();
     }
@@ -777,7 +758,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
 
     setState(() => _isAiThinking = true);
 
-    // Short 500ms delay if chained combo so steps are fluid yet distinct
     final delayMs = _board.multiCapturePiece != null ? 500 : 700;
 
     Future.delayed(Duration(milliseconds: delayMs), () {
@@ -864,7 +844,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
     final winner = _board.winner;
     final isP1Winner = winner == 1;
 
-    // Record win / loss / draw result
     if (!_resultRecorded) {
       _resultRecorded = true;
       try {
@@ -876,7 +855,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
           auth.recordDamaMatchResult(isWin: isWin, isDraw: false);
         }
 
-        // Record persistent Head-to-Head score
         final user = auth.currentUser;
         if (user != null) {
           final oppUid = _gameMode == DamaMode.vsAi
@@ -1096,7 +1074,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
   void _executeQuitOrForfeit() {
     final auth = context.read<AuthViewModel>();
 
-    // Forfeit online match if active
     if (_isOnlinePvP && _activeMatch != null) {
       final user = auth.currentUser;
       final opponentUid = _matchedScholar?.uid ?? '';
@@ -1170,9 +1147,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
     );
   }
 
-  // ===================================================================
-  // SCREEN 1: PRE-GAME LOBBY / SETTINGS FIRST
-  // ===================================================================
 
   Widget _buildLobbyScreen(BuildContext context) {
     return Scaffold(
@@ -1216,7 +1190,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            // Hero Card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -1282,7 +1255,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
             ),
             const SizedBox(height: 20),
 
-            // Mode Selector Tabs: vs AI Bot | PvP
             Container(
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.05),
@@ -1337,7 +1309,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
             ),
             const SizedBox(height: 20),
 
-            // Mode Content: AI Settings vs PvP Settings
             if (_gameMode == DamaMode.vsAi) ...[
               _buildAiSettingsCard(),
             ] else ...[
@@ -1397,7 +1368,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
           ),
           const SizedBox(height: 24),
 
-          // Start Match Button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
@@ -1431,7 +1401,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
           const Text('Choose PvP Matchmaking Mode', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15)),
           const SizedBox(height: 12),
 
-          // 3 PvP Pills
           Row(
             children: [
               Expanded(
@@ -1449,7 +1418,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
           ),
           const SizedBox(height: 16),
 
-          // Sub-Mode 0: Find Online Match (Centered & Online-Only)
           if (_pvpSubMode == 0) ...[
             Container(
               width: double.infinity,
@@ -1656,7 +1624,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
             ),
           ],
 
-          // Sub-Mode 1: Invite a Scholar
           if (_pvpSubMode == 1) ...[
             TextField(
               onChanged: (val) => setState(() => _scholarSearchQuery = val.trim().toLowerCase()),
@@ -1758,7 +1725,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
             ],
           ],
 
-          // Sub-Mode 2: Pass & Play
           if (_pvpSubMode == 2) ...[
             Container(
               padding: const EdgeInsets.all(14),
@@ -1783,7 +1749,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
 
           const SizedBox(height: 20),
 
-          // Start PvP Battle Button (Only needed for Pass & Play or direct start)
           if (_pvpSubMode == 2)
             SizedBox(
               width: double.infinity,
@@ -1843,9 +1808,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
     );
   }
 
-  // ===================================================================
-  // SCREEN 2: INTERACTIVE 8x8 DAMA CHECKERBOARD
-  // ===================================================================
 
   Widget _buildBoardScreen(BuildContext context) {
     final user = context.watch<AuthViewModel>().currentUser;
@@ -1928,7 +1890,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
       body: SafeArea(
         child: Column(
           children: [
-            // Top Status & Rules Pill
             Container(
               margin: const EdgeInsets.fromLTRB(16, 10, 16, 6),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -1963,7 +1924,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
               ),
             ),
 
-            // Head-to-Head Score Bar
             if (_h2hRecord != null)
               Container(
                 margin: const EdgeInsets.fromLTRB(16, 0, 16, 6),
@@ -1996,7 +1956,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
                 ),
               ),
 
-            // Top Tray (Always the Opponent / AI)
             _buildPlayerTray(
               playerNumber: _isBoardFlipped ? 1 : 2,
               name: _isBoardFlipped ? p1Name : p2Name,
@@ -2006,7 +1965,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
               isThinking: _isAiThinking && (_isBoardFlipped ? _board.currentTurn == 1 : _board.currentTurn == 2),
             ),
 
-            // Fixed-height status slot to prevent board resizing / zooming when thinking or chaining
             SizedBox(
               height: 28,
               child: Center(
@@ -2049,7 +2007,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
               ),
             ),
 
-            // 8x8 Board Container
             Expanded(
               child: Center(
                 child: Padding(
@@ -2062,7 +2019,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
               ),
             ),
 
-            // Bottom Tray (Always the User / You)
             _buildPlayerTray(
               playerNumber: _isBoardFlipped ? 2 : 1,
               name: _isBoardFlipped ? p2Name : p1Name,
@@ -2072,7 +2028,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
               isThinking: false,
             ),
 
-            // Bottom Actions Bar (Move count, Draw, Resign)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Row(
@@ -2207,14 +2162,12 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
           itemBuilder: (context, index) {
             final screenRow = index ~/ DamaBoard.size;
             final screenCol = index % DamaBoard.size;
-            // Map screen coordinates according to player POV perspective
             final r = _isBoardFlipped ? (DamaBoard.size - 1 - screenRow) : screenRow;
             final c = _isBoardFlipped ? (DamaBoard.size - 1 - screenCol) : screenCol;
             final isDark = _board.isDarkTile(r, c);
             final piece = _board.getPiece(r, c);
             final isSelected = _selectedTile != null && _selectedTile!.x == r && _selectedTile!.y == c;
             final isLegalDest = _currentLegalMoves.any((m) => m.toRow == r && m.toCol == c);
-            // Highlight ONLY the destination square where the piece moved to (no glow on source square)
             final isLastMoveTile = _lastMove != null &&
                 _lastMove!.toRow == r &&
                 _lastMove!.toCol == c;
@@ -2236,7 +2189,6 @@ class _DamaGameViewState extends State<DamaGameView> with SingleTickerProviderSt
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // Moving box glowing light effect (Target / Destination square ONLY)
                     if (isLastMoveTile && !isSelected)
                       Positioned.fill(
                         child: AnimatedBuilder(

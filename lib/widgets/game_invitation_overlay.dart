@@ -7,9 +7,6 @@ import '../models/game_match_model.dart';
 import '../services/game_session_service.dart';
 import '../viewmodels/auth_viewmodel.dart';
 
-/// Global in-app notification bar overlay that listens for incoming
-/// live board game invitations (Dama / Chess) and displays an actionable
-/// top banner across the app with Accept and Decline buttons.
 class GameInvitationOverlay extends StatefulWidget {
   final Widget child;
   final GameSessionService? sessionService;
@@ -53,7 +50,6 @@ class _GameInvitationOverlayState extends State<GameInvitationOverlay> {
     final user = auth.currentUser;
     final uid = user?.uid;
 
-    // If user is actively in a match, suppress challenge popups
     if (user?.isInMatch == true && _currentChallenge != null) {
       _currentChallenge = null;
     }
@@ -105,13 +101,11 @@ class _GameInvitationOverlayState extends State<GameInvitationOverlay> {
   }
 
   void _navigateToMatch(String route, GameMatchModel match) {
-    // 1. Direct GoRouter reference passed from app root
     if (widget.router != null) {
       widget.router!.push(route, extra: match);
       return;
     }
 
-    // 2. Global root navigator context where GoRouter is registered
     final navContext = rootNavigatorKey.currentContext;
     if (navContext != null) {
       try {
@@ -120,7 +114,6 @@ class _GameInvitationOverlayState extends State<GameInvitationOverlay> {
       } catch (_) {}
     }
 
-    // 3. Fallback to local context
     if (mounted) {
       try {
         context.push(route, extra: match);
@@ -142,7 +135,6 @@ class _GameInvitationOverlayState extends State<GameInvitationOverlay> {
     return Stack(
       children: [
         widget.child,
-        // Animated Notification Bar that slides down from top
         Positioned(
           top: 0,
           left: 0,
@@ -200,7 +192,6 @@ class _GameInvitationOverlayState extends State<GameInvitationOverlay> {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
-            // Glowing Game Icon Emblem
             Container(
               width: 44,
               height: 44,
@@ -225,7 +216,6 @@ class _GameInvitationOverlayState extends State<GameInvitationOverlay> {
             ),
             const SizedBox(width: 12),
 
-            // Text Info
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -286,11 +276,9 @@ class _GameInvitationOverlayState extends State<GameInvitationOverlay> {
             ),
             const SizedBox(width: 10),
 
-            // Actions: Decline & Accept
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Decline Button
                 InkWell(
                   onTap: () => _handleDecline(challenge),
                   borderRadius: BorderRadius.circular(12),
@@ -313,7 +301,6 @@ class _GameInvitationOverlayState extends State<GameInvitationOverlay> {
                 ),
                 const SizedBox(width: 8),
 
-                // Accept Button
                 InkWell(
                   onTap: () => _handleAccept(challenge),
                   borderRadius: BorderRadius.circular(12),

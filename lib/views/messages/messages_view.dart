@@ -18,12 +18,6 @@ import '../../viewmodels/auth_viewmodel.dart';
 import '../../widgets/main_bottom_nav.dart';
 import '../../widgets/quick_quiz_top_bar.dart';
 
-/// Social & Messages panel adhering to Strict Friendship Rules:
-/// - Chats list (1-on-1 & Group)
-/// - Friends list with online status
-/// - Inbox for Friend Requests & Broadcast Alerts
-/// - Search with STRICT PRIVACY LOCK (chat button disabled for non-friends)
-/// - Group Chat creation capped at 5 scholars (friends-only invitations)
 class MessagesView extends StatefulWidget {
   const MessagesView({super.key});
 
@@ -63,7 +57,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
       });
     }
 
-    // Auto-refresh notifications and friend requests silently every 5 seconds
     _autoRefreshTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (mounted) _refreshSilently();
     });
@@ -165,7 +158,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
               ? _buildGuestMessageLock(context)
               : Column(
                   children: [
-                    // Tab Selector
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                       decoration: BoxDecoration(
@@ -267,9 +259,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
     );
   }
 
-  // -------------------------------------------------------------------
-  // Tab 1: Chats
-  // -------------------------------------------------------------------
 
   Widget _buildChatsTab(BuildContext context, UserModel currentUser) {
     if (_chatRooms.isEmpty) {
@@ -359,9 +348,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
     );
   }
 
-  // -------------------------------------------------------------------
-  // Tab 2: Friends
-  // -------------------------------------------------------------------
 
   Widget _buildFriendsTab(BuildContext context, UserModel currentUser) {
     if (_friends.isEmpty) {
@@ -398,7 +384,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
             padding: const EdgeInsets.all(14),
             child: Row(
               children: [
-                // Avatar with online status
                 Stack(
                   children: [
                     CircleAvatar(
@@ -446,7 +431,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
                   ),
                 ),
 
-                // Chat button (ENABLED because this user is on Friends list)
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -475,9 +459,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
     );
   }
 
-  // -------------------------------------------------------------------
-  // Tab 3: Inbox (Broadcast Alerts & Friend Requests)
-  // -------------------------------------------------------------------
 
   void _openAnnouncementDetailDialog(BuildContext context, BroadcastAlertModel alert, String userId) {
     _inboxController.markAlertAsRead(alertId: alert.id, userId: userId);
@@ -581,7 +562,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
         return ListView(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 104),
           children: [
-            // Broadcast Announcements
             if (alerts.isNotEmpty) ...[
               Row(
                 children: [
@@ -748,7 +728,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
               const SizedBox(height: 16),
             ],
 
-        // Friend Requests
         if (_pendingRequests.isNotEmpty) ...[
           Row(
             children: [
@@ -846,9 +825,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
     }
   }
 
-  // -------------------------------------------------------------------
-  // STRICT PRIVACY LOCK: Search Sheet
-  // -------------------------------------------------------------------
 
   void _openSearchFriendsSheet(BuildContext context, UserModel? currentUser) {
     if (currentUser == null) return;
@@ -860,9 +836,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
     ).then((_) => _loadData());
   }
 
-  // -------------------------------------------------------------------
-  // Group Chat Modal (Max 5 Players, Friends-Only)
-  // -------------------------------------------------------------------
 
   void _openCreateGroupDialog(BuildContext context, UserModel? currentUser) {
     if (currentUser == null) return;
@@ -879,7 +852,6 @@ class _MessagesViewState extends State<MessagesView> with SingleTickerProviderSt
   }
 }
 
-/// Search Friends Modal with STRICT PRIVACY LOCK
 class _SearchFriendsModal extends StatefulWidget {
   final UserModel currentUser;
   final SocialService socialService;
@@ -959,7 +931,6 @@ class _SearchFriendsModalState extends State<_SearchFriendsModal> {
           ),
           const SizedBox(height: 16),
 
-          // Search Box
           TextField(
             controller: _searchCtrl,
             autofocus: true,
@@ -980,7 +951,6 @@ class _SearchFriendsModalState extends State<_SearchFriendsModal> {
           ),
           const SizedBox(height: 16),
 
-          // Results
           Expanded(
             child: _isSearching
                 ? const Center(child: CircularProgressIndicator())
@@ -1035,9 +1005,7 @@ class _SearchFriendsModalState extends State<_SearchFriendsModal> {
                                     ),
                                   ),
 
-                                  // STRICT PRIVACY LOCK ACTION:
                                   if (isFriend) ...[
-                                    // Friends: Enabled Chat Button
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -1055,7 +1023,6 @@ class _SearchFriendsModalState extends State<_SearchFriendsModal> {
                                       child: const Text('Chat', style: TextStyle(fontWeight: FontWeight.w800)),
                                     ),
                                   ] else ...[
-                                    // Non-Friend: Chat is LOCKED. Only "Add Friend" or "Pending"
                                     if (isPendingSent) ...[
                                       const OutlinedButton(
                                         onPressed: null,
@@ -1084,7 +1051,6 @@ class _SearchFriendsModalState extends State<_SearchFriendsModal> {
                                       ),
                                     ],
                                     const SizedBox(width: 6),
-                                    // Disabled Lock Chat Button
                                     Tooltip(
                                       message: 'STRICT PRIVACY LOCK: Must be accepted friends to chat',
                                       child: IconButton(
@@ -1111,7 +1077,6 @@ class _SearchFriendsModalState extends State<_SearchFriendsModal> {
   }
 }
 
-/// Create Group Modal (Max 5 Players, Friends-Only Invitations)
 class _CreateGroupModal extends StatefulWidget {
   final UserModel currentUser;
   final List<UserModel> friends;
@@ -1134,7 +1099,7 @@ class _CreateGroupModalState extends State<_CreateGroupModal> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final totalMembers = _selectedFriendUids.length + 1; // +1 for host
+    final totalMembers = _selectedFriendUids.length + 1;
 
     return Container(
       constraints: BoxConstraints(
@@ -1187,7 +1152,6 @@ class _CreateGroupModalState extends State<_CreateGroupModal> {
           ),
           const SizedBox(height: 16),
 
-          // Group Name
           TextField(
             controller: _groupNameCtrl,
             decoration: const InputDecoration(

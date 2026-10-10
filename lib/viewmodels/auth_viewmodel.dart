@@ -10,8 +10,6 @@ import '../services/local_storage_service.dart';
 import '../services/progression_service.dart';
 import 'base_viewmodel.dart';
 
-/// Owns authentication state for the whole app, plus guest gating,
-/// native email/password auth, profile updates, and gamified EXP synchronization.
 class AuthViewModel extends BaseViewModel {
   final AuthRepository _authRepository;
   final LocalStorageService _localStorage;
@@ -50,12 +48,10 @@ class AuthViewModel extends BaseViewModel {
   Future<void> _init() async {
     _guestQuizUsed = await _localStorage.getGuestQuizUsed();
 
-    // 1. Immediately hydrate session from local storage cache so phone close doesn't log user out
     try {
       final cached = await _localStorage.getCachedCurrentUser();
       if (cached != null) {
         if (cached.isAdmin) {
-          // Check if admin inactivity exceeded 5 minutes while app was closed
           final lastActivity = await _localStorage.getLastAdminActivity();
           if (lastActivity != null &&
               DateTime.now().difference(lastActivity) > const Duration(minutes: 5)) {
@@ -68,7 +64,6 @@ class AuthViewModel extends BaseViewModel {
             await _localStorage.saveLastAdminActivity(_lastAdminActivity!);
           }
         } else {
-          // Regular scholars: persist indefinitely across phone closes
           _currentUser = cached;
         }
         _authInitialized = true;
@@ -80,13 +75,10 @@ class AuthViewModel extends BaseViewModel {
 
     _seedDefaultAdmin();
 
-    // 2. Listen to remote auth changes and keep cached profile synced
     _authSub = _authRepository.authStateChanges().listen((user) async {
       if (user != null) {
-        // Fetch full profile from Firestore if available
         final fullProfile = await _firestoreService.getUserProfile(user.uid);
         if (fullProfile != null) {
-          // Preserve full profile data and ensure photoUrl is synced from Google Auth if missing
           final effectivePhoto = (fullProfile.photoUrl != null && fullProfile.photoUrl!.isNotEmpty)
               ? fullProfile.photoUrl
               : user.photoUrl;
@@ -105,9 +97,7 @@ class AuthViewModel extends BaseViewModel {
           await _localStorage.saveLastAdminActivity(_lastAdminActivity!);
         }
       } else {
-        // Only clear if not in offline/fallback admin mode
         if (_currentUser == null || _currentUser!.uid != 'admin_default_uid') {
-          // If we had no cached regular user or if Firebase explicitly reports signed out
           final cached = await _localStorage.getCachedCurrentUser();
           if (cached == null) {
             _currentUser = null;
@@ -119,7 +109,6 @@ class AuthViewModel extends BaseViewModel {
     });
   }
 
-  /// Records recent interaction for administrator activity monitoring.
   void touchAdminActivity() {
     if (_currentUser?.isAdmin == true) {
       _lastAdminActivity = DateTime.now();
@@ -127,8 +116,6 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  /// Evaluates whether the active administrator session has exceeded 5 minutes
-  /// of inactivity. If timed out, signs out and returns true.
   Future<bool> checkAdminInactivityTimeout() async {
     if (_currentUser == null || !_currentUser!.isAdmin) {
       return false;
@@ -155,7 +142,6 @@ class AuthViewModel extends BaseViewModel {
     } catch (_) {}
   }
 
-  /// Free-quiz + auth gate.
   Future<bool> canCreateQuiz() async {
     if (isAuthenticated) return true;
     _guestQuizUsed = await _localStorage.getGuestQuizUsed();
@@ -169,9 +155,6 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  // -------------------------------------------------------------------
-  // Native Email & Password Registration & Login
-  // -------------------------------------------------------------------
 
   Future<bool> registerWithEmailPassword({
     required String email,
@@ -232,7 +215,6 @@ class AuthViewModel extends BaseViewModel {
           password: password,
         );
       } catch (authError) {
-        // Fallback for default seeded Admin account
         if (cleanEmail.toLowerCase() == 'admin@quickquiz.com' && password == 'admin123') {
           user = UserModel(
             uid: 'admin_default_uid',
@@ -251,7 +233,6 @@ class AuthViewModel extends BaseViewModel {
         }
       }
 
-      // Load or create profile
       final fullProfile = await _firestoreService.getUserProfile(user.uid);
       final streak = ProgressionService.evaluateDailyStreak(
         lastActive: fullProfile?.lastActive ?? fullProfile?.lastLoginDate,
@@ -295,7 +276,6 @@ class AuthViewModel extends BaseViewModel {
     setLoading('Updating password...');
     try {
       if (_currentUser?.email.toLowerCase() == 'admin@quickquiz.com' && currentPassword == 'admin123') {
-        // Seeded admin password verification succeeds in fallback
         setSuccess();
         return true;
       }
@@ -315,14 +295,12 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  /// Verifies administrator credentials before critical system maintenance actions.
   Future<bool> verifyAdminPassword(String password) async {
     if (_currentUser == null || !_currentUser!.isAdmin) {
       return false;
     }
 
     final cleanEmail = _currentUser!.email.trim().toLowerCase();
-    // Default fallback admin account check
     if (cleanEmail == 'admin@quickquiz.com' && password == 'admin123') {
       return true;
     }
@@ -360,9 +338,6 @@ class AuthViewModel extends BaseViewModel {
     } catch (_) {}
   }
 
-  // -------------------------------------------------------------------
-  // Google Sign-In
-  // -------------------------------------------------------------------
 
   Future<bool> signInWithGoogle() async {
     if (isLoading) return false;
@@ -399,7 +374,6 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  /// Synchronizes Google Profile Picture & Account metadata with the current UserModel.
   Future<bool> syncGoogleAccountProfile() async {
     try {
       final fbUser = _authRepository.rawFirebaseUser;
@@ -436,9 +410,6 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  // -------------------------------------------------------------------
-  // Progression & Profile Updates
-  // -------------------------------------------------------------------
 
   Future<QuizExpResult?> recordQuizExp({
     required int questionCount,
@@ -451,7 +422,6 @@ class AuthViewModel extends BaseViewModel {
     bool isGlobal = false,
     double percentage = 0.0,
   }) async {
-    // Admins and Guests are excluded from earning EXP, maintaining streaks, or levelling up
     if (_currentUser == null || _currentUser!.isAdmin || _currentUser!.isGuest) return null;
 
     final adminSettings = await AdminSettingsModel.loadSettings();
@@ -520,7 +490,6 @@ class AuthViewModel extends BaseViewModel {
   }
 
   Future<void> claimDailyReward() async {
-    // Admins and Guests are excluded from daily streak rewards
     if (_currentUser == null || _currentUser!.isAdmin || _currentUser!.isGuest) return;
     final claimed = await ProgressionService.isDailyRewardClaimedToday();
     if (claimed) return;
@@ -610,7 +579,6 @@ class AuthViewModel extends BaseViewModel {
     return true;
   }
 
-  /// Periodically refreshes online heartbeat and lastActive timestamp in Firestore
   Future<void> refreshHeartbeat() async {
     if (_currentUser == null || _currentUser!.isGuest) return;
     try {
@@ -623,8 +591,6 @@ class AuthViewModel extends BaseViewModel {
     } catch (_) {}
   }
 
-  /// Records a completed Dama match result (win, loss, or draw).
-  /// Updates local UserModel, persists to local storage, and syncs to Firestore.
   Future<void> recordDamaMatchResult({required bool isWin, required bool isDraw}) async {
     if (_currentUser == null) return;
 
@@ -651,7 +617,6 @@ class AuthViewModel extends BaseViewModel {
     }
   }
 
-  /// Sets the player's active in-match status to suppress challenge pop-ups during active gameplay.
   Future<void> setInMatchStatus(bool inMatch) async {
     if (_currentUser == null) return;
     if (_currentUser!.isInMatch == inMatch) return;

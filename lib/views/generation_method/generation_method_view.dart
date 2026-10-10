@@ -14,8 +14,6 @@ import '../../viewmodels/auth_viewmodel.dart';
 import '../../widgets/ai_provider_logo.dart';
 import '../../widgets/gemini_api_key_dialog.dart';
 
-/// Screen displayed immediately after document analysis, allowing the user
-/// to choose between generating an Exam Quiz, Structured Study Notes, or Interactive Flashcards.
 class GenerationMethodView extends StatefulWidget {
   final DocumentModel? document;
 
@@ -30,8 +28,6 @@ class GenerationMethodView extends StatefulWidget {
 }
 
 class _GenerationMethodViewState extends State<GenerationMethodView> {
-  // In-memory cache for previously generated study notes and flashcard decks
-  // ensuring switching methods or returning to this screen consumes ZERO additional tokens!
   static final Map<String, StudyNotesModel> _notesCache = {};
   static final Map<String, FlashcardDeckModel> _deckCache = {};
 
@@ -94,7 +90,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
 
     final docKey = _getDocKey(doc);
     if (_notesCache.containsKey(docKey)) {
-      // Re-use cached notes immediately without calling Gemini or burning tokens!
       context.go(
         AppRoutes.studyNotes,
         extra: (notes: _notesCache[docKey]!, document: doc),
@@ -102,7 +97,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
       return;
     }
 
-    // Prompt for key if not configured
     if (!_hasApiKey) {
       final keyProvided = await showGeminiApiKeyDialog(context);
       if (keyProvided == true) {
@@ -131,7 +125,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
 
       _notesCache[docKey] = notes;
 
-      // Auto-save to local storage history
       if (mounted) {
         final auth = context.read<AuthViewModel>();
         final userId = auth.isAuthenticated ? auth.currentUser!.uid : '';
@@ -166,7 +159,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
 
     final docKey = _getDocKey(doc);
     if (_deckCache.containsKey(docKey)) {
-      // Re-use cached deck immediately without calling Gemini or burning tokens!
       context.go(
         AppRoutes.flashcards,
         extra: (deck: _deckCache[docKey]!, document: doc),
@@ -174,7 +166,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
       return;
     }
 
-    // Prompt for key if not configured
     if (!_hasApiKey) {
       final keyProvided = await showGeminiApiKeyDialog(context);
       if (keyProvided == true) {
@@ -201,7 +192,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
 
       _deckCache[docKey] = deck;
 
-      // Auto-save to local storage history
       if (mounted) {
         final auth = context.read<AuthViewModel>();
         final userId = auth.isAuthenticated ? auth.currentUser!.uid : '';
@@ -318,7 +308,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
               ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                 children: [
-                  // AI Engine & API Key Status Card
                   Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -419,7 +408,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
                   ),
                   const SizedBox(height: 12),
 
-                  // Material Summary Overview Card (Compact)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
@@ -532,7 +520,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
                     ),
                   ],
 
-                  // Method Card 1: Quiz (MCQ)
                   _MethodCard(
                     title: 'Quiz (MCQ & Practice)',
                     badge: 'POPULAR',
@@ -549,7 +536,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
 
                   const SizedBox(height: 10),
 
-                  // Method Card 2: Notes
                   _MethodCard(
                     title: 'Organized Study Notes',
                     badge: hasGeneratedNotes ? 'READY • 0 TOKENS' : 'AI SYNTHESIS',
@@ -567,7 +553,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
 
                   const SizedBox(height: 10),
 
-                  // Method Card 3: Flashcards
                   _MethodCard(
                     title: 'Flashcards',
                     badge: hasGeneratedDeck ? 'READY • 0 TOKENS' : 'ACTIVE RECALL',
@@ -587,7 +572,6 @@ class _GenerationMethodViewState extends State<GenerationMethodView> {
                 ],
               ),
 
-              // Loading overlay when synthesizing notes or flashcards
               if (_isGeneratingNotes || _isGeneratingFlashcards)
                 Container(
                   color: Colors.black.withValues(alpha: 0.65),

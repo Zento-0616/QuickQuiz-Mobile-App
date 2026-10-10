@@ -5,7 +5,7 @@ enum ChessDifficulty { easy, medium, hard }
 enum ChessPieceType { pawn, knight, bishop, rook, queen, king }
 
 class ChessPiece {
-  final int player; // 1: White, 2: Black
+  final int player;
   final ChessPieceType type;
   bool hasMoved;
 
@@ -46,7 +46,6 @@ class ChessPiece {
 
   String get symbol {
     if (player == 1) {
-      // White
       switch (type) {
         case ChessPieceType.pawn: return '♙';
         case ChessPieceType.knight: return '♘';
@@ -56,7 +55,6 @@ class ChessPiece {
         case ChessPieceType.king: return '♔';
       }
     } else {
-      // Black
       switch (type) {
         case ChessPieceType.pawn: return '♟';
         case ChessPieceType.knight: return '♞';
@@ -98,12 +96,12 @@ class ChessMove {
 class ChessBoard {
   static const int size = 8;
   late List<List<ChessPiece?>> grid;
-  int currentTurn = 1; // 1: White, 2: Black
+  int currentTurn = 1;
   final List<ChessPiece> capturedByWhite = [];
   final List<ChessPiece> capturedByBlack = [];
   final List<ChessMove> moveHistory = [];
   bool isGameOver = false;
-  int? winner; // 1 = White, 2 = Black, null = draw/ongoing
+  int? winner;
   bool isDraw = false;
   String? gameOverReason;
   int halfmoveClock = 0;
@@ -127,7 +125,6 @@ class ChessBoard {
     enPassantTarget = null;
     halfmoveClock = 0;
 
-    // Row 0: Black major pieces
     grid[0][0] = ChessPiece(player: 2, type: ChessPieceType.rook);
     grid[0][1] = ChessPiece(player: 2, type: ChessPieceType.knight);
     grid[0][2] = ChessPiece(player: 2, type: ChessPieceType.bishop);
@@ -137,17 +134,14 @@ class ChessBoard {
     grid[0][6] = ChessPiece(player: 2, type: ChessPieceType.knight);
     grid[0][7] = ChessPiece(player: 2, type: ChessPieceType.rook);
 
-    // Row 1: Black pawns
     for (int c = 0; c < size; c++) {
       grid[1][c] = ChessPiece(player: 2, type: ChessPieceType.pawn);
     }
 
-    // Row 6: White pawns
     for (int c = 0; c < size; c++) {
       grid[6][c] = ChessPiece(player: 1, type: ChessPieceType.pawn);
     }
 
-    // Row 7: White major pieces
     grid[7][0] = ChessPiece(player: 1, type: ChessPieceType.rook);
     grid[7][1] = ChessPiece(player: 1, type: ChessPieceType.knight);
     grid[7][2] = ChessPiece(player: 1, type: ChessPieceType.bishop);
@@ -205,7 +199,6 @@ class ChessBoard {
     return null;
   }
 
-  /// Calculates pseudo-legal candidate moves without check validation
   List<ChessMove> getPseudoLegalMoves(int r, int c) {
     final piece = getPiece(r, c);
     if (piece == null) return [];
@@ -219,7 +212,6 @@ class ChessBoard {
         final startRow = piece.player == 1 ? 6 : 1;
         final promoRow = piece.player == 1 ? 0 : 7;
 
-        // 1 step forward
         final oneR = r + forward;
         if (isInBounds(oneR, c) && grid[oneR][c] == null) {
           if (oneR == promoRow) {
@@ -230,14 +222,12 @@ class ChessBoard {
             moves.add(ChessMove(fromRow: r, fromCol: c, toRow: oneR, toCol: c));
           }
 
-          // 2 steps forward from initial rank
           final twoR = r + (forward * 2);
           if (r == startRow && isInBounds(twoR, c) && grid[twoR][c] == null) {
             moves.add(ChessMove(fromRow: r, fromCol: c, toRow: twoR, toCol: c));
           }
         }
 
-        // Diagonal captures
         for (final dc in [-1, 1]) {
           final capC = c + dc;
           if (isInBounds(oneR, capC)) {
@@ -310,9 +300,7 @@ class ChessBoard {
           }
         }
 
-        // Castling check
         if (!piece.hasMoved && !isKingInCheck(piece.player)) {
-          // Kingside (col 4 -> col 6, rook at col 7)
           final kRook = grid[r][7];
           if (kRook != null && kRook.type == ChessPieceType.rook && !kRook.hasMoved) {
             if (grid[r][5] == null && grid[r][6] == null) {
@@ -321,7 +309,6 @@ class ChessBoard {
               }
             }
           }
-          // Queenside (col 4 -> col 2, rook at col 0)
           final qRook = grid[r][0];
           if (qRook != null && qRook.type == ChessPieceType.rook && !qRook.hasMoved) {
             if (grid[r][1] == null && grid[r][2] == null && grid[r][3] == null) {
@@ -358,7 +345,6 @@ class ChessBoard {
   }
 
   bool isSquareAttacked(int r, int c, int byPlayer) {
-    // 1. Attacked by pawns
     final pawnForward = byPlayer == 1 ? -1 : 1;
     final pawnOriginRow = r - pawnForward;
     for (final dc in [-1, 1]) {
@@ -371,7 +357,6 @@ class ChessBoard {
       }
     }
 
-    // 2. Attacked by knights
     const knightDeltas = [
       Point(-2, -1), Point(-2, 1), Point(-1, -2), Point(-1, 2),
       Point(1, -2), Point(1, 2), Point(2, -1), Point(2, 1),
@@ -387,7 +372,6 @@ class ChessBoard {
       }
     }
 
-    // 3. Attacked by diagonal sliders (Bishop, Queen)
     const diagDirs = [Point(-1, -1), Point(-1, 1), Point(1, -1), Point(1, 1)];
     for (final d in diagDirs) {
       int nr = r + d.x;
@@ -405,7 +389,6 @@ class ChessBoard {
       }
     }
 
-    // 4. Attacked by orthogonal sliders (Rook, Queen)
     const orthoDirs = [Point(-1, 0), Point(1, 0), Point(0, -1), Point(0, 1)];
     for (final d in orthoDirs) {
       int nr = r + d.x;
@@ -423,7 +406,6 @@ class ChessBoard {
       }
     }
 
-    // 5. Attacked by adjacent King
     const kingDeltas = [
       Point(-1, -1), Point(-1, 0), Point(-1, 1),
       Point(0, -1), Point(0, 1),
@@ -445,12 +427,11 @@ class ChessBoard {
 
   bool isKingInCheck(int player) {
     final kingPos = findKing(player);
-    if (kingPos == null) return true; // King captured
+    if (kingPos == null) return true;
     final oppPlayer = player == 1 ? 2 : 1;
     return isSquareAttacked(kingPos.x, kingPos.y, oppPlayer);
   }
 
-  /// Strictly filters candidate moves so King is never in check
   List<ChessMove> getLegalMoves(int r, int c) {
     final piece = getPiece(r, c);
     if (piece == null || piece.player != currentTurn) return [];
@@ -481,19 +462,16 @@ class ChessBoard {
     return moves;
   }
 
-  /// Internal simulator move
   void applyMoveSim(ChessMove move) {
     final piece = grid[move.fromRow][move.fromCol]!;
     grid[move.fromRow][move.fromCol] = null;
 
     if (move.isCastling) {
       if (move.toCol == 6) {
-        // Kingside
         final rook = grid[move.toRow][7]!;
         grid[move.toRow][7] = null;
         grid[move.toRow][5] = rook;
       } else if (move.toCol == 2) {
-        // Queenside
         final rook = grid[move.toRow][0]!;
         grid[move.toRow][0] = null;
         grid[move.toRow][3] = rook;
@@ -510,17 +488,14 @@ class ChessBoard {
     }
   }
 
-  /// Executes an official move on the board and handles turns, captured pieces, and checkmate
   bool makeMove(ChessMove move) {
     if (isGameOver) return false;
 
     final piece = grid[move.fromRow][move.fromCol];
     if (piece == null || piece.player != currentTurn) return false;
 
-    // Remove piece from origin
     grid[move.fromRow][move.fromCol] = null;
 
-    // Handle captures
     if (move.isEnPassant) {
       final capRow = move.fromRow;
       final capPiece = grid[capRow][move.toCol];
@@ -543,7 +518,6 @@ class ChessBoard {
       }
     }
 
-    // Handle castling rook movement
     if (move.isCastling) {
       if (move.toCol == 6) {
         final rook = grid[move.toRow][7];
@@ -560,7 +534,6 @@ class ChessBoard {
       }
     }
 
-    // Place moving piece
     if (move.promotionType != null) {
       grid[move.toRow][move.toCol] = ChessPiece(
         player: piece.player,
@@ -571,7 +544,6 @@ class ChessBoard {
       grid[move.toRow][move.toCol] = piece.copyWith(hasMoved: true);
     }
 
-    // Set or clear en passant target
     if (piece.type == ChessPieceType.pawn && (move.toRow - move.fromRow).abs() == 2) {
       enPassantTarget = Point((move.fromRow + move.toRow) ~/ 2, move.fromCol);
     } else {
@@ -580,17 +552,14 @@ class ChessBoard {
 
     moveHistory.add(move);
 
-    // Update halfmove clock for deadlock / run-and-hide detection
     if (piece.type == ChessPieceType.pawn || move.isCapture) {
       halfmoveClock = 0;
     } else {
       halfmoveClock++;
     }
 
-    // Switch turn
     currentTurn = currentTurn == 1 ? 2 : 1;
 
-    // Check game over
     final oppMoves = getAllLegalMoves(currentTurn);
     if (oppMoves.isEmpty) {
       isGameOver = true;
@@ -607,7 +576,6 @@ class ChessBoard {
     return true;
   }
 
-  /// Detects if insufficient material remains on board to force a checkmate.
   bool isInsufficientMaterial() {
     final activePieces = <ChessPiece>[];
     for (int r = 0; r < size; r++) {
@@ -616,11 +584,9 @@ class ChessBoard {
         if (p != null) activePieces.add(p);
       }
     }
-    // King vs King
     if (activePieces.length == 2) {
       return activePieces.every((p) => p.type == ChessPieceType.king);
     }
-    // King + single minor piece vs King
     if (activePieces.length == 3) {
       final nonKings = activePieces.where((p) => p.type != ChessPieceType.king).toList();
       if (nonKings.length == 1) {
@@ -631,17 +597,13 @@ class ChessBoard {
     return false;
   }
 
-  /// Detects if the game has reached an impossible-to-beat or evasive deadlock
-  /// ("run and hide" loop with no material advancement).
   bool isDeadlockOrRunAndHide() {
     if (isGameOver) return false;
     if (isInsufficientMaterial()) return true;
-    // 30 half-moves (15 full moves without pawn move or capture)
     if (halfmoveClock >= 30) return true;
     return false;
   }
 
-  // Material evaluation differential
   int evaluateBoard(int forPlayer) {
     if (isGameOver) {
       if (winner == forPlayer) return 100000;
@@ -659,23 +621,20 @@ class ChessBoard {
 
         int val = p.baseValue;
 
-        // Positional heuristics: center control
         if ((r == 3 || r == 4) && (c == 3 || c == 4)) {
           val += 25;
         } else if ((r >= 2 && r <= 5) && (c >= 2 && c <= 5)) {
           val += 12;
         }
 
-        // Pawns advance bonus
         if (p.type == ChessPieceType.pawn) {
           final adv = p.player == 1 ? (6 - r) : (r - 1);
           val += adv * 8;
         }
 
-        // Knights active in center
         if (p.type == ChessPieceType.knight) {
           if (c == 0 || c == 7 || r == 0 || r == 7) {
-            val -= 15; // Knights on the rim are dim
+            val -= 15;
           }
         }
 
@@ -687,7 +646,6 @@ class ChessBoard {
       }
     }
 
-    // Mobility difference
     final myMoves = getAllLegalMoves(forPlayer).length;
     final oppMoves = getAllLegalMoves(oppPlayer).length;
     score += (myMoves - oppMoves) * 4;
@@ -714,10 +672,9 @@ class ChessBoard {
       if (board.isKingInCheck(currentPlayer)) {
         return isMaximizing ? -100000 + depth : 100000 - depth;
       }
-      return 0; // Stalemate
+      return 0;
     }
 
-    // Move ordering: evaluate captures and checks first
     legalMoves.sort((a, b) {
       if (a.isCapture != b.isCapture) return a.isCapture ? -1 : 1;
       if (a.promotionType != null && b.promotionType == null) return -1;
@@ -763,10 +720,6 @@ class ChessBoard {
     }
   }
 
-  /// Evaluates AI move based on difficulty:
-  /// - Easy: Material-conscious with random selections
-  /// - Medium: 2-ply Minimax
-  /// - Hard: 3-ply Minimax with Alpha-Beta pruning
   ChessMove? getAiMove(ChessDifficulty difficulty) {
     if (isGameOver) return null;
 

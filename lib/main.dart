@@ -18,31 +18,25 @@ Future<void> main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
-      // 1. Immediately dismiss native splash so native screen is < 1 second
       FlutterNativeSplash.remove();
 
-      // 2. Friendly Error UI for widget crashes
       ErrorWidget.builder = (details) => FriendlyErrorWidget(details: details);
 
-      // 3. Load Environment Variables
       try {
         await dotenv.load(fileName: '.env');
       } catch (e) {
         debugPrint('Note: .env file not found or failed to load: $e');
       }
 
-      // 4. Initialize Firebase (Wrapped with timeout to guarantee immediate startup)
       try {
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         ).timeout(const Duration(seconds: 3));
         debugPrint('Firebase initialized successfully');
       } catch (e) {
-        // If Firebase fails or times out, the app opens smoothly and features degrade gracefully
         debugPrint('Firebase Initialization Warning: $e');
       }
 
-      // 5. Initialize Ads (Wrapped with timeout)
       final adService = AdService();
       try {
         await adService.initialize().timeout(const Duration(seconds: 3));
@@ -50,7 +44,6 @@ Future<void> main() async {
         debugPrint('AdService initialization failed or timed out: $e');
       }
 
-      // 6. Ensure native splash is completely removed before running app
       FlutterNativeSplash.remove();
 
       runApp(
@@ -66,7 +59,6 @@ Future<void> main() async {
       );
     },
     (error, stackTrace) {
-      // Catch-all for async errors
       debugPrint('Uncaught async error: $error\n$stackTrace');
     },
   );

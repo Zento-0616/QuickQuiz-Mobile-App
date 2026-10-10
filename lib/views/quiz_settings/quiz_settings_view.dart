@@ -13,7 +13,6 @@ import '../../widgets/gemini_api_key_dialog.dart';
 import '../../widgets/pre_quiz_confirmation_dialog.dart';
 import '../../widgets/sign_in_required_dialog.dart';
 
-/// Modern Quiz Settings screen: configure question count and difficulty level.
 class QuizSettingsView extends StatelessWidget {
   final DocumentModel? document;
   const QuizSettingsView({super.key, this.document});
@@ -333,7 +332,6 @@ class _QuizSettingsBody extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
 
-                    // Interactive Slider Control (Drag-to-select)
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -364,7 +362,7 @@ class _QuizSettingsBody extends StatelessWidget {
                                         ),
                                     min: QuizSettingsModel.minQuestions.toDouble(),
                                     max: QuizSettingsModel.maxQuestions.toDouble(),
-                                    divisions: 9, // Steps of 5: 5, 10, 15, 20, 25, 30, 35, 40, 45, 50
+                                    divisions: 9,
                                     onChanged: viewModel.isLoading
                                         ? null
                                         : (value) => viewModel.updateQuestionCount(value.round()),
@@ -609,13 +607,10 @@ class _QuizSettingsBody extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 6),
-                                // ignore: deprecated_member_use
                                 Radio<QuizDifficulty>(
                                   value: difficulty,
-                                  // ignore: deprecated_member_use
                                   groupValue: settings.difficulty,
                                   activeColor: diffColor,
-                                  // ignore: deprecated_member_use
                                   onChanged: viewModel.isLoading
                                       ? null
                                       : (value) => viewModel.updateDifficulty(value!),

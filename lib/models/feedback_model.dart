@@ -1,13 +1,12 @@
-/// Data model representing a scholar's suggestion or issue report.
 class FeedbackModel {
   final String id;
   final String userId;
   final String userName;
   final String userEmail;
-  final String type; // 'suggestion' or 'issue_report'
+  final String type;
   final String title;
   final String message;
-  final String status; // 'pending' or 'resolved'
+  final String status;
   final DateTime createdAt;
   final DateTime? resolvedAt;
 
@@ -87,7 +86,6 @@ class FeedbackModel {
   }
 }
 
-/// Aggregated real-time metric tracking for scholar feedback.
 class FeedbackMetrics {
   final int totalReceived;
   final int totalResolved;
@@ -100,5 +98,4 @@ class FeedbackMetrics {
   });
 }
 
-/// Backward compatibility alias
 typedef FeedbackMetrics7Days = FeedbackMetrics;

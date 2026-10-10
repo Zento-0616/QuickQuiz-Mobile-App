@@ -4,8 +4,8 @@ const _uuid = Uuid();
 
 class FlashcardModel {
   final String id;
-  final String front; // Question, Term, Concept, or Formula Name
-  final String back; // Answer, Definition, Explanation, or Formula Details
+  final String front;
+  final String back;
   final String? hint;
   final String? category;
   final bool isMastered;

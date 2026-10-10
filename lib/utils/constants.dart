@@ -1,36 +1,18 @@
-/// App-wide constants. Values marked "CONFIGURE" must be replaced before
-/// shipping to production — see README for the full checklist.
 class AppConstants {
   AppConstants._();
 
-  // ---------------------------------------------------------------------
-  // App metadata
-  // ---------------------------------------------------------------------
   static const String appName = 'QuickQuiz';
   static const String appTagline = 'Turn Your Notes Into Knowledge';
 
-  // ---------------------------------------------------------------------
-  // File upload limits
-  // ---------------------------------------------------------------------
   static const int maxFileSizeMb = 20;
   static const int maxFileSizeBytes = maxFileSizeMb * 1024 * 1024;
   static const List<String> supportedExtensions = ['pdf', 'pptx', 'docx', 'txt'];
 
-  /// Minimum characters of extracted text required to attempt quiz
-  /// generation. Below this, the AI has nothing meaningful to work with.
   static const int minExtractedTextLength = 200;
 
-  // ---------------------------------------------------------------------
-  // Quiz settings bounds
-  // ---------------------------------------------------------------------
   static const int minQuestions = 1;
   static const int maxQuestions = 50;
 
-  // ---------------------------------------------------------------------
-  // Guest / free quiz logic
-  // ---------------------------------------------------------------------
-  /// SharedPreferences key. Only ever set to `true` AFTER a quiz has been
-  /// successfully generated — see QuizGeneratorViewModel.
   static const String prefGuestQuizUsed = 'guest_quiz_used';
   static const String prefOnboardingComplete = 'onboarding_complete';
   static const String prefGeminiApiKey = 'gemini_api_key';
@@ -41,45 +23,26 @@ class AppConstants {
   static const String prefAnthropicApiKey = 'anthropic_api_key';
   static const String prefActiveAiProvider = 'active_ai_provider';
 
-  // ---------------------------------------------------------------------
-  // Backend (Firebase Cloud Functions)
-  // ---------------------------------------------------------------------
-  /// Name of the deployed callable function (see functions/index.js,
-  /// generated in the Quiz API Service step). Callable functions are
-  /// invoked by name, not URL, so there's no base URL to configure here
-  /// when using `cloud_functions` — but we keep a REGION constant since
-  /// callable functions are region-specific.
   static const String generateQuizFunctionName = 'generateQuiz';
-  static const String cloudFunctionsRegion = 'us-central1'; // CONFIGURE if different
+  static const String cloudFunctionsRegion = 'us-central1';
 
-  // ---------------------------------------------------------------------
-  // AdMob — TEST IDs below. Replace with production IDs before release.
-  // https://developers.google.com/admob/flutter/test-ads
-  // ---------------------------------------------------------------------
   static const String admobBannerIdAndroidTest = 'ca-app-pub-3940256099942544/6300978111';
   static const String admobBannerIdIosTest = 'ca-app-pub-3940256099942544/2934735716';
   static const String admobInterstitialIdAndroidTest = 'ca-app-pub-3940256099942544/1033173712';
   static const String admobInterstitialIdIosTest = 'ca-app-pub-3940256099942544/4411468910';
 
-  // CONFIGURE: production ad unit IDs (leave blank until you have real ones)
   static const String admobBannerIdAndroidProd = '';
   static const String admobBannerIdIosProd = '';
   static const String admobInterstitialIdAndroidProd = '';
   static const String admobInterstitialIdIosProd = '';
 
-  /// Flip this to false when building for release, or better, wire it to
-  /// `--dart-define=PRODUCTION=true` in your build command.
   static const bool useTestAds =
       bool.fromEnvironment('PRODUCTION', defaultValue: false) == false;
 
-  // ---------------------------------------------------------------------
-  // Firestore collection names
-  // ---------------------------------------------------------------------
   static const String usersCollection = 'users';
   static const String quizzesCollection = 'quizzes';
 }
 
-/// Supported AI LLM providers for quiz, notes, and flashcard generation.
 enum AiProvider {
   gemini,
   openAi,

@@ -2,12 +2,6 @@ import 'package:flutter/foundation.dart';
 
 enum ViewState { idle, loading, success, error }
 
-/// Base class for every ViewModel in the app.
-///
-/// Centralizes the loading/error/state pattern so individual ViewModels
-/// (AuthViewModel, UploadViewModel, QuizGeneratorViewModel, etc.) don't
-/// each reinvent `isLoading` / `errorMessage` bookkeeping, and so Views
-/// can react to state changes in one consistent way.
 abstract class BaseViewModel extends ChangeNotifier {
   ViewState _state = ViewState.idle;
   String? _errorMessage;
@@ -17,8 +11,6 @@ abstract class BaseViewModel extends ChangeNotifier {
   bool get hasError => _state == ViewState.error;
   String? get errorMessage => _errorMessage;
 
-  /// Optional label describing the current loading step, e.g.
-  /// "Analyzing your study material..." — surfaced by loading UIs.
   String? _loadingMessage;
   String? get loadingMessage => _loadingMessage;
 

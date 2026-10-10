@@ -11,12 +11,6 @@ import '../../services/profanity_filter_service.dart';
 import '../../utils/toast_helper.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 
-/// User Profile & Settings Page:
-/// - Nickname Editor with automated Profanity Filter
-/// - Avatar & Customizable Bio section
-/// - Gamified Stats Overview (Level, EXP, Streak, Win Rate)
-/// - App Settings (Theme, Haptic, Sound, Push Notifications)
-/// - Admin Dashboard access (for admin accounts)
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
 
@@ -101,7 +95,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
     _bioCtrl = TextEditingController(text: u.bio ?? '');
     _selectedRegion = u.region.isNotEmpty ? u.region : 'US';
 
-    // Auto-sync Google profile picture and details if missing
     if (u.photoUrl == null || u.photoUrl!.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -126,7 +119,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
     final age = int.tryParse(_ageCtrl.text.trim()) ?? widget.auth.currentUser!.age;
     final bio = _bioCtrl.text.trim();
 
-    // Run automated profanity filter on nickname
     final validationError = ProfanityFilterService.validateNickname(nickname);
     if (validationError != null) {
       setState(() => _nicknameError = validationError);
@@ -292,7 +284,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
             ),
             const SizedBox(height: 14),
 
-            // Sync with Google Account Profile Card
             Material(
               color: Colors.transparent,
               child: InkWell(
@@ -413,7 +404,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
       child: Column(
         children: [
-          // Avatar Card
           Center(
             child: Stack(
               children: [
@@ -459,7 +449,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
           ),
           const SizedBox(height: 14),
 
-          // Nickname & Role
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -492,7 +481,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
           ),
           const SizedBox(height: 4),
 
-          // Real Name & Age
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -519,7 +507,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
           ),
           const SizedBox(height: 4),
 
-          // Email Address
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -540,7 +527,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
           ),
           const SizedBox(height: 8),
 
-          // Personal Bio
           if (user.bio != null && user.bio!.isNotEmpty && !_isEditingProfile)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -557,7 +543,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
 
           const SizedBox(height: 12),
 
-          // Edit Profile Button / Form
           if (!_isEditingProfile)
             OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
@@ -688,7 +673,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
 
           const SizedBox(height: 20),
 
-          // Detailed Account Information Card (Full Name, Nickname, Age, Email, Bio)
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -739,7 +723,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
 
           const SizedBox(height: 24),
 
-          // Gamified Stats Grid
           Row(
             children: [
               Expanded(
@@ -782,7 +765,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
 
           const SizedBox(height: 24),
 
-          // Admin Dashboard Button (if Admin)
           if (user.isAdmin) ...[
             Card(
               color: AppTheme.accentColor.withValues(alpha: 0.12),
@@ -801,7 +783,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
             const SizedBox(height: 16),
           ],
 
-          // App Settings Section
           Card(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -910,7 +891,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
 
           const SizedBox(height: 16),
 
-          // Security & Password Management Section
           Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -932,7 +912,6 @@ class _AuthenticatedProfileState extends State<_AuthenticatedProfile> {
 
           const SizedBox(height: 24),
 
-          // Sign Out Button
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(

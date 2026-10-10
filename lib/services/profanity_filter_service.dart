@@ -1,9 +1,3 @@
-/// Automated profanity filter and bad-word restriction engine.
-///
-/// Features:
-/// - Leetspeak normalization (e.g. "@" -> "a", "$" -> "s", "0" -> "o", "1" -> "i", "3" -> "e")
-/// - Word-boundary regex matching to avoid false positives (e.g. "classic" shouldn't trigger "ass")
-/// - Nickname length & format validation
 class ProfanityFilterService {
   ProfanityFilterService._();
 
@@ -13,7 +7,6 @@ class ProfanityFilterService {
     'idiot', 'moron', 'dumbass', 'kill', 'hate', 'nazi', 'hitler', 'porn', 'sex',
   };
 
-  /// Map common leetspeak substitutions to standard characters for inspection
   static String _normalizeLeetspeak(String input) {
     return input
         .toLowerCase()
@@ -30,14 +23,12 @@ class ProfanityFilterService {
         .replaceAll('7', 't')
         .replaceAll('+', 't')
         .replaceAll('*', 'u')
-        .replaceAll(RegExp(r'[^a-z0-9]'), ''); // strip separators like underscores, dots, hyphens
+        .replaceAll(RegExp(r'[^a-z0-9]'), '');
   }
 
-  /// Checks whether [text] contains prohibited profane or derogatory terms.
   static bool hasProfanity(String text) {
     if (text.trim().isEmpty) return false;
 
-    // 1. Direct word check against tokens
     final tokens = text.toLowerCase().split(RegExp(r'[\s._\-+*!@#$%^&()]+'));
     for (final token in tokens) {
       if (_badWords.contains(token)) {
@@ -45,7 +36,6 @@ class ProfanityFilterService {
       }
     }
 
-    // 2. Normalized tokens check (each token normalized for leetspeak)
     for (final token in tokens) {
       final normToken = _normalizeLeetspeak(token);
       if (_badWords.contains(normToken)) {
@@ -53,7 +43,6 @@ class ProfanityFilterService {
       }
     }
 
-    // 3. Explicit profanity substring check
     final normalized = _normalizeLeetspeak(text);
     const explicitBadWords = {
       'bitch', 'shit', 'fuck', 'bastard', 'cunt', 'whore', 'slut',
@@ -68,7 +57,6 @@ class ProfanityFilterService {
     return false;
   }
 
-  /// Replaces bad words with asterisks.
   static String cleanText(String text) {
     String result = text;
     for (final bad in _badWords) {
@@ -78,8 +66,6 @@ class ProfanityFilterService {
     return result;
   }
 
-  /// Validates a chosen nickname against length, character, and profanity constraints.
-  /// Returns null if valid, or a descriptive error message if invalid.
   static String? validateNickname(String? nickname) {
     if (nickname == null || nickname.trim().isEmpty) {
       return 'Nickname cannot be empty.';

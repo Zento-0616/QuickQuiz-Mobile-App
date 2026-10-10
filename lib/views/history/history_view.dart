@@ -16,8 +16,6 @@ import '../../widgets/banner_ad_widget.dart';
 import '../../widgets/main_bottom_nav.dart';
 import '../../widgets/quick_quiz_top_bar.dart';
 
-/// Modern History screen displaying Quizzes, Structured Study Notes, and Flashcards
-/// with dedicated tabs, distinct styling, and quick review/retake flows.
 class HistoryView extends StatelessWidget {
   const HistoryView({super.key});
 
@@ -76,7 +74,6 @@ class _HistoryList extends StatelessWidget {
           child: Column(
             children: [
               BannerAdWidget(isVisible: !viewModel.isLoading),
-              // Category Filter Tab Bar
               _buildCategoryTabs(context, viewModel),
               const SizedBox(height: 8),
               Expanded(
@@ -204,7 +201,6 @@ class _HistoryList extends StatelessWidget {
 
     final active = viewModel.activeFilter;
 
-    // Filter items based on selected tab
     List<Widget> cards = [];
 
     if (active == HistoryCategoryFilter.quizzes) {
@@ -214,7 +210,6 @@ class _HistoryList extends StatelessWidget {
     } else if (active == HistoryCategoryFilter.flashcards) {
       cards = viewModel.flashcardHistory.map((d) => _FlashcardDeckHistoryCard(deck: d)).toList();
     } else {
-      // All items: combine and sort chronologically
       final unifiedItems = <({DateTime date, Widget widget})>[];
 
       for (final q in viewModel.quizHistory) {
@@ -330,7 +325,6 @@ class _HistoryList extends StatelessWidget {
   }
 }
 
-/// Distinct Visual Card for Quiz Results
 class _QuizHistoryCard extends StatelessWidget {
   final QuizResultModel result;
   const _QuizHistoryCard({required this.result});
@@ -495,7 +489,6 @@ class _QuizHistoryCard extends StatelessWidget {
   }
 }
 
-/// Distinct Visual Card for Structured Study Notes
 class _StudyNotesHistoryCard extends StatelessWidget {
   final StudyNotesModel notes;
   const _StudyNotesHistoryCard({required this.notes});
@@ -632,7 +625,6 @@ class _StudyNotesHistoryCard extends StatelessWidget {
   }
 }
 
-/// Distinct Visual Card for Flashcard Decks
 class _FlashcardDeckHistoryCard extends StatelessWidget {
   final FlashcardDeckModel deck;
   const _FlashcardDeckHistoryCard({required this.deck});
@@ -729,7 +721,6 @@ class _FlashcardDeckHistoryCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              // Mastery Progress Bar
               ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(

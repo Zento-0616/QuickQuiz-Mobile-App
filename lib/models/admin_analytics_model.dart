@@ -3,8 +3,6 @@ library admin_analytics_model;
 import 'question_model.dart';
 import 'quiz_result_model.dart';
 
-/// Data classes supporting the Admin Live Metrics and Quiz Performance Analytics Suite.
-
 class AdminLiveMetrics {
   final int activeScholarsOnline;
   final int totalRegisteredScholars;
@@ -21,7 +19,6 @@ class AdminLiveMetrics {
   })  : activeScholarsOnline = activeScholarsOnline ?? activePlayersOnline ?? 0,
         totalRegisteredScholars = totalRegisteredScholars ?? totalRegisteredPlayers ?? 0;
 
-  // Backward compatibility aliases
   int get activePlayersOnline => activeScholarsOnline;
   int get totalRegisteredPlayers => totalRegisteredScholars;
 
@@ -94,7 +91,6 @@ class QuizAnalyticsData {
   })  : topScholar = topScholar ?? topPlayer,
         scholarBreakdown = scholarBreakdown ?? playerBreakdown ?? const [];
 
-  // Backward compatibility getters
   ScholarScoreRecord? get topPlayer => topScholar;
   List<ScholarScoreRecord> get playerBreakdown => scholarBreakdown;
 

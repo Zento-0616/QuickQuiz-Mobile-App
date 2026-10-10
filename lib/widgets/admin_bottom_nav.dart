@@ -4,16 +4,6 @@ import '../app/theme.dart';
 
 enum AdminTab { home, quizzes, scholars, messages, feedback, expControls, settings }
 
-/// Floating glassmorphic bottom navigation bar for the Admin Dashboard.
-///
-/// 7 Icon-Only Tabs matching the QuickQuiz design system:
-/// 1. Home (Live Metrics & Overview)
-/// 2. Quizzes (Created Quizzes & Deck Analytics)
-/// 3. Scholars (Leaderboards & Moderation)
-/// 4. Messages (Admin Chat & Support)
-/// 5. Feedback (Scholar Feedback Management Hub)
-/// 6. EXP Controls (Daily Scholar EXP Cap)
-/// 7. Settings (Admin Security, Preferences & Database)
 class AdminBottomNavBar extends StatelessWidget {
   final AdminTab currentTab;
   final ValueChanged<AdminTab> onTabSelected;

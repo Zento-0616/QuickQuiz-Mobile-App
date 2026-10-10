@@ -2,9 +2,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Tracks previously generated question stems per document and session to ensure
-/// the AI does not repeat questions even when the user generates quizzes multiple times
-/// from the exact same study material.
 class QuestionHistoryService {
   static final QuestionHistoryService _instance = QuestionHistoryService._internal();
   factory QuestionHistoryService() => _instance;
@@ -12,15 +9,12 @@ class QuestionHistoryService {
 
   static const String _prefPrefix = 'quickquiz_generated_questions_';
 
-  /// In-memory cache of question stems keyed by normalized document identifier.
   final Map<String, Set<String>> _inMemoryStems = {};
 
-  /// Normalizes a document key (e.g. file name + length or hash)
   String _documentKey(String sourceFileName) {
     return sourceFileName.trim().toLowerCase().replaceAll(RegExp(r'[^a-z0-9_\-\.]'), '_');
   }
 
-  /// Normalizes a question stem for deduplication comparison
   static String normalizeStem(String stem) {
     return stem
         .toLowerCase()
@@ -28,7 +22,6 @@ class QuestionHistoryService {
         .trim();
   }
 
-  /// Retrieves previously generated question stems for this document
   Future<List<String>> getPreviousQuestionStems(String sourceFileName) async {
     final key = _documentKey(sourceFileName);
 
@@ -55,7 +48,6 @@ class QuestionHistoryService {
     return [];
   }
 
-  /// Records newly generated question stems to avoid repeating them in future generations
   Future<void> recordGeneratedQuestions(
     String sourceFileName,
     List<String> rawQuestionStems,
@@ -72,7 +64,6 @@ class QuestionHistoryService {
       }
     }
 
-    // Cap history at 100 most recent questions per document to avoid unbounded growth
     final cappedList = set.toList();
     if (cappedList.length > 100) {
       cappedList.removeRange(0, cappedList.length - 100);
@@ -88,7 +79,6 @@ class QuestionHistoryService {
     }
   }
 
-  /// Checks if a candidate question stem is duplicate or semantically near-identical
   bool isDuplicate(String sourceFileName, String candidateStem) {
     final key = _documentKey(sourceFileName);
     final existing = _inMemoryStems[key];
@@ -101,7 +91,6 @@ class QuestionHistoryService {
       final normalizedExisting = normalizeStem(stem);
       if (normalizedCandidate == normalizedExisting) return true;
 
-      // Jaccard token overlap for near-identical rephrasing
       if (_hasHighTokenOverlap(candidateStem, stem)) return true;
     }
 
@@ -116,10 +105,9 @@ class QuestionHistoryService {
     final intersection = wordsA.intersection(wordsB).length;
     final union = wordsA.union(wordsB).length;
     final jaccard = union > 0 ? intersection / union : 0.0;
-    return jaccard > 0.80; // 80%+ overlap in significant keywords
+    return jaccard > 0.80;
   }
 
-  /// Clears stored question history for a given document
   Future<void> clearHistoryForDocument(String sourceFileName) async {
     final key = _documentKey(sourceFileName);
     _inMemoryStems.remove(key);

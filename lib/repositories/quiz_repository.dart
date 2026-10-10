@@ -27,11 +27,6 @@ class QuizRepository {
 
   Future<List<String>> getCategories() => _questionBankService.getCategories();
 
-  /// Dynamically generates high-quality multiple choice questions from study notes
-  /// using Google Gemini (Google AI Studio SDK or Firebase Cloud Functions).
-  ///
-  /// For uploaded documents, real Google AI Studio question generation is strictly
-  /// enforced — mock template generation has been erased.
   Future<QuizModel> generateQuiz({
     String? documentText,
     required String sourceFileName,
@@ -40,11 +35,9 @@ class QuizRepository {
     String? category,
     List<String>? tags,
   }) async {
-    // 1. If study material text is provided, use Google AI Studio (Gemini)
     if (documentText != null && documentText.trim().length >= 10) {
       final hasKey = await _geminiService.isConfiguredAsync;
 
-      // Direct Google AI Studio official SDK
       if (hasKey) {
         try {
           debugPrint('[QuizRepository] Generating quiz via Google AI Studio official SDK...');
@@ -67,7 +60,6 @@ class QuizRepository {
         }
       }
 
-      // Secure Firebase Cloud Functions backend proxy
       try {
         debugPrint('[QuizRepository] Generating quiz via Google Gemini AI Cloud Function...');
         final aiQuiz = await _quizApiService.generateQuiz(
@@ -84,8 +76,6 @@ class QuizRepository {
         debugPrint('[QuizRepository] Cloud Functions proxy failed: $cloudFnError');
       }
 
-      // If neither AI Studio direct SDK nor Cloud Functions succeeded,
-      // strictly do NOT generate fake mock questions. Throw an explicit exception.
 
       if (!hasKey) {
         throw const GeminiApiKeyMissingException(
@@ -98,7 +88,6 @@ class QuizRepository {
       }
     }
 
-    // 2. Fallback to Question Bank Service
     final questions = await _questionBankService.queryQuestions(
       category: category,
       difficulty: difficulty,
@@ -129,7 +118,6 @@ class QuizRepository {
     return _firestoreService.deleteQuizResult(quizId);
   }
 
-  /// Regenerates a single question using Google AI Studio.
   Future<QuestionModel> regenerateQuestion({
     required String documentText,
     required QuestionModel oldQuestion,

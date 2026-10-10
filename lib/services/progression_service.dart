@@ -22,7 +22,6 @@ class QuizExpResult {
 class ProgressionService {
   static const String _prefLastRewardClaim = 'pref_last_daily_reward_claim';
 
-  /// Calculates EXP earned from a completed quiz session, respecting repeat quiz rules.
   static int calculateExp({
     required int questionCount,
     required int correctCount,
@@ -37,7 +36,6 @@ class ProgressionService {
     if (questionCount <= 0) return 10;
     final accuracy = (correctCount / questionCount).clamp(0.0, 1.0);
 
-    // If direct EXP reward is specified (1-1000 EXP), reward proportionally to score accuracy
     if (customExpReward != null && customExpReward > 0) {
       final reward = (customExpReward * accuracy).round();
       return max(accuracy > 0 ? 1 : 0, reward);
@@ -46,14 +44,9 @@ class ProgressionService {
     final baseExp = questionCount * 20;
     final perfectBonus = (correctCount == questionCount && questionCount >= 3) ? 50 : 0;
     final total = (baseExp * accuracy * multiplier).round() + perfectBonus;
-    return max(15, total); // Minimum 15 EXP participation
+    return max(15, total);
   }
 
-  /// Returns the start of the 4:00 PM (16:00) daily cycle containing [dateTime].
-  ///
-  /// The daily calendar cycle runs from 4:00 PM to 3:59:59 PM next day.
-  /// If [dateTime] is before 16:00, it belongs to the cycle that started yesterday at 16:00.
-  /// If [dateTime] is at or after 16:00, it belongs to the cycle starting today at 16:00.
   static DateTime getDailyCycleStart([DateTime? dateTime]) {
     final dt = dateTime ?? DateTime.now();
     if (dt.hour >= 16) {
@@ -64,7 +57,6 @@ class ProgressionService {
     }
   }
 
-  /// Checks if two timestamps belong to the same 4:00 PM daily cycle.
   static bool isSameDailyCycle(DateTime d1, DateTime d2) {
     final start1 = getDailyCycleStart(d1);
     final start2 = getDailyCycleStart(d2);
@@ -110,11 +102,6 @@ class ProgressionService {
     return min(proposedExp, remainingAllowance);
   }
 
-  /// Calculates level based on cumulative EXP.
-  /// Level 1: 0 - 149 EXP
-  /// Level 2: 150 - 449 EXP (+300)
-  /// Level 3: 450 - 899 EXP (+450)
-  /// etc.
   static int calculateLevelFromExp(int exp) {
     if (exp <= 0) return 1;
     int currentExp = exp;
@@ -129,7 +116,6 @@ class ProgressionService {
     }
   }
 
-  /// Calculates the new user state after completing a quiz.
   static QuizExpResult processQuizCompletion({
     required UserModel user,
     required int questionCount,
@@ -163,7 +149,6 @@ class ProgressionService {
     final newLevel = calculateLevelFromExp(totalExp);
     final leveledUp = newLevel > oldLevel;
 
-    // Check streak
     final updatedStreak = evaluateDailyStreak(
       lastActive: user.lastActive ?? user.lastLoginDate,
       currentStreak: user.dailyStreak,
@@ -178,7 +163,6 @@ class ProgressionService {
     );
   }
 
-  /// Evaluates consecutive day activity for the daily streak using the 4:00 PM cycle.
   static int evaluateDailyStreak({
     required DateTime? lastActive,
     required int currentStreak,
@@ -191,18 +175,14 @@ class ProgressionService {
     final diffDays = currentCycle.difference(lastCycle).inDays;
 
     if (diffDays == 0) {
-      // Same 4:00 PM cycle: streak stays intact
       return max(1, currentStreak);
     } else if (diffDays == 1) {
-      // Consecutive next 4:00 PM cycle: streak increment!
       return currentStreak + 1;
     } else {
-      // Missed one or more cycles: reset to 1
       return 1;
     }
   }
 
-  /// Returns the daily login reward EXP for day 1..7.
   static int getDailyRewardExp(int streakDay, {AdminSettingsModel? settings}) {
     final dayIndex = ((streakDay - 1) % 7) + 1;
     if (settings != null) {
@@ -220,7 +200,6 @@ class ProgressionService {
     }
   }
 
-  /// Checks whether the daily reward for the current 4:00 PM cycle has already been claimed.
   static Future<bool> isDailyRewardClaimedToday() async {
     final prefs = await SharedPreferences.getInstance();
     final lastClaim = prefs.getString(_prefLastRewardClaim);
@@ -232,7 +211,6 @@ class ProgressionService {
     return isSameDailyCycle(claimDate, DateTime.now());
   }
 
-  /// Marks today's daily reward as claimed.
   static Future<void> markDailyRewardClaimedToday() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_prefLastRewardClaim, DateTime.now().toIso8601String());

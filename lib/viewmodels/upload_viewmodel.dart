@@ -4,13 +4,6 @@ import '../services/document_parser_service.dart';
 import '../services/file_service.dart';
 import 'base_viewmodel.dart';
 
-/// Manages the Upload screen's state: picking a file, validating it,
-/// removing it, and running text extraction.
-///
-/// Deliberately does NOT touch the guest/free-quiz flag — that stays
-/// AuthViewModel's job. This ViewModel only succeeds or fails at getting
-/// usable document text; QuizGeneratorViewModel decides what that means
-/// for the free-quiz rule.
 class UploadViewModel extends BaseViewModel {
   static const int maxFiles = 3;
 
@@ -51,7 +44,7 @@ class UploadViewModel extends BaseViewModel {
           existingNames.add(doc.fileName.toLowerCase());
         }
       }
-      _analyzedDocument = null; // Reset previous analysis if new file added
+      _analyzedDocument = null;
       setSuccess();
     } on FileSelectionException catch (e) {
       if (e.userCancelled) {

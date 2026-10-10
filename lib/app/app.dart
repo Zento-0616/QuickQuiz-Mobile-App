@@ -11,8 +11,6 @@ import 'routes.dart';
 import 'theme.dart';
 import '../widgets/game_invitation_overlay.dart';
 
-/// Root widget. ViewModels/services are provided here (via MultiProvider)
-/// so any screen can access them without prop-drilling.
 class QuickQuizApp extends StatefulWidget {
   final List<SingleChildWidget> providers;
   final String? initialRoute;
@@ -68,8 +66,6 @@ class _QuickQuizAppState extends State<QuickQuizApp> {
   }
 }
 
-/// Observes user interaction and app lifecycle to enforce the 5-minute inactivity
-/// auto-logout strictly for Administrator accounts. Regular scholars are never logged out.
 class AdminInactivityWatcher extends StatefulWidget {
   final Widget child;
   final GoRouter router;
@@ -92,7 +88,6 @@ class _AdminInactivityWatcherState extends State<AdminInactivityWatcher>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Periodically check inactivity every 15 seconds
     _inactivityTimer =
         Timer.periodic(const Duration(seconds: 15), (_) => _checkInactivity());
   }

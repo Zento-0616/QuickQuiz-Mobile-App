@@ -8,8 +8,6 @@ import '../models/quiz_settings_model.dart';
 import '../services/ad_service.dart';
 import 'base_viewmodel.dart';
 
-/// Manages taking an already-generated quiz: current question, answer
-/// selection, flagging questions, exam timer, navigation, and scoring.
 class QuizViewModel extends BaseViewModel {
   QuizModel _quiz;
   int _currentIndex = 0;
@@ -21,7 +19,6 @@ class QuizViewModel extends BaseViewModel {
   int _remainingSeconds = 0;
   bool _isTimeUp = false;
 
-  // Precision & Integrity Tracking
   int _answerChangesCount = 0;
   int _backAttemptsCount = 0;
   int _screenshotAttemptsCount = 0;
@@ -32,7 +29,6 @@ class QuizViewModel extends BaseViewModel {
   int get screenshotAttemptsCount => _screenshotAttemptsCount;
   int get delayDeductions => _delayDeductions;
 
-  /// Optional callback invoked when the countdown timer hits 0.
   VoidCallback? onTimeUp;
 
   QuizViewModel(QuizModel quiz, {AdService? adService})
@@ -40,12 +36,8 @@ class QuizViewModel extends BaseViewModel {
           questions: quiz.questions.map((q) => q.randomizeAnswers()).toList(),
         ),
         _adService = adService {
-    // Preload ad
     _adService?.preloadInterstitial();
 
-    // Determine if countdown timer should be enabled:
-    // Easy mode has unlimited time (no countdown).
-    // Medium and Hard modes use the dynamic countdown timer.
     _isCountdown = _quiz.difficulty != QuizDifficulty.easy;
 
     if (_isCountdown) {
@@ -58,7 +50,6 @@ class QuizViewModel extends BaseViewModel {
       _remainingSeconds = totalSeconds;
     }
 
-    // Start exam session timer
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       _secondsElapsed++;
 
@@ -112,11 +103,9 @@ class QuizViewModel extends BaseViewModel {
       _quiz.difficulty == QuizDifficulty.hard && currentQuestion.isAnswered;
 
   void selectAnswer(int optionIndex) {
-    // Hard Tier (Strict Mode): Once a player taps an answer option, it is permanently locked in
     if (_quiz.difficulty == QuizDifficulty.hard && currentQuestion.isAnswered) {
       return;
     }
-    // Track answer modification penalty (-5% integrity per answer change)
     if (currentQuestion.isAnswered && currentQuestion.selectedAnswerIndex != optionIndex) {
       _answerChangesCount++;
     }
@@ -125,7 +114,6 @@ class QuizViewModel extends BaseViewModel {
   }
 
   void submitTextAnswer(String answer) {
-    // Hard Tier (Strict Mode): Locked once submitted
     if (_quiz.difficulty == QuizDifficulty.hard && currentQuestion.isAnswered) {
       return;
     }
@@ -153,11 +141,6 @@ class QuizViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  /// Calculates the integrity & precision rating starting from a 100% baseline:
-  /// - 5% penalty per answer change
-  /// - 10% penalty per exit or back quiz navigation attempt
-  /// - 10% penalty per phone back / backgrounding / screenshot attempt
-  /// - Delay penalty if elapsed time per question exceeds normal limits
   double calculateIntegrity() {
     int delayPenalty = _delayDeductions;
     if (_quiz.questionCount > 0) {
@@ -200,8 +183,6 @@ class QuizViewModel extends BaseViewModel {
     }
   }
 
-  /// Jumps directly to a question — used by the Review screen's
-  /// "go fix this answer" affordance if you wire that up later.
   void goToQuestion(int index) {
     if (index >= 0 && index < totalQuestions) {
       _currentIndex = index;
@@ -209,7 +190,6 @@ class QuizViewModel extends BaseViewModel {
     }
   }
 
-  /// Scores the quiz and returns the result with full integrity metrics.
   QuizResultModel submit({
     String? userId,
     String? userNickname,
@@ -232,11 +212,6 @@ class QuizViewModel extends BaseViewModel {
     );
   }
 
-  /// Shows the interstitial (if one loaded in time) right after quiz
-  /// completion, then calls [onComplete]. Per spec this fires "after
-  /// completing a quiz" — exactly once per quiz, never mid-question. If
-  /// no ad is ready, [onComplete] fires immediately so navigation is
-  /// never blocked waiting on ads.
   void showPostQuizAd(VoidCallback onComplete, {BuildContext? context, bool isAdmin = false}) {
     final adService = _adService;
     if (adService == null || isAdmin) {

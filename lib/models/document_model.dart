@@ -1,11 +1,5 @@
 import 'dart:typed_data';
 
-/// Supported source document formats.
-///
-/// Note: legacy binary `.ppt` is intentionally NOT included. There is no
-/// reliable pure-Dart parser for the old binary PowerPoint format, and
-/// this app does not pretend to support formats it cannot actually read.
-/// Users with `.ppt` files are asked to convert to `.pptx` first.
 enum DocumentType { pdf, pptx, docx, txt, unsupported }
 
 extension DocumentTypeX on DocumentType {
@@ -40,11 +34,6 @@ extension DocumentTypeX on DocumentType {
   }
 }
 
-/// Represents a file the user has picked, plus (once extraction runs)
-/// the cleaned text pulled from it.
-///
-/// This model is used from the moment a file is selected in
-/// `UploadViewModel` through to being handed to `QuizApiService`.
 class DocumentModel {
   final String fileName;
   final String? filePath;
@@ -52,15 +41,12 @@ class DocumentModel {
   final DocumentType type;
   final int fileSizeBytes;
 
-  /// Null until [DocumentParserService] has successfully extracted text.
   final String? extractedText;
 
-  /// Optional AI Studio analysis metadata
   final String? summary;
   final List<String>? keyTopics;
   final String? detectedSubject;
 
-  /// Constituent source files if this model represents a merged multi-document set.
   final List<DocumentModel>? sourceDocuments;
 
   const DocumentModel({
@@ -123,7 +109,6 @@ class DocumentModel {
     );
   }
 
-  /// Combines multiple individual [DocumentModel] instances into a single synthesized document.
   static DocumentModel combine(
     List<DocumentModel> docs, {
     String? summary,

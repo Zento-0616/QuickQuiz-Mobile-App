@@ -2,22 +2,16 @@ import 'quiz_model.dart';
 import 'quiz_settings_model.dart';
 import 'question_model.dart';
 
-/// The outcome of a completed quiz attempt.
-///
-/// Used for:
-///  - the Result screen (in-memory, right after submission)
-///  - Firestore quiz history documents (`quizzes/{quizId}`) for signed-in
-///    users — see FirestoreService.saveQuizResult
 class QuizResultModel {
   final String quizId;
-  final String? userId; // null for guest attempts (not persisted)
+  final String? userId;
   final String fileName;
   final QuizDifficulty difficulty;
   final int questionCount;
   final int correctCount;
   final DateTime createdAt;
-  final List<QuestionModel> questions; // store all questions with user answers
-  final List<String> suggestions; // Actionable tricks and study suggestions to improve
+  final List<QuestionModel> questions;
+  final List<String> suggestions;
   final int? timeElapsedSeconds;
   final int? expEarned;
   final String? userNickname;
@@ -106,7 +100,6 @@ class QuizResultModel {
     return 'Keep practicing! Review the material and try again.';
   }
 
-  /// Generates contextual question-picking tricks and study improvement advice.
   static List<String> generateImprovementSuggestions({
     required int score,
     required int total,
@@ -123,7 +116,6 @@ class QuizResultModel {
 
     final tips = <String>[];
 
-    // 1. Question-Picking Tricks (Exam Technique)
     if (pct < 70) {
       tips.add(
         'Trick - Process of Elimination: Quickly disqualify 2 obviously incorrect options first (watch for absolute traps like "always", "never", or "only") to raise your guessing odds to 50/50.',
@@ -140,7 +132,6 @@ class QuizResultModel {
       );
     }
 
-    // 2. Post-Quiz Study & Retention Suggestions
     if (pct < 60) {
       tips.add(
         'Study Strategy - Active Recall: Close your study notes and write down a 3-bullet summary of each missed question without peeking.',
@@ -173,7 +164,6 @@ class QuizResultModel {
     return tips;
   }
 
-  /// Builds a result from a completed [QuizModel] by scoring each question.
   factory QuizResultModel.fromQuiz(
     QuizModel quiz, {
     String? userId,

@@ -5,8 +5,6 @@ import '../services/document_parser_service.dart';
 import '../services/file_service.dart';
 import '../services/gemini_service.dart';
 
-/// Clean boundary between UploadViewModel and the FileService /
-/// DocumentParserService / GeminiService trio.
 class DocumentRepository {
   final FileService _fileService;
   final DocumentParserService _parserService;
@@ -43,7 +41,6 @@ class DocumentRepository {
 
     final combined = DocumentModel.combine(parsedDocs);
 
-    // Power the multi-document analyzer with Google AI Studio (Gemini)
     DocumentAnalysisResult? analysis;
     try {
       if (combined.extractedText != null && combined.extractedText!.isNotEmpty) {

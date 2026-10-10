@@ -10,15 +10,6 @@ import '../viewmodels/auth_viewmodel.dart';
 
 enum MainTab { home, history, games, messages }
 
-/// iOS-inspired floating oval bottom navigation bar with 4 icon-only tabs:
-/// Home, History, Games, Messages.
-///
-/// Features:
-/// - Icon-Only navigation to eliminate horizontal text overflow on narrow displays.
-/// - Detached pill-shaped container floating above screen bottom.
-/// - Glassmorphic frosted blur effect via [BackdropFilter].
-/// - Animated active indicator pill with gradient & subtle glow.
-/// - Real-time unread notification dot badge on the Messages tab.
 class MainBottomNav extends StatelessWidget {
   final MainTab current;
   const MainBottomNav({super.key, required this.current});
@@ -29,7 +20,6 @@ class MainBottomNav extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
-    // Start unread monitoring for authenticated users
     final auth = context.watch<AuthViewModel?>();
     final user = auth?.currentUser;
     final unreadService = UnreadNotificationService();

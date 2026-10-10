@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import '../app/theme.dart';
 
-/// Result of the submit confirmation dialog.
 enum SubmitDialogChoice { reviewAnswers, submitQuiz, cancel }
 
-/// Shown when the user taps "Submit Exam" or wants to submit their exam.
-/// Displays an audit of answered, unanswered, and flagged questions.
 Future<SubmitDialogChoice> showSubmitQuizDialog(
   BuildContext context, {
   required int answeredCount,
@@ -55,7 +52,6 @@ Future<SubmitDialogChoice> showSubmitQuizDialog(
           ),
           const SizedBox(height: 16),
 
-          // Status Cards Grid
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(

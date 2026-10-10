@@ -11,8 +11,6 @@ import '../../services/local_storage_service.dart';
 import '../../utils/toast_helper.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 
-/// Professional Academic Study Notes viewer featuring structured conceptual pillars,
-/// terminology glossary, high-yield takeaways, and copy-to-clipboard functionality.
 class StudyNotesView extends StatefulWidget {
   final StudyNotesModel? notes;
   final DocumentModel? document;
@@ -57,8 +55,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
     }
   }
 
-  /// Sanitizes note section content, healing any runs of single-character lines
-  /// (e.g. O\np\ne\nr\na\nt\ni\nn\ng) and unwrapping soft line breaks into fluent paragraphs.
   static String _sanitizeNoteContent(String raw) {
     if (raw.isEmpty) return raw;
 
@@ -186,7 +182,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             children: [
-              // Title Header Banner (bounded full width)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -276,7 +271,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
 
               const SizedBox(height: 20),
 
-              // Executive Overview
               if (studyNotes.overview.isNotEmpty) ...[
                 _buildSectionHeader(
                   context,
@@ -308,7 +302,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                 const SizedBox(height: 24),
               ],
 
-              // Conceptual Pillars / Sections
               if (studyNotes.sections.isNotEmpty) ...[
                 _buildSectionHeader(
                   context,
@@ -338,7 +331,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // 1. Term / Topic Heading
                           Row(
                             children: [
                               Container(
@@ -372,7 +364,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                             ],
                           ),
 
-                          // 2. Simple Definition
                           if (section.definition != null && section.definition!.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             Container(
@@ -424,7 +415,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                             ),
                           ],
 
-                          // 3. Purpose / Function
                           if (section.purpose != null && section.purpose!.isNotEmpty) ...[
                             const SizedBox(height: 10),
                             Container(
@@ -462,7 +452,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                             ),
                           ],
 
-                          // 4. Key Points
                           if (section.keyPoints.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             Container(
@@ -520,7 +509,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                             ),
                           ],
 
-                          // 5. Example
                           if (section.example != null && section.example!.isNotEmpty) ...[
                             const SizedBox(height: 10),
                             Container(
@@ -559,7 +547,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                             ),
                           ],
 
-                          // 6. Difference / Comparison
                           if (section.comparison != null && section.comparison!.isNotEmpty) ...[
                             const SizedBox(height: 10),
                             Container(
@@ -598,7 +585,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                             ),
                           ],
 
-                          // Key Takeaway (High-Impact Takeaway for Exams)
                           if (effectiveBottomLine != null) ...[
                             const SizedBox(height: 12),
                             Container(
@@ -652,7 +638,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                             ),
                           ],
 
-                          // 8. Possible Exam Question
                           if (section.examQuestion != null && section.examQuestion!.isNotEmpty) ...[
                             const SizedBox(height: 10),
                             Container(
@@ -705,7 +690,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                 const SizedBox(height: 16),
               ],
 
-              // Glossary of Terms & Formulas (Using direct Column instead of shrink-wrapped ListView)
               if (studyNotes.glossary.isNotEmpty) ...[
                 _buildSectionHeader(
                   context,
@@ -779,7 +763,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                 const SizedBox(height: 24),
               ],
 
-              // Exam High-Yield Takeaways
               if (studyNotes.examTakeaways.isNotEmpty) ...[
                 _buildSectionHeader(
                   context,
@@ -842,7 +825,6 @@ class _StudyNotesViewState extends State<StudyNotesView> {
                 const SizedBox(height: 24),
               ],
 
-              // Cross-Method Bridge Buttons (Switch learning modes without re-analyzing)
               if (widget.document != null) ...[
                 Container(
                   width: double.infinity,

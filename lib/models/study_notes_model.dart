@@ -3,19 +3,19 @@ import 'package:uuid/uuid.dart';
 const _uuid = Uuid();
 
 class StudyNoteSection {
-  final String heading; // 1. Term / Topic
-  final String content; // Retained for backward compatibility
-  final String? definition; // 2. Simple Definition
+  final String heading;
+  final String content;
+  final String? definition;
   final String?
-      purpose; // 3. Purpose / Function (👉 What is it used for? Why is it important?)
-  final List<String> keyPoints; // 4. Key Points (Short bullet points)
+      purpose;
+  final List<String> keyPoints;
   final String?
-      example; // 5. Example (Give a simple, real-life or technical example)
-  final String? comparison; // 6. Difference / Comparison (when applicable)
-  final String? rememberThis; // 7. Remember This ⭐
+      example;
+  final String? comparison;
+  final String? rememberThis;
   final String?
-      bottomLine; // MB Format: B - Bottom Line (Core takeaway for exam)
-  final String? examQuestion; // 8. Possible Exam Question (Q: ... A: ...)
+      bottomLine;
+  final String? examQuestion;
 
   const StudyNoteSection({
     required this.heading,
@@ -174,7 +174,6 @@ class StudyNotesModel {
         'createdAt': createdAt.toIso8601String(),
       };
 
-  /// Formats all notes as clean Markdown text strictly adhering to the MB Note Format (Main & Bottom).
   String toMarkdown() {
     final buffer = StringBuffer();
     buffer.writeln('# $title');

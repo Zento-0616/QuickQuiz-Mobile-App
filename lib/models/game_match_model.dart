@@ -46,7 +46,7 @@ extension GameMatchStatusExtension on GameMatchStatus {
 
 class GameMatchModel {
   final String id;
-  final String gameType; // 'dama' or 'chess'
+  final String gameType;
   final String hostId;
   final String hostName;
   final String? hostAvatar;
@@ -56,7 +56,7 @@ class GameMatchModel {
   final String? opponentAvatar;
   final int opponentLevel;
   final GameMatchStatus status;
-  final int currentTurn; // 1 = Host (White/Light), 2 = Opponent (Red/Dark)
+  final int currentTurn;
   final Map<String, dynamic>? lastMove;
   final bool isGameOver;
   final String? winnerId;

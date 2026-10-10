@@ -76,8 +76,6 @@ class FlashcardViewModel extends BaseViewModel {
     }
   }
 
-  /// Mark current card as Mastered (true) or Still Learning (false)
-  /// and automatically persist and transition to next card.
   void markCurrentMastered(bool mastered, {bool advance = true}) {
     final card = currentCard;
     if (card == null) return;
@@ -115,7 +113,6 @@ class FlashcardViewModel extends BaseViewModel {
       _masteredCardIds.add(card.id);
     }
 
-    // Update card in deck
     final updatedCards = _deck.cards.map((c) {
       if (c.id == card.id) {
         return c.copyWith(isMastered: _masteredCardIds.contains(c.id));
@@ -128,7 +125,6 @@ class FlashcardViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  /// Mark every single card in this deck as mastered (100% mastery)
   Future<void> markAllCardsMastered() async {
     for (final c in _deck.cards) {
       _masteredCardIds.add(c.id);
@@ -143,7 +139,6 @@ class FlashcardViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  /// Reset the practice session to focus solely on unmastered cards
   void reviewUnmasteredOnly() {
     final unmastered = _deck.cards.where((c) => !_masteredCardIds.contains(c.id)).toList();
     if (unmastered.isNotEmpty) {

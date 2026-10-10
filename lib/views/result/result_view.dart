@@ -14,8 +14,6 @@ import '../../viewmodels/auth_viewmodel.dart';
 import '../../viewmodels/history_viewmodel.dart';
 import '../../widgets/banner_ad_widget.dart';
 
-/// Modern Result view: animated circular score gauge, grade letter, breakdown
-/// metrics, confetti particles for high scores, animated reward & EXP celebration, and action buttons.
 class ResultView extends StatefulWidget {
   final QuizResultPayload? payload;
   const ResultView({super.key, this.payload});
@@ -66,7 +64,6 @@ class _ResultViewState extends State<ResultView>
           final auth = context.read<AuthViewModel>();
           QuizExpResult? res;
 
-          // Check if this is an official / tournament / daily challenge quiz
           final isOfficialQuiz = data.quiz.isPublished ||
               data.quiz.quizScheduleType == 'daily' ||
               data.quiz.category == 'Daily Challenge';
@@ -86,7 +83,6 @@ class _ResultViewState extends State<ResultView>
                 percentage: data.result.percentage,
               );
             } else {
-              // Custom / Document Practice Quiz awards 0 EXP
               final u = auth.currentUser;
               res = QuizExpResult(
                 earnedExp: 0,
@@ -97,7 +93,6 @@ class _ResultViewState extends State<ResultView>
               );
             }
           } else {
-            // Guest preview
             if (isOfficialQuiz) {
               final calculated = ProgressionService.calculateExp(
                 questionCount: data.result.questionCount,
@@ -232,7 +227,6 @@ class _ResultViewState extends State<ResultView>
                     children: [
                       const SizedBox(height: 8),
 
-                      // Animated Score Gauge
                       AnimatedBuilder(
                         animation: _gaugeAnim,
                         builder: (context, _) {
@@ -264,7 +258,6 @@ class _ResultViewState extends State<ResultView>
                             ),
                             const SizedBox(height: 12),
 
-                            // Performance message
                             Container(
                               width: double.infinity,
                               padding: const EdgeInsets.all(18),
@@ -332,7 +325,6 @@ class _ResultViewState extends State<ResultView>
 
                             const SizedBox(height: 20),
 
-                            // Stats row
                             Builder(builder: (context) {
                               final skipped = result.questions
                                   .where((q) => !q.isAnswered)
@@ -392,7 +384,6 @@ class _ResultViewState extends State<ResultView>
 
               const SizedBox(height: 12),
 
-              // Action buttons
               Column(
                 children: [
                   Row(
@@ -483,7 +474,6 @@ class _ResultViewState extends State<ResultView>
   }
 }
 
-/// Animated gauge that draws its arc and ticks up the percentage number.
 class _ScoreGauge extends StatelessWidget {
   final int percentage;
   final int animatedPercent;
@@ -507,7 +497,6 @@ class _ScoreGauge extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Background circle
           SizedBox(
             width: 180,
             height: 180,
@@ -520,7 +509,6 @@ class _ScoreGauge extends StatelessWidget {
             ),
           ),
 
-          // Inner card
           Container(
             width: 120,
             height: 120,
@@ -565,7 +553,6 @@ class _ScoreGauge extends StatelessWidget {
   }
 }
 
-/// Custom painter for smooth arc gauge.
 class _GaugePainter extends CustomPainter {
   final double progress;
   final Color trackColor;
@@ -597,7 +584,6 @@ class _GaugePainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
 
-    // Track
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       startAngle,
@@ -606,7 +592,6 @@ class _GaugePainter extends CustomPainter {
       trackPaint,
     );
 
-    // Fill
     if (progress > 0) {
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
@@ -1016,8 +1001,6 @@ class _TricksAndSuggestionsCard extends StatelessWidget {
   }
 }
 
-/// Celebratory animated card displaying rewards, EXP count-up, streak flame,
-/// level progression, and level-up congratulations.
 class _CelebrationRewardCard extends StatelessWidget {
   final QuizExpResult expResult;
   final AnimationController controller;
@@ -1113,7 +1096,6 @@ class _CelebrationRewardCard extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Animated EXP Counter
               AnimatedBuilder(
                 animation: controller,
                 builder: (context, _) {
@@ -1148,7 +1130,6 @@ class _CelebrationRewardCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // Streaks & Bonus Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -1201,7 +1182,6 @@ class _CelebrationRewardCard extends StatelessWidget {
                 ],
               ),
 
-              // Level Up Celebration Callout
               if (expResult.leveledUp) ...[
                 const SizedBox(height: 14),
                 Container(

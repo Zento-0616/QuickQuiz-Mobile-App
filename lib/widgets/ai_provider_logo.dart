@@ -2,7 +2,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
-/// Renders authentic vector-drawn logos for Google Gemini, OpenAI (ChatGPT), and DeepSeek.
 class AiProviderLogo extends StatelessWidget {
   final AiProvider provider;
   final double size;
@@ -107,7 +106,6 @@ class AiProviderLogo extends StatelessWidget {
   }
 }
 
-/// Official Google Gemini 4-pointed sparkle gradient vector painter
 class _GeminiLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -119,10 +117,10 @@ class _GeminiLogoPainter extends CustomPainter {
     final paint = Paint()
       ..shader = const LinearGradient(
         colors: [
-          Color(0xFF38BDF8), // Cyan
-          Color(0xFF4F46E5), // Indigo
-          Color(0xFF9333EA), // Violet
-          Color(0xFFEC4899), // Pink
+          Color(0xFF38BDF8),
+          Color(0xFF4F46E5),
+          Color(0xFF9333EA),
+          Color(0xFFEC4899),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -130,7 +128,6 @@ class _GeminiLogoPainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..isAntiAlias = true;
 
-    // Curved 4-pointed Gemini star
     final path = Path();
     path.moveTo(center.dx, 0);
     path.quadraticBezierTo(center.dx, center.dy, w, center.dy);
@@ -141,7 +138,6 @@ class _GeminiLogoPainter extends CustomPainter {
 
     canvas.drawPath(path, paint);
 
-    // Inner bright center glow
     final glowPaint = Paint()
       ..shader = RadialGradient(
         colors: [
@@ -158,7 +154,6 @@ class _GeminiLogoPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Official OpenAI rosette / spiral geometric vector painter
 class _OpenAiLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -175,7 +170,6 @@ class _OpenAiLogoPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round
       ..isAntiAlias = true;
 
-    // 6-petaled interlocking OpenAI knot
     for (int i = 0; i < 6; i++) {
       final angle = (i * 60) * math.pi / 180;
       canvas.save();
@@ -202,7 +196,6 @@ class _OpenAiLogoPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Official DeepSeek whale / oceanic fin vector painter
 class _DeepSeekLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -213,9 +206,9 @@ class _DeepSeekLogoPainter extends CustomPainter {
     final paint = Paint()
       ..shader = const LinearGradient(
         colors: [
-          Color(0xFF0284C7), // Deep Ocean Blue
-          Color(0xFF2563EB), // Vivid Blue
-          Color(0xFF1D4ED8), // Deep Blue
+          Color(0xFF0284C7),
+          Color(0xFF2563EB),
+          Color(0xFF1D4ED8),
         ],
         begin: Alignment.topCenter,
         end: Alignment.bottomRight,
@@ -223,27 +216,18 @@ class _DeepSeekLogoPainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..isAntiAlias = true;
 
-    // Graceful leaping whale / fin silhouette
     final path = Path();
-    // Start at dorsal fin tip
     path.moveTo(w * 0.48, h * 0.08);
-    // Upper back arch down to tail
     path.cubicTo(w * 0.65, h * 0.20, w * 0.88, h * 0.40, w * 0.92, h * 0.72);
-    // Tail fluke top
     path.quadraticBezierTo(w * 0.98, h * 0.78, w * 0.96, h * 0.90);
-    // Tail notch
     path.quadraticBezierTo(w * 0.86, h * 0.88, w * 0.82, h * 0.76);
-    // Lower belly curve
     path.cubicTo(w * 0.60, h * 0.88, w * 0.35, h * 0.90, w * 0.15, h * 0.78);
-    // Snout / chin
     path.cubicTo(w * 0.05, h * 0.68, w * 0.08, h * 0.48, w * 0.22, h * 0.38);
-    // Up along front edge to dorsal fin
     path.cubicTo(w * 0.32, h * 0.32, w * 0.42, h * 0.22, w * 0.48, h * 0.08);
     path.close();
 
     canvas.drawPath(path, paint);
 
-    // Eye sparkle
     final eyePaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
@@ -254,7 +238,6 @@ class _DeepSeekLogoPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Official xAI / Grok dynamic geometric X vector painter
 class _GrokLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -277,14 +260,12 @@ class _GrokLogoPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true;
 
-    // Primary diagonal line
     canvas.drawLine(
       Offset(w * 0.22, h * 0.82),
       Offset(w * 0.78, h * 0.18),
       paintSlash,
     );
 
-    // Left chevron arm of the X
     final leftArm = Path()
       ..moveTo(w * 0.22, h * 0.18)
       ..lineTo(w * 0.42, h * 0.18)
@@ -293,7 +274,6 @@ class _GrokLogoPainter extends CustomPainter {
       ..close();
     canvas.drawPath(leftArm, paintMain);
 
-    // Right chevron arm of the X
     final rightArm = Path()
       ..moveTo(w * 0.78, h * 0.82)
       ..lineTo(w * 0.58, h * 0.82)
@@ -307,7 +287,6 @@ class _GrokLogoPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Official Groq warm orange rounded geometric G emblem vector painter
 class _GroqLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -327,13 +306,11 @@ class _GroqLogoPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true;
 
-    // Outer G arc from 0.8pi to 2.2pi (roughly 45 deg to 360 deg)
     final arcRect = Rect.fromCircle(center: center, radius: radius);
     final arcPath = Path();
     arcPath.addArc(arcRect, 0.2 * math.pi, 1.65 * math.pi);
     canvas.drawPath(arcPath, strokePaint);
 
-    // Inward horizontal bar of the 'G'
     final barPaint = Paint()
       ..color = const Color(0xFFF55036)
       ..style = PaintingStyle.stroke
@@ -352,7 +329,6 @@ class _GroqLogoPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Official Anthropic geometric asterisk / terracotta emblem vector painter
 class _AnthropicLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -371,7 +347,6 @@ class _AnthropicLogoPainter extends CustomPainter {
       ..strokeWidth = w * 0.14
       ..isAntiAlias = true;
 
-    // Draw the 6-rayed geometric asterisk mark of Claude / Anthropic
     for (int i = 0; i < 3; i++) {
       final angle = i * (math.pi / 3);
       final dx = math.cos(angle) * (w * 0.38);
@@ -383,7 +358,6 @@ class _AnthropicLogoPainter extends CustomPainter {
       );
     }
 
-    // Small warm core
     final corePaint = Paint()
       ..color = const Color(0xFFD97757)
       ..style = PaintingStyle.fill;

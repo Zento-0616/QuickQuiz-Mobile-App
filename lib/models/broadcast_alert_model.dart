@@ -1,11 +1,10 @@
-/// Data model for broadcast announcements and alerts pushed by administrators to scholars.
 class BroadcastAlertModel {
   final String id;
   final String title;
   final String message;
   final String authorName;
   final DateTime createdAt;
-  final String priority; // 'normal', 'high', 'urgent'
+  final String priority;
   final List<String> readByUsers;
 
   const BroadcastAlertModel({

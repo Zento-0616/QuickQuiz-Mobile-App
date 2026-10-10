@@ -110,8 +110,6 @@ class ChatRoomModel {
     );
   }
 
-  /// Helper to get the display name for a given user.
-  /// If it's a 1-on-1 chat, returns the other person's nickname.
   String getDisplayName(String currentUserId) {
     if (isGroup) return name;
     final otherUserId = memberIds.firstWhere((id) => id != currentUserId, orElse: () => '');

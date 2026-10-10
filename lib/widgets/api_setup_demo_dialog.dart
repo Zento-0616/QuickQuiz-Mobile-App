@@ -6,8 +6,6 @@ import '../app/theme.dart';
 import '../utils/constants.dart';
 import 'ai_provider_logo.dart';
 
-/// Shows an interactive walkthrough demo explaining how to obtain and set
-/// a personal AI API key (Google Gemini, OpenAI, DeepSeek, Groq, etc.).
 Future<bool?> showApiSetupDemoDialog(
   BuildContext context, {
   AiProvider? initialProvider,
@@ -74,7 +72,7 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
     setState(() {
       _currentStep = step.clamp(0, 3);
       if (_isPlaying) {
-        _startAutoPlay(); // Reset timer
+        _startAutoPlay();
       }
     });
   }
@@ -134,7 +132,6 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Header
               Row(
                 children: [
                   Container(
@@ -186,7 +183,6 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
 
               const SizedBox(height: 14),
 
-              // Provider Switcher Selector
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -242,12 +238,10 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
 
               const SizedBox(height: 14),
 
-              // Animated Simulated Interactive Demo Box
               _buildInteractiveSimulation(context, isDark),
 
               const SizedBox(height: 14),
 
-              // Step Pills Navigation (1, 2, 3, 4)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(4, (index) {
@@ -320,12 +314,10 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
 
               const SizedBox(height: 12),
 
-              // Current Step Description Card
               _buildStepDetailsCard(context),
 
               const SizedBox(height: 14),
 
-              // Interactive Action Bar (Copy URL, AutoPlay control)
               Row(
                 children: [
                   OutlinedButton.icon(
@@ -378,7 +370,6 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
     );
   }
 
-  /// Interactive Simulation Box representing live actions
   Widget _buildInteractiveSimulation(BuildContext context, bool isDark) {
     return Container(
       height: 175,
@@ -408,7 +399,6 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
   Widget _buildSimulationScene(BuildContext context, bool isDark) {
     switch (_currentStep) {
       case 0:
-        // Scene 1: Visiting developer studio
         return Column(
           key: const ValueKey(0),
           mainAxisAlignment: MainAxisAlignment.center,
@@ -470,7 +460,6 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
         );
 
       case 1:
-        // Scene 2: Click "Create API Key"
         return Column(
           key: const ValueKey(1),
           mainAxisAlignment: MainAxisAlignment.center,
@@ -529,7 +518,6 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
         );
 
       case 2:
-        // Scene 3: Copy key
         return Column(
           key: const ValueKey(2),
           mainAxisAlignment: MainAxisAlignment.center,
@@ -594,7 +582,6 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
 
       case 3:
       default:
-        // Scene 4: Paste in QuickQuiz & Save
         return Column(
           key: const ValueKey(3),
           mainAxisAlignment: MainAxisAlignment.center,
@@ -667,7 +654,6 @@ class _ApiSetupDemoDialogState extends State<ApiSetupDemoDialog> {
     }
   }
 
-  /// Step Details Explanation Card
   Widget _buildStepDetailsCard(BuildContext context) {
     final theme = Theme.of(context);
     String stepBody;

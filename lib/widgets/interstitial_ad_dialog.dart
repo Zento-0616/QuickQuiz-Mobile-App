@@ -2,10 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../app/theme.dart';
 
-/// Full-screen simulated interstitial ad dialog used when native Google Mobile Ads
-/// are not yet loaded, unsupported (e.g. desktop/Windows or web development), or in test mode.
-/// Automatically dismisses after [autoDismissDuration] (default 3s) and guarantees
-/// [onDismissed] is called exactly once.
 class InterstitialAdDialog extends StatefulWidget {
   final VoidCallback onDismissed;
   final Duration autoDismissDuration;
@@ -107,7 +103,6 @@ class _InterstitialAdDialogState extends State<InterstitialAdDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Top Bar with Ad Tag, Countdown, and Close Button
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 12, 12),
               child: Row(
@@ -163,7 +158,6 @@ class _InterstitialAdDialogState extends State<InterstitialAdDialog> {
 
             const Divider(height: 1),
 
-            // Main Promotional Content
             Padding(
               padding: const EdgeInsets.all(24),
               child: Column(

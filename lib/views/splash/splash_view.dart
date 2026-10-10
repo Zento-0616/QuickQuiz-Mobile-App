@@ -7,11 +7,6 @@ import 'package:go_router/go_router.dart';
 import '../../app/routes.dart';
 import '../../services/local_storage_service.dart';
 
-/// Premium animated Splash screen featuring a Gemini-style dancing aurora background,
-/// concentric splash ripple shockwaves, an orbital celestial halo, a glossy 3D polished
-/// glass logo with specular light sweep, smooth percentage loading progress bar,
-/// and dynamic status micro-copy. Runs for 5-6 seconds (default 5.5s) to deliver an
-/// immersive, mesmerizing loading effect.
 class SplashView extends StatefulWidget {
   final Duration minDuration;
 
@@ -25,24 +20,18 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
-  // Breathing and glow animation for logo
   late final AnimationController _pulseController;
   late final Animation<double> _scaleAnim;
   late final Animation<double> _glowAnim;
 
-  // Concentric splash ripple shockwave effect
   late final AnimationController _rippleController;
 
-  // Orbiting celestial halo ring around the emblem
   late final AnimationController _orbitController;
 
-  // Controller for continuous Gemini aurora dancing background
   late final AnimationController _auroraController;
 
-  // Controller for glossy specular light sweep across the logo
   late final AnimationController _glossShimmerController;
 
-  // Smooth progress bar animation over the 5-6 second duration
   late final AnimationController _progressController;
   late final Animation<double> _progressAnim;
 
@@ -52,12 +41,10 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    // 1. Immediately dismiss OS native splash on first frame (< 1 second)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FlutterNativeSplash.remove();
     });
 
-    // 2. Breathing / scale animation for logo
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -71,31 +58,26 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    // 3. Concentric splash shockwave ripple controller (emanates every 2.4s)
     _rippleController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2400),
     )..repeat();
 
-    // 4. Orbiting halo particle ring around emblem (rotates smoothly every 3.8s)
     _orbitController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3800),
     )..repeat();
 
-    // 5. Gemini dancing aurora background controller (continuous looping flow)
     _auroraController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 8000),
     )..repeat();
 
-    // 6. Glossy specular light sweep shimmer controller (sweeps every 2.4s)
     _glossShimmerController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2400),
     )..repeat();
 
-    // 7. Smooth progress bar animation over the 5-6s loading duration
     _progressController = AnimationController(
       vsync: this,
       duration: widget.minDuration,
@@ -103,11 +85,9 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
     _progressAnim = _progressController;
 
-    // Dynamic staged micro-copy mapped continuously to progress
     _progressController.addListener(_onProgressUpdated);
     _progressController.forward();
 
-    // 8. App initialization and navigation after 5-6s loading effect
     _initializeApp();
   }
 
@@ -149,7 +129,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       debugPrint('Error reading onboarding status in SplashView: $e');
     }
 
-    // Wait until at least 5-6 seconds (widget.minDuration) have elapsed
     await minTimer;
 
     if (mounted) {
@@ -175,7 +154,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       backgroundColor: const Color(0xFF09061A),
       body: Stack(
         children: [
-          // 1. Dancing Aurora Background (Gemini Fluid Aurora Borealis)
           Positioned.fill(
             child: AnimatedBuilder(
               animation: _auroraController,
@@ -189,7 +167,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
             ),
           ),
 
-          // 2. Subtle Star & Aurora Sparkle Dust Overlay
           Positioned.fill(
             child: AnimatedBuilder(
               animation: _auroraController,
@@ -203,7 +180,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
             ),
           ),
 
-          // 3. Main Centered Content
           SafeArea(
             child: Center(
               child: Padding(
@@ -213,15 +189,12 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                   children: [
                     const Spacer(),
 
-                    // Animated Logo Centerpiece with Concentric Splash Ripples,
-                    // Orbital Halo, Glossy 3D Effect & Glowing Aura
                     SizedBox(
                       width: 220,
                       height: 220,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          // Splash Effect: Expanding Concentric Shockwave Ripples
                           Positioned.fill(
                             child: AnimatedBuilder(
                               animation: _rippleController,
@@ -235,7 +208,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                             ),
                           ),
 
-                          // Orbital Celestial Ring with rotating spark
                           Positioned.fill(
                             child: AnimatedBuilder(
                               animation: _orbitController,
@@ -249,7 +221,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                             ),
                           ),
 
-                          // Animated Logo Emblem with Glossy 3D Effect & Glowing Aura
                           AnimatedBuilder(
                             animation: Listenable.merge([
                               _pulseController,
@@ -264,21 +235,18 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     boxShadow: [
-                                      // Outer celestial cyan glow
                                       BoxShadow(
                                         color: const Color(0xFF00F2FE)
                                             .withValues(alpha: _glowAnim.value * 0.45),
                                         blurRadius: 42,
                                         spreadRadius: 8,
                                       ),
-                                      // Vibrant violet / purple aurora reflection
                                       BoxShadow(
                                         color: const Color(0xFF8B5CF6)
                                             .withValues(alpha: _glowAnim.value * 0.65),
                                         blurRadius: 30,
                                         spreadRadius: 4,
                                       ),
-                                      // Inner ambient depth shadow
                                       BoxShadow(
                                         color: Colors.black.withValues(alpha: 0.45),
                                         blurRadius: 18,
@@ -289,7 +257,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                                   child: Stack(
                                     clipBehavior: Clip.antiAlias,
                                     children: [
-                                      // Base QuickQuiz circular emblem
                                       ClipOval(
                                         child: Image.asset(
                                           'assets/icons/quickquiz_logo.png',
@@ -307,7 +274,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                                         ),
                                       ),
 
-                                      // Glossy Effect 1: Curved Glass Dome Specular Highlight
                                       Positioned(
                                         top: 2,
                                         left: 12,
@@ -335,7 +301,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                                         ),
                                       ),
 
-                                      // Glossy Effect 2: Animated Specular Light Sweep Shimmer
                                       Positioned.fill(
                                         child: ClipOval(
                                           child: LayoutBuilder(
@@ -365,7 +330,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                                         ),
                                       ),
 
-                                      // Glossy Effect 3: Polished Glass Rim / Beveled Ring Lighting
                                       Positioned.fill(
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -378,7 +342,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                                         ),
                                       ),
 
-                                      // Glossy Effect 4: Bottom Ambient Reflective Rim
                                       Positioned(
                                         bottom: 4,
                                         left: 24,
@@ -409,7 +372,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
                     const SizedBox(height: 24),
 
-                    // Brand Typography
                     const Text(
                       'QuickQuiz',
                       style: TextStyle(
@@ -448,7 +410,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
                     const Spacer(),
 
-                    // Progress Header: Section Name & Real-Time Percentage
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: Row(
@@ -504,7 +465,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
                     const SizedBox(height: 8),
 
-                    // Animated Progress Loading Bar with Vibrant Gradient
                     AnimatedBuilder(
                       animation: _progressAnim,
                       builder: (context, _) {
@@ -527,10 +487,10 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0xFF00F2FE), // Cyan highlight
-                                    Color(0xFF7B3FF2), // Violet
-                                    Color(0xFFA855F7), // Purple
-                                    Color(0xFFEC4899), // Neon pink
+                                    Color(0xFF00F2FE),
+                                    Color(0xFF7B3FF2),
+                                    Color(0xFFA855F7),
+                                    Color(0xFFEC4899),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(999),
@@ -555,7 +515,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
                     const SizedBox(height: 16),
 
-                    // Dynamic Status Micro-copy with Smooth Animated Transitions
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 350),
                       transitionBuilder: (child, animation) {
@@ -598,7 +557,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   }
 }
 
-/// Custom painter rendering concentric splash ripple shockwaves expanding from the logo
 class _AuraRipplePainter extends CustomPainter {
   final double animationValue;
 
@@ -607,10 +565,9 @@ class _AuraRipplePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final baseRadius = size.width * 0.32; // ~70px
-    final maxExpansion = size.width * 0.18; // expands outward
+    final baseRadius = size.width * 0.32;
+    final maxExpansion = size.width * 0.18;
 
-    // 3 staggered concentric ripples
     for (int i = 0; i < 3; i++) {
       final waveProgress = (animationValue + (i / 3.0)) % 1.0;
       final currentRadius = baseRadius + (waveProgress * maxExpansion);
@@ -640,7 +597,6 @@ class _AuraRipplePainter extends CustomPainter {
       oldDelegate.animationValue != animationValue;
 }
 
-/// Rotating orbital halo ring with energetic satellite spark
 class _OrbitalHaloPainter extends CustomPainter {
   final double progress;
 
@@ -674,7 +630,6 @@ class _OrbitalHaloPainter extends CustomPainter {
 
     canvas.drawCircle(center, radius, sweepPaint);
 
-    // Orbiting satellite spark
     final sparkX = center.dx + radius * cos(angle);
     final sparkY = center.dy + radius * sin(angle);
     final sparkPaint = Paint()
@@ -691,7 +646,6 @@ class _OrbitalHaloPainter extends CustomPainter {
       oldDelegate.progress != progress;
 }
 
-/// Custom painter rendering Gemini's fluid, waving aurora borealis colors
 class GeminiAuroraPainter extends CustomPainter {
   final double animationValue;
 
@@ -701,13 +655,12 @@ class GeminiAuroraPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
 
-    // 1. Deep space night sky backdrop
     final basePaint = Paint()
       ..shader = const LinearGradient(
         colors: [
-          Color(0xFF0A061C), // Deep midnight space
-          Color(0xFF0D122E), // Rich cosmic blue-navy
-          Color(0xFF140828), // Deep nebula violet
+          Color(0xFF0A061C),
+          Color(0xFF0D122E),
+          Color(0xFF140828),
         ],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -716,7 +669,6 @@ class GeminiAuroraPainter extends CustomPainter {
 
     final t = animationValue * 2 * pi;
 
-    // Aurora Blob 1: Cosmic Sapphire Blue (swirls top-left towards center)
     final dx1 = size.width * (0.35 + 0.25 * sin(t));
     final dy1 = size.height * (0.28 + 0.16 * cos(t * 0.8));
     final r1 = size.width * 0.65;
@@ -731,7 +683,6 @@ class GeminiAuroraPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: Offset(dx1, dy1), radius: r1));
     canvas.drawCircle(Offset(dx1, dy1), r1, paint1);
 
-    // Aurora Blob 2: Glowing Cyan / Celestial Teal (Gemini's electric cyan spark)
     final dx2 = size.width * (0.65 + 0.22 * cos(t * 1.2));
     final dy2 = size.height * (0.44 + 0.20 * sin(t * 0.9));
     final r2 = size.width * 0.55;
@@ -746,7 +697,6 @@ class GeminiAuroraPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: Offset(dx2, dy2), radius: r2));
     canvas.drawCircle(Offset(dx2, dy2), r2, paint2);
 
-    // Aurora Blob 3: Vibrant Violet / Purple Plasma (dances bottom-left)
     final dx3 = size.width * (0.30 + 0.28 * sin(t * 0.7 + 1.2));
     final dy3 = size.height * (0.68 + 0.18 * cos(t * 1.1 + 0.4));
     final r3 = size.width * 0.70;
@@ -761,7 +711,6 @@ class GeminiAuroraPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: Offset(dx3, dy3), radius: r3));
     canvas.drawCircle(Offset(dx3, dy3), r3, paint3);
 
-    // Aurora Blob 4: Radiant Neon Pink / Magenta (vivid Gemini accent at top-right)
     final dx4 = size.width * (0.72 + 0.20 * sin(t * 1.3 + 2.0));
     final dy4 = size.height * (0.24 + 0.14 * sin(t * 0.6 + 1.5));
     final r4 = size.width * 0.50;
@@ -776,7 +725,6 @@ class GeminiAuroraPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: Offset(dx4, dy4), radius: r4));
     canvas.drawCircle(Offset(dx4, dy4), r4, paint4);
 
-    // 2. Fluid Dancing Aurora Wave Ribbon sweeping across the canvas
     final wavePath = Path();
     final waveY = size.height * (0.42 + 0.08 * sin(t));
     wavePath.moveTo(0, waveY);
@@ -810,7 +758,6 @@ class GeminiAuroraPainter extends CustomPainter {
       oldDelegate.animationValue != animationValue;
 }
 
-/// Floating subtle aurora star sparkles
 class _AuroraSparklePainter extends CustomPainter {
   final double progress;
 

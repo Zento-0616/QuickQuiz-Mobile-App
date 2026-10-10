@@ -2,7 +2,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../services/reward_effect_service.dart';
 
-/// Spawns a floating celebratory overlay entry over the current navigator.
 void showRewardCelebrationOverlay(
   BuildContext context,
   RewardCelebrationPayload payload,
@@ -78,7 +77,7 @@ class _RewardOverlayContentState extends State<_RewardOverlayContent>
       final isStar = rng.nextBool();
       return _Particle(
         dx: math.cos(angle) * speed,
-        dy: math.sin(angle) * speed - 50.0, // slight upward bias
+        dy: math.sin(angle) * speed - 50.0,
         size: size,
         color: color,
         isStar: isStar,
@@ -128,7 +127,6 @@ class _RewardOverlayContentState extends State<_RewardOverlayContent>
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
-                  // Particle Confetti Burst
                   Positioned(
                     top: 130,
                     child: CustomPaint(
@@ -139,7 +137,6 @@ class _RewardOverlayContentState extends State<_RewardOverlayContent>
                     ),
                   ),
 
-                  // Floating Celebratory Banner
                   Positioned(
                     top: 70,
                     left: 20,
@@ -252,13 +249,13 @@ class _RewardOverlayContentState extends State<_RewardOverlayContent>
   Color _defaultAccentColor(RewardType type) {
     switch (type) {
       case RewardType.xp:
-        return const Color(0xFFF59E0B); // Amber / Gold
+        return const Color(0xFFF59E0B);
       case RewardType.coin:
-        return const Color(0xFFFBBF24); // Yellow Gold
+        return const Color(0xFFFBBF24);
       case RewardType.achievement:
-        return const Color(0xFFA855F7); // Purple
+        return const Color(0xFFA855F7);
       case RewardType.quizComplete:
-        return const Color(0xFF10B981); // Emerald
+        return const Color(0xFF10B981);
     }
   }
 
@@ -306,7 +303,6 @@ class _ConfettiPainter extends CustomPainter {
 
     for (final p in particles) {
       final currentX = p.dx * progress;
-      // Parabolic gravity drop
       final currentY = (p.dy * progress) + (90.0 * progress * progress);
       final currentOpacity = (1.0 - progress * 0.7).clamp(0.0, 1.0);
 

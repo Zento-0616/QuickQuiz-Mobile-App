@@ -102,7 +102,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
     setState(() => _showHint = false);
     vm.nextCard();
 
-    // If deck completed, celebrate study session
     if (vm.isDeckCompleted) {
       final rewardService = RewardEffectService();
       rewardService.showCelebration(
@@ -264,7 +263,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
         body: SafeArea(
           child: Column(
             children: [
-              // Progress Bar
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: vm.progress),
                 duration: const Duration(milliseconds: 300),
@@ -277,7 +275,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                 ),
               ),
 
-              // Header counter & Mastery badge
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
                 child: Row(
@@ -358,7 +355,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                 ),
               ),
 
-              // Interactive 3D Flippable Flashcard
               Expanded(
                 child: Center(
                   child: Padding(
@@ -393,7 +389,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                 ),
               ),
 
-              // Subtle Hint Banner if available and toggled
               if (card != null && card.hint != null && card.hint!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
@@ -439,7 +434,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                   ),
                 ),
 
-              // Bottom Action Controls
               SafeArea(
                 top: false,
                 child: Padding(
@@ -447,7 +441,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                   child: vm.isFlipped
                       ? Row(
                           children: [
-                            // "Still Learning" Button
                             Expanded(
                               flex: 5,
                               child: SizedBox(
@@ -477,7 +470,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                             ),
                             const SizedBox(width: 8),
 
-                            // Flip Back Button
                             SizedBox(
                               height: 48,
                               width: 48,
@@ -493,7 +485,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                             ),
                             const SizedBox(width: 8),
 
-                            // "Got It! Mastered" Button
                             Expanded(
                               flex: 5,
                               child: SizedBox(
@@ -522,7 +513,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                         )
                       : Row(
                           children: [
-                            // Previous Card Button
                             Expanded(
                               flex: 3,
                               child: SizedBox(
@@ -543,7 +533,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                             ),
                             const SizedBox(width: 10),
 
-                            // Flip Card Center Pill
                             Expanded(
                               flex: 4,
                               child: SizedBox(
@@ -571,7 +560,6 @@ class _FlashcardBodyState extends State<_FlashcardBody>
                             ),
                             const SizedBox(width: 10),
 
-                            // Next Card Button
                             Expanded(
                               flex: 3,
                               child: SizedBox(

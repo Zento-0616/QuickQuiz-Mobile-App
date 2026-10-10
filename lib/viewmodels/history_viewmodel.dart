@@ -8,8 +8,6 @@ import 'base_viewmodel.dart';
 
 enum HistoryCategoryFilter { all, quizzes, notes, flashcards }
 
-/// Manages the History screen: loading a scholar's past quizzes,
-/// study notes, and flashcard decks with category filtering.
 class HistoryViewModel extends BaseViewModel {
   final QuizRepository _repository;
   final LocalStorageService _storage;
@@ -84,7 +82,6 @@ class HistoryViewModel extends BaseViewModel {
     try {
       await _repository.saveQuizResult(result);
     } catch (_) {
-      // Swallowed by design
     }
   }
 

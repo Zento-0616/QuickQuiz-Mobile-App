@@ -19,12 +19,6 @@ import '../../widgets/gemini_api_key_dialog.dart';
 import '../../widgets/main_bottom_nav.dart';
 import '../../widgets/quick_quiz_top_bar.dart';
 
-/// Modern Home screen with:
-/// - QuickQuizTopBar (official logo beside title, avatar button in top-right)
-/// - 4-tab floating bottom navigation bar
-/// - Gamified progression hero with dynamic Level, EXP progress bar, and Daily Streak
-/// - Action card for uploading notes & generating quizzes
-/// - Dynamic stats and recent quiz history
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -112,7 +106,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Animated Gamified Hero Greeting Banner
                 AnimatedBuilder(
                   animation: _animController,
                   builder: (context, _) {
@@ -187,7 +180,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           ),
                           const SizedBox(height: 8),
 
-                          // Level Progress Bar
                           if (auth.isAuthenticated && user != null) ...[
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -225,7 +217,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                             const SizedBox(height: 16),
                           ],
 
-                          // Upload Action Button with animated subtle glow
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16),
@@ -265,7 +256,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
                 const SizedBox(height: 24),
 
-                // Gamified Dashboard Stats Header (Overflow Protected)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

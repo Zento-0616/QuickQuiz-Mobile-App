@@ -6,14 +6,12 @@ import 'package:flutter/foundation.dart';
 import '../models/document_model.dart';
 import '../utils/constants.dart';
 
-/// Thrown for any file-selection problem the ViewModel should show as a friendly message.
 class FileSelectionException implements Exception {
   final String message;
   final bool userCancelled;
   const FileSelectionException(this.message, {this.userCancelled = false});
 }
 
-/// Service handling file selection and validation across Desktop, Web, and Mobile.
 class FileService {
   Future<DocumentModel> pickFile() async {
     final list = await pickMultipleFiles(maxFiles: 1);
@@ -62,7 +60,6 @@ class FileService {
   }
 
   Future<DocumentModel> _processPlatformFile(PlatformFile picked) async {
-    // Safely parse extension from name or extension property
     String rawExt = picked.extension ?? '';
     if (rawExt.isEmpty && picked.name.contains('.')) {
       rawExt = picked.name.split('.').last;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../app/theme.dart';
 
-/// Displays a modern, floating success notification toast across the app.
 void showSuccessToast(BuildContext context, String message) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
@@ -46,7 +45,6 @@ void showSuccessToast(BuildContext context, String message) {
     );
 }
 
-/// Displays a floating warning / validation notification toast across the app.
 void showWarningToast(BuildContext context, String message) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
@@ -90,7 +88,6 @@ void showWarningToast(BuildContext context, String message) {
     );
 }
 
-/// Displays a floating error notification toast across the app.
 void showErrorToast(BuildContext context, String message) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
@@ -134,7 +131,6 @@ void showErrorToast(BuildContext context, String message) {
     );
 }
 
-/// Displays a floating informational / message notification toast across the app.
 void showInfoToast(BuildContext context, String message) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()

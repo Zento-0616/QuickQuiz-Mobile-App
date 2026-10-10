@@ -8,15 +8,6 @@ import 'package:provider/provider.dart';
 import '../services/ad_service.dart';
 import '../viewmodels/auth_viewmodel.dart';
 
-/// Responsive drop-in banner ad widget.
-///
-/// Fixes:
-/// 1. Small Screen Ad Rendering: Uses anchored adaptive banner sizes calculated dynamically
-///    based on current orientation and viewport width (e.g. Samsung Galaxy S7, 360dp width).
-/// 2. Ad & Loading Overlay Conflict: Accepts an [isVisible] parameter (default true).
-///    When a loading overlay, modal, or screen transition is active, the native PlatformView
-///    is safely concealed using Visibility(visible: false) to prevent native z-index punch-through.
-/// 3. Ad-Free Admin Hygiene: When currentUser is an Admin, all ads are completely disabled.
 class BannerAdWidget extends StatefulWidget {
   final bool isVisible;
   final double? maxWidth;
@@ -65,14 +56,11 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     if (_isAdminUser()) return;
     if (!_adsSupported) return;
 
-    // Dispose any previous ad before loading new adaptive size
     _bannerAd?.dispose();
     _bannerAd = null;
     _isLoaded = false;
 
-    // Calculate available width for adaptive banner
     final screenWidth = widget.maxWidth ?? MediaQuery.of(context).size.width;
-    // On small screens like Galaxy S7 (360dp width), clamp width accounting for layout margins
     final availableWidth = (screenWidth - 32).clamp(280.0, 728.0).truncate();
 
     AdSize? adaptiveSize;
@@ -84,7 +72,6 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
       debugPrint('[BannerAdWidget] Error calculating adaptive ad size: $e');
     }
 
-    // Fallback to standard banner size if adaptive calculation is null
     adaptiveSize ??= AdSize.banner;
 
     if (!mounted) return;
@@ -137,10 +124,6 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     final ad = _bannerAd;
     final size = _adSize;
 
-    // Layering / Z-Index fix:
-    // If native Ad is loaded on Android/iOS, display platform AdWidget.
-    // If on desktop (Windows), unsupported platform, or still loading, display
-    // a clean, styled test banner so ads are always visible in testing and development.
     if (_isLoaded && ad != null && size != null) {
       return Center(
         child: Container(

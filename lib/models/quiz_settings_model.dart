@@ -12,9 +12,7 @@ extension QuizDifficultyX on QuizDifficulty {
     }
   }
 
-  /// Sent to the backend as-is; keep this stable since it's part of the
-  /// AI prompt contract.
-  String get apiValue => name; // 'easy' | 'medium' | 'hard'
+  String get apiValue => name;
 
   String get description {
     switch (this) {
@@ -28,7 +26,6 @@ extension QuizDifficultyX on QuizDifficulty {
   }
 }
 
-/// User-chosen settings before quiz generation.
 class QuizSettingsModel {
   static const int minQuestions = 5;
   static const int maxQuestions = 50;
@@ -46,19 +43,9 @@ class QuizSettingsModel {
   bool get isValid =>
       questionCount >= minQuestions && questionCount <= maxQuestions;
 
-  /// Calculates the dynamic countdown duration in seconds according to difficulty
-  /// and question count specifications:
-  /// - Easy: null (countdown disabled / unlimited time)
-  /// - Medium & Hard:
-  ///     50 questions: 60 minutes (3600s)
-  ///     40 questions: 50 minutes (3000s)
-  ///     30 questions: 40 minutes (2400s)
-  ///     20 questions: 30 minutes (1800s)
-  ///     10 questions: 10 minutes (600s)
-  ///      5 questions: 5 minutes (300s)
   static int? calculateTimeLimitInSeconds(int count, QuizDifficulty difficulty) {
     if (difficulty == QuizDifficulty.easy) {
-      return null; // Unlimited time
+      return null;
     }
 
     final clamped = count.clamp(minQuestions, maxQuestions);
@@ -84,11 +71,9 @@ class QuizSettingsModel {
     return (50 * 60 + ratio * (60 * 60 - 50 * 60)).round();
   }
 
-  /// The countdown limit for the current settings instance, or null if unlimited.
   int? get timeLimitInSeconds =>
       calculateTimeLimitInSeconds(questionCount, difficulty);
 
-  /// Human-friendly display of the estimated exam duration.
   String get formattedEstimatedTime {
     final seconds = timeLimitInSeconds;
     if (seconds == null) {

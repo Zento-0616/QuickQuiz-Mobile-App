@@ -159,7 +159,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
       ),
       child: Column(
         children: [
-          // Header Bar
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
             child: Row(
@@ -203,7 +202,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 30),
               children: [
-                // Title
                 _buildSectionHeader('Dama Tournament Title'),
                 TextField(
                   controller: _titleCtrl,
@@ -215,7 +213,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
                 ),
                 const SizedBox(height: 12),
 
-                // Description
                 TextField(
                   controller: _descCtrl,
                   maxLines: 2,
@@ -227,7 +224,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
                 ),
                 const SizedBox(height: 18),
 
-                // Tournament Format
                 _buildSectionHeader('Competition Format'),
                 TextField(
                   controller: _formatCtrl,
@@ -254,7 +250,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
                 ),
                 const SizedBox(height: 18),
 
-                // Date & Time
                 _buildSectionHeader('Match Schedule (Start Date & Time)'),
                 Row(
                   children: [
@@ -277,7 +272,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
                 ),
                 const SizedBox(height: 18),
 
-                // Match Duration
                 _buildSectionHeader('Round Duration'),
                 Wrap(
                   spacing: 8,
@@ -294,7 +288,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
                 ),
                 const SizedBox(height: 18),
 
-                // EXP Rewards
                 _buildSectionHeader('Scholar EXP Rewards (Tiered)'),
                 Row(
                   children: [
@@ -334,7 +327,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
                 ),
                 const SizedBox(height: 18),
 
-                // Status
                 _buildSectionHeader('Tournament Status'),
                 DropdownButton<TournamentStatus>(
                   value: _status,
@@ -350,7 +342,6 @@ class _DamaTournamentModalState extends State<DamaTournamentModal> {
                 ),
                 const SizedBox(height: 24),
 
-                // Save button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(

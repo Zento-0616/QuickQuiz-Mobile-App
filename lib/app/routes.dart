@@ -31,7 +31,6 @@ import '../models/game_match_model.dart';
 import '../views/games/chess_game_view.dart';
 import '../views/games/dama_game_view.dart';
 
-/// Central route name/path constants.
 class AppRoutes {
   AppRoutes._();
 
@@ -59,7 +58,6 @@ class AppRoutes {
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
-/// App-wide router factory.
 GoRouter createAppRouter({
   String initialLocation = AppRoutes.splash,
   GlobalKey<NavigatorState>? navigatorKey,

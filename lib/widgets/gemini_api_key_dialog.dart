@@ -7,9 +7,6 @@ import '../utils/constants.dart';
 import 'ai_provider_logo.dart';
 import 'api_setup_demo_dialog.dart';
 
-/// Shows an interactive dialog allowing users to enter and save their
-/// AI API key (Google Gemini, OpenAI GPT, or DeepSeek) to enable
-/// AI-powered document quiz, study notes, and flashcard generation.
 Future<bool?> showGeminiApiKeyDialog(BuildContext context) {
   return showDialog<bool>(
     context: context,
@@ -66,7 +63,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
 
   void _onProviderChanged(AiProvider provider) {
     if (_selectedProvider == provider) return;
-    // Save current draft in memory
     final currentText = _controller.text.trim();
     if (currentText.isNotEmpty) {
       _keysByProvider[_selectedProvider] = currentText;
@@ -130,7 +126,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Provider Segmented Selector Chips (Horizontally scrollable to comfortably house all 6 providers)
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Container(
@@ -218,7 +213,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
 
             const SizedBox(height: 10),
 
-            // Dynamic Provider Logo
             AiProviderLogo(
               provider: _selectedProvider,
               size: 34,
@@ -227,7 +221,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
 
             const SizedBox(height: 8),
 
-            // Dynamic Title matching provider
             Text(
               'Connect ${_selectedProvider.displayName}',
               textAlign: TextAlign.center,
@@ -248,7 +241,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
 
             const SizedBox(height: 4),
 
-            // Model Badge
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
               decoration: BoxDecoration(
@@ -267,7 +259,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
 
             const SizedBox(height: 6),
 
-            // Description
             Text(
               _selectedProvider.description,
               textAlign: TextAlign.center,
@@ -280,7 +271,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
 
             const SizedBox(height: 10),
 
-            // Interactive Demo Banner & Link Section
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
@@ -357,7 +347,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
                     ],
                   ),
                   const SizedBox(height: 6),
-                  // Button to launch interactive video/simulation walkthrough
                   InkWell(
                     onTap: () => showApiSetupDemoDialog(
                       context,
@@ -393,7 +382,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
 
             const SizedBox(height: 10),
 
-            // Input Field
             if (_loading)
               const Padding(
                 padding: EdgeInsets.all(16),
@@ -441,7 +429,6 @@ class _GeminiApiKeyDialogState extends State<GeminiApiKeyDialog> {
 
             const SizedBox(height: 6),
 
-            // Contextual Tip
             Text(
               _getProviderTip(_selectedProvider),
               style: TextStyle(

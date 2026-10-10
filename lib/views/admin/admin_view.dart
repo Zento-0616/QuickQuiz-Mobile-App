@@ -63,7 +63,6 @@ class _AdminViewState extends State<AdminView> with SingleTickerProviderStateMix
     final auth = context.watch<AuthViewModel>();
     final user = auth.currentUser;
 
-    // RBAC: Check admin permissions
     if (user == null || !user.isAdmin) {
       return Scaffold(
         appBar: AppBar(title: const Text('Access Denied')),
@@ -133,9 +132,6 @@ class _AdminViewState extends State<AdminView> with SingleTickerProviderStateMix
     );
   }
 
-  // -------------------------------------------------------------------
-  // Tab 1: Quiz Deck Studio
-  // -------------------------------------------------------------------
 
   Widget _buildDecksTab(BuildContext context, UserModel admin) {
     if (_decks.isEmpty) {
@@ -171,9 +167,6 @@ class _AdminViewState extends State<AdminView> with SingleTickerProviderStateMix
     );
   }
 
-  // -------------------------------------------------------------------
-  // Tab 2: Scholar Management
-  // -------------------------------------------------------------------
 
   Widget _buildUsersTab(BuildContext context) {
     if (_users.isEmpty) {
@@ -219,9 +212,6 @@ class _AdminViewState extends State<AdminView> with SingleTickerProviderStateMix
     );
   }
 
-  // -------------------------------------------------------------------
-  // Tab 3: Platform Analytics
-  // -------------------------------------------------------------------
 
   Widget _buildAnalyticsTab(BuildContext context) {
     return SingleChildScrollView(
@@ -340,7 +330,6 @@ class _CreateDeckModalState extends State<_CreateDeckModal> {
             ),
             const SizedBox(height: 16),
 
-            // Difficulty
             const Text('Difficulty Tier:', style: TextStyle(fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             SegmentedButton<QuizDifficulty>(
@@ -354,7 +343,6 @@ class _CreateDeckModalState extends State<_CreateDeckModal> {
             ),
             const SizedBox(height: 16),
 
-            // EXP Reward (1-1000)
             Text('EXP Reward: $_expReward EXP', style: const TextStyle(fontWeight: FontWeight.w700)),
             Slider(
               value: _expReward.toDouble(),
@@ -365,7 +353,6 @@ class _CreateDeckModalState extends State<_CreateDeckModal> {
               onChanged: (v) => setState(() => _expReward = v.round()),
             ),
 
-            // Time Limit
             Text('Time Limit: $_timeLimit seconds', style: const TextStyle(fontWeight: FontWeight.w700)),
             Slider(
               value: _timeLimit.toDouble(),

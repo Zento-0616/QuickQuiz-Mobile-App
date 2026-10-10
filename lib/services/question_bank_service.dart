@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 import '../models/question_model.dart';
 import '../models/quiz_settings_model.dart';
 
-/// Service responsible for loading and querying the local pre-generated
-/// question bank stored in JSON format, without making any external API calls.
 class QuestionBankService {
   static const String defaultAssetPath = 'assets/data/question_bank.json';
 
@@ -22,7 +20,6 @@ class QuestionBankService {
   })  : _rng = rng ?? Random(),
         _cachedQuestions = preloadedQuestions;
 
-  /// Loads all questions from the local JSON store if not already cached.
   Future<List<QuestionModel>> loadQuestions() async {
     if (_cachedQuestions != null) {
       return _cachedQuestions!;
@@ -42,12 +39,10 @@ class QuestionBankService {
 
       return _cachedQuestions!;
     } catch (e) {
-      // Return empty list on failure rather than crashing
       return [];
     }
   }
 
-  /// Retrieves a distinct, sorted list of all available categories.
   Future<List<String>> getCategories() async {
     final questions = await loadQuestions();
     final categories = <String>{'All'};
@@ -59,7 +54,6 @@ class QuestionBankService {
     return categories.toList();
   }
 
-  /// Retrieves all unique tags across the question bank.
   Future<List<String>> getAllTags() async {
     final questions = await loadQuestions();
     final tags = <String>{};
@@ -69,12 +63,6 @@ class QuestionBankService {
     return tags.toList();
   }
 
-  /// Queries questions dynamically based on [category], [difficulty], [tags],
-  /// and the requested [count], without triggering any live external API calls.
-  ///
-  /// If the filtered pool contains fewer questions than [count], it automatically
-  /// backfills with questions of the same difficulty or from the broader pool
-  /// to ensure the returned list always satisfies [count].
   Future<List<QuestionModel>> queryQuestions({
     String? category,
     QuizDifficulty? difficulty,
@@ -86,7 +74,6 @@ class QuestionBankService {
       return [];
     }
 
-    // 1. Primary Filter
     final primaryMatches = allQuestions.where((q) {
       final matchesCategory = category == null ||
           category.isEmpty ||
@@ -103,18 +90,15 @@ class QuestionBankService {
       return matchesCategory && matchesDifficulty && matchesTags;
     }).toList();
 
-    // Shuffle primary matches for variety in each quiz session
     primaryMatches.shuffle(_rng);
 
     if (primaryMatches.length >= count) {
       return primaryMatches.take(count).map((q) => q.randomizeAnswers(rng: _rng)).toList();
     }
 
-    // 2. Backfill: If narrow filter yields fewer than count, backfill
     final result = List<QuestionModel>.from(primaryMatches);
     final usedIds = result.map((q) => q.id ?? q.question).toSet();
 
-    // First backfill attempt: same difficulty, any category
     if (difficulty != null) {
       final sameDifficultyPool = allQuestions
           .where((q) =>
@@ -129,7 +113,6 @@ class QuestionBankService {
       }
     }
 
-    // Second backfill attempt: any remaining questions from the entire bank
     if (result.length < count) {
       final remainingPool = allQuestions
           .where((q) => !usedIds.contains(q.id ?? q.question))
@@ -143,7 +126,6 @@ class QuestionBankService {
       }
     }
 
-    // If still less than count (extreme edge case: total bank < count), cycle
     var cycleIndex = 0;
     while (result.length < count && allQuestions.isNotEmpty) {
       final source = allQuestions[cycleIndex % allQuestions.length];

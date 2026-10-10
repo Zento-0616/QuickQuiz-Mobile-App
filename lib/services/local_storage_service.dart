@@ -6,8 +6,6 @@ import '../models/study_notes_model.dart';
 import '../models/user_model.dart';
 import '../utils/constants.dart';
 
-/// Thin wrapper over SharedPreferences. Handles guest quiz flags, onboarding flags,
-/// and offline local quiz history persistence.
 class LocalStorageService {
   SharedPreferences? _prefs;
 
@@ -15,9 +13,6 @@ class LocalStorageService {
     return _prefs ??= await SharedPreferences.getInstance();
   }
 
-  // ---------------------------------------------------------------------
-  // Local Quiz History Fallback
-  // ---------------------------------------------------------------------
 
   static const String _prefLocalQuizHistory = 'local_quiz_history';
 
@@ -26,7 +21,6 @@ class LocalStorageService {
         result.userId!.isEmpty ||
         result.userId!.startsWith('guest_');
     if (isGuest) {
-      // Do not record guest quiz results
       return;
     }
 
@@ -48,15 +42,12 @@ class LocalStorageService {
         final Map<String, dynamic> map = jsonDecode(str);
         final model = QuizResultModel.fromJson(map);
         if (userId == null) {
-          // Return all records when no filter is provided
           list.add(model);
         } else if (userId.isNotEmpty) {
-          // Strictly isolate to the requesting scholar
           if (model.userId == userId) {
             list.add(model);
           }
         } else {
-          // Only general unassigned records when userId is empty string
           if (model.userId == null || model.userId!.isEmpty) {
             list.add(model);
           }
@@ -88,9 +79,6 @@ class LocalStorageService {
     await prefs.setStringList(_prefLocalQuizHistory, rawJson);
   }
 
-  // ---------------------------------------------------------------------
-  // Local Study Notes History Persistence
-  // ---------------------------------------------------------------------
 
   static const String _prefLocalStudyNotes = 'local_study_notes_history';
 
@@ -146,9 +134,6 @@ class LocalStorageService {
     await prefs.remove(_prefLocalStudyNotes);
   }
 
-  // ---------------------------------------------------------------------
-  // Local Flashcard Decks History Persistence
-  // ---------------------------------------------------------------------
 
   static const String _prefLocalFlashcardDecks = 'local_flashcard_decks_history';
 
@@ -204,16 +189,12 @@ class LocalStorageService {
     await prefs.remove(_prefLocalFlashcardDecks);
   }
 
-  // ---------------------------------------------------------------------
-  // Guest free-quiz flag
-  // ---------------------------------------------------------------------
 
   Future<bool> getGuestQuizUsed() async {
     final prefs = await _instance;
     return prefs.getBool(AppConstants.prefGuestQuizUsed) ?? false;
   }
 
-  /// Must ONLY be called after a quiz has been successfully generated.
   Future<void> markGuestQuizUsed() async {
     final prefs = await _instance;
     await prefs.setBool(AppConstants.prefGuestQuizUsed, true);
@@ -224,9 +205,6 @@ class LocalStorageService {
     await prefs.remove(AppConstants.prefGuestQuizUsed);
   }
 
-  // ---------------------------------------------------------------------
-  // Onboarding flag
-  // ---------------------------------------------------------------------
 
   Future<bool> getOnboardingComplete() async {
     final prefs = await _instance;
@@ -238,9 +216,6 @@ class LocalStorageService {
     await prefs.setBool(AppConstants.prefOnboardingComplete, true);
   }
 
-  // ---------------------------------------------------------------------
-  // Multi-Provider AI (Gemini, OpenAI, DeepSeek) API Keys
-  // ---------------------------------------------------------------------
 
   Future<AiProvider> getActiveAiProvider() async {
     final prefs = await _instance;
@@ -299,7 +274,6 @@ class LocalStorageService {
     return getApiKeyForProvider(provider);
   }
 
-  // Backward-compatible methods
   Future<String?> getGeminiApiKey() async {
     return getApiKeyForProvider(AiProvider.gemini);
   }
@@ -312,9 +286,6 @@ class LocalStorageService {
     await clearApiKeyForProvider(AiProvider.gemini);
   }
 
-  // ---------------------------------------------------------------------
-  // User Session Persistence & Admin Inactivity
-  // ---------------------------------------------------------------------
 
   static const String _prefCachedUser = 'cached_current_user';
   static const String _prefLastAdminActivity = 'last_admin_activity';
