@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "385294000922",
+    "project_id": "quickquiz-27a7c",
+    "storage_bucket": "quickquiz-27a7c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:385294000922:android:828ad3e652466fd78e42a3",
+        "android_client_info": {
+          "package_name": "com.example.quickquiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgHzSabFkA-ZjlYTg_P7H0r_CxkBncFDU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

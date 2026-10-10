@@ -1,0 +1,1149 @@
+{
+  "version": "1.0.0",
+  "questions": [
+    {
+      "id": "cs_easy_001",
+      "category": "Computer Science",
+      "difficulty": "easy",
+      "tags": [
+        "hardware",
+        "fundamentals"
+      ],
+      "question": "What is the primary function of the Central Processing Unit (CPU) in a computer?",
+      "options": [
+        "Executing program instructions and performing arithmetic/logic operations",
+        "Permanently retaining user documents and installed applications",
+        "Regulating alternating electrical current from power outlets",
+        "Rendering high-resolution three-dimensional vector graphics"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Central Processing Unit (CPU) operates as the primary computational engine, executing programmatic instructions and coordinating arithmetic and logical decisions.",
+      "hint": "The Central Processing Unit (CPU) operates as the primary computational engine, executing programmatic instructions and coordinating arithmetic and logical decisions."
+    },
+    {
+      "id": "cs_easy_002",
+      "category": "Computer Science",
+      "difficulty": "easy",
+      "tags": [
+        "memory",
+        "hardware"
+      ],
+      "question": "Which type of computer memory is volatile and loses its contents when power is turned off?",
+      "options": [
+        "Random Access Memory (RAM)",
+        "Read-Only Memory (ROM)",
+        "Solid State Drive (SSD)",
+        "Hard Disk Drive (HDD)"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "RAM is volatile primary memory used for active application data; it requires continuous electrical power to maintain its stored bits.",
+      "hint": "RAM is volatile primary memory used for active application data; it requires continuous electrical power to maintain its stored bits."
+    },
+    {
+      "id": "cs_easy_003",
+      "category": "Computer Science",
+      "difficulty": "easy",
+      "tags": [
+        "networking",
+        "internet"
+      ],
+      "question": "What is the standard protocol used to securely transfer hypertext web pages over the internet?",
+      "options": [
+        "HTTPS",
+        "FTP",
+        "SMTP",
+        "SNMP"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "HTTPS (Hypertext Transfer Protocol Secure) encrypts communication over computer networks using Transport Layer Security (TLS).",
+      "hint": "Consider the role and functionality associated with networking."
+    },
+    {
+      "id": "cs_easy_004",
+      "category": "Computer Science",
+      "difficulty": "easy",
+      "tags": [
+        "programming",
+        "data-structures"
+      ],
+      "question": "Which data structure follows the First-In, First-Out (FIFO) ordering principle?",
+      "options": [
+        "Queue",
+        "Stack",
+        "Binary Tree",
+        "Hash Map"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "A queue processes items in the exact chronological order of their arrival, adhering strictly to the First-In, First-Out rule.",
+      "hint": "Consider the role and functionality associated with programming."
+    },
+    {
+      "id": "cs_easy_005",
+      "category": "Computer Science",
+      "difficulty": "easy",
+      "tags": [
+        "programming",
+        "data-structures"
+      ],
+      "question": "Which data structure operates on a Last-In, First-Out (LIFO) access sequence?",
+      "options": [
+        "Stack",
+        "Queue",
+        "Linked List",
+        "Heap"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "A stack enforces Last-In, First-Out access where the most recently pushed element is the first element popped off.",
+      "hint": "Consider the role and functionality associated with programming."
+    },
+    {
+      "id": "cs_medium_001",
+      "category": "Computer Science",
+      "difficulty": "medium",
+      "tags": [
+        "algorithms",
+        "complexity"
+      ],
+      "question": "What is the average time complexity of finding an element in a balanced Binary Search Tree (BST) with n elements?",
+      "options": [
+        "O(log n)",
+        "O(n)",
+        "O(1)",
+        "O(n log n)"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "In a balanced binary search tree, each comparison eliminates half the remaining search space, resulting in logarithmic O(log n) time complexity.",
+      "hint": "Consider the role and functionality associated with algorithms."
+    },
+    {
+      "id": "cs_medium_002",
+      "category": "Computer Science",
+      "difficulty": "medium",
+      "tags": [
+        "databases",
+        "sql"
+      ],
+      "question": "In relational database design, what property does the 'I' in the ACID acronym represent?",
+      "options": [
+        "Isolation",
+        "Integrity",
+        "Indexing",
+        "Iteration"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Isolation guarantees that concurrently executing database transactions operate without interfering with one another's intermediate states.",
+      "hint": "Consider the role and functionality associated with databases."
+    },
+    {
+      "id": "cs_medium_003",
+      "category": "Computer Science",
+      "difficulty": "medium",
+      "tags": [
+        "operating-systems",
+        "concurrency"
+      ],
+      "question": "Which operating system condition occurs when two or more processes are blocked indefinitely waiting for resources held by each other?",
+      "options": [
+        "Deadlock",
+        "Thrashing",
+        "Paging",
+        "Fragmentation"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "A deadlock occurs when a set of concurrent processes are stalled because each process is holding a resource and waiting for another held by another process.",
+      "hint": "Consider the role and functionality associated with operating-systems."
+    },
+    {
+      "id": "cs_medium_004",
+      "category": "Computer Science",
+      "difficulty": "medium",
+      "tags": [
+        "networking",
+        "tcp"
+      ],
+      "question": "What is the primary difference between Transmission Control Protocol (TCP) and User Datagram Protocol (UDP)?",
+      "options": [
+        "TCP provides reliable, ordered stream delivery while UDP prioritizes low latency over reliability",
+        "UDP guarantees packet delivery acknowledgement while TCP ignores packet dropouts",
+        "TCP operates only over wireless networks while UDP is reserved for fiber optic lines",
+        "UDP establishes a three-way handshake before transmitting payload packets"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "TCP ensures complete and orderly delivery with acknowledgments and retransmissions, whereas UDP is connectionless and optimizes for low-latency transmission.",
+      "hint": "TCP ensures complete and orderly delivery with acknowledgments and retransmissions, whereas UDP is connectionless and optimizes for low-latency transmission."
+    },
+    {
+      "id": "cs_medium_005",
+      "category": "Computer Science",
+      "difficulty": "medium",
+      "tags": [
+        "oop",
+        "design-patterns"
+      ],
+      "question": "Which design pattern ensures a class possesses only a single instance and provides a global access point to it?",
+      "options": [
+        "Singleton Pattern",
+        "Factory Pattern",
+        "Observer Pattern",
+        "Decorator Pattern"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Singleton pattern restricts class instantiation to a singular instance and exposes a synchronized global accessor.",
+      "hint": "Consider the role and functionality associated with oop."
+    },
+    {
+      "id": "cs_hard_001",
+      "category": "Computer Science",
+      "difficulty": "hard",
+      "tags": [
+        "algorithms",
+        "dynamic-programming"
+      ],
+      "question": "Why is Memoization effective in optimizing recursive solutions for problems exhibiting overlapping subproblems?",
+      "options": [
+        "It caches precomputed subproblem results to avoid redundant combinatorial recalculations",
+        "It replaces the runtime stack frames with asynchronous compiler micro-threads",
+        "It flattens multi-dimensional dynamic programming matrices into constant O(1) hash tables",
+        "It eliminates exponential space complexity by discarding previously processed state trees"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Memoization records the output of expensive deterministic function calls indexed by arguments, pruning identical subtrees across recursion graphs."
+    },
+    {
+      "id": "cs_hard_002",
+      "category": "Computer Science",
+      "difficulty": "hard",
+      "tags": [
+        "distributed-systems",
+        "concurrency"
+      ],
+      "question": "According to the CAP theorem, which property must a distributed system sacrifice during an active network partition?",
+      "options": [
+        "Either Strict Consistency or Continuous Availability",
+        "Hardware Redundancy across physical data centers",
+        "Cryptographic Authentication of peer node heartbeats",
+        "Asynchronous replication latency tolerances"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "When a network partition (P) arises in a distributed data store, the system must trade off between returning the latest data (Consistency) or remaining operational (Availability)."
+    },
+    {
+      "id": "cs_hard_003",
+      "category": "Computer Science",
+      "difficulty": "hard",
+      "tags": [
+        "operating-systems",
+        "virtual-memory"
+      ],
+      "question": "What is the phenomenon known as 'Thrashing' in virtual memory systems and what is its direct cause?",
+      "options": [
+        "Excessive page faulting where the system spends more time paging than executing instructions",
+        "Rapid disk head wear caused by sequential write operations on fragmented partitions",
+        "Sudden cache invalidation triggered by context switches between kernel-level threads",
+        "Bus saturation resulting from continuous direct memory access (DMA) transfers"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Thrashing arises when a process's working set exceeds physical memory capacity, forcing the operating system to continuously swap pages between RAM and disk storage."
+    },
+    {
+      "id": "cs_hard_004",
+      "category": "Computer Science",
+      "difficulty": "hard",
+      "tags": [
+        "compilers",
+        "formal-languages"
+      ],
+      "question": "Which classification of formal grammars in the Chomsky hierarchy describes constructs parseable by a deterministic pushdown automaton?",
+      "options": [
+        "Deterministic Context-Free Grammars (Type 2 subset)",
+        "Regular Grammars recognized by finite state automata (Type 3)",
+        "Context-Sensitive Grammars with bounded workspace constraints (Type 1)",
+        "Recursively Enumerable Grammars executed by universal Turing machines (Type 0)"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Deterministic Context-Free Grammars (LR parsing) are precisely the languages recognized by deterministic pushdown automata, widely utilized for programming language parsing."
+    },
+    {
+      "id": "bio_easy_001",
+      "category": "Biology",
+      "difficulty": "easy",
+      "tags": [
+        "cell-biology",
+        "organelles"
+      ],
+      "question": "Which cellular organelle is universally acknowledged as the powerhouse of eukaryotic cells due to its production of ATP?",
+      "options": [
+        "Mitochondrion",
+        "Endoplasmic Reticulum",
+        "Golgi Apparatus",
+        "Lysosome"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Mitochondria generate the overwhelming majority of adenosine triphosphate (ATP) consumed during cellular metabolism via oxidative phosphorylation.",
+      "hint": "Mitochondria generate the overwhelming majority of adenosine triphosphate (ATP) consumed during cellular metabolism via oxidative phosphorylation."
+    },
+    {
+      "id": "bio_easy_002",
+      "category": "Biology",
+      "difficulty": "easy",
+      "tags": [
+        "genetics",
+        "dna"
+      ],
+      "question": "Which nitrogenous base pairs complementary with Adenine (A) in double-stranded DNA molecules?",
+      "options": [
+        "Thymine (T)",
+        "Cytosine (C)",
+        "Guanine (G)",
+        "Uracil (U)"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "In double-stranded DNA according to Watson-Crick base pairing rules, Adenine consistently pairs with Thymine via two hydrogen bonds.",
+      "hint": "In double-stranded DNA according to Watson-Crick base pairing rules, Adenine consistently pairs with Thymine via two hydrogen bonds."
+    },
+    {
+      "id": "bio_easy_003",
+      "category": "Biology",
+      "difficulty": "easy",
+      "tags": [
+        "plants",
+        "photosynthesis"
+      ],
+      "question": "Which specialized green pigment is primarily responsible for light absorption during plant photosynthesis?",
+      "options": [
+        "Chlorophyll",
+        "Carotenoid",
+        "Anthocyanin",
+        "Hemoglobin"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Chlorophyll pigments absorb blue and red optical wavelengths while reflecting green light, driving light-dependent photosynthetic reactions.",
+      "hint": "Consider the role and functionality associated with plants."
+    },
+    {
+      "id": "bio_easy_004",
+      "category": "Biology",
+      "difficulty": "easy",
+      "tags": [
+        "human-body",
+        "circulatory"
+      ],
+      "question": "Which blood vessels transport oxygenated blood directly away from the heart to systemic bodily tissues?",
+      "options": [
+        "Arteries",
+        "Veins",
+        "Venules",
+        "Lymphatic Vessels"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Arteries carry blood under high hydrostatic pressure away from the ventricles of the heart toward peripheral capillaries.",
+      "hint": "Consider the role and functionality associated with human-body."
+    },
+    {
+      "id": "bio_easy_005",
+      "category": "Biology",
+      "difficulty": "easy",
+      "tags": [
+        "cell-biology",
+        "division"
+      ],
+      "question": "What is the biological process of somatic cell division resulting in two genetically identical diploid daughter cells?",
+      "options": [
+        "Mitosis",
+        "Meiosis",
+        "Binary Fission",
+        "Cytokinesis"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Mitosis replicates nuclear chromatin into two identical sets, maintaining parental diploid chromosome counts in somatic tissues.",
+      "hint": "Consider the role and functionality associated with cell-biology."
+    },
+    {
+      "id": "bio_medium_001",
+      "category": "Biology",
+      "difficulty": "medium",
+      "tags": [
+        "metabolism",
+        "cellular-respiration"
+      ],
+      "question": "During which phase of aerobic cellular respiration is the majority of ATP synthesized via the chemiosmotic proton gradient?",
+      "options": [
+        "Oxidative Phosphorylation",
+        "Glycolytic Substrate Phosphorylation",
+        "The Citric Acid (Krebs) Cycle",
+        "Pyruvate Oxidation Reaction"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Oxidative phosphorylation harnesses the electrochemical proton motive force across the inner mitochondrial membrane via ATP synthase.",
+      "hint": "Consider the role and functionality associated with metabolism."
+    },
+    {
+      "id": "bio_medium_002",
+      "category": "Biology",
+      "difficulty": "medium",
+      "tags": [
+        "genetics",
+        "translation"
+      ],
+      "question": "Which molecule acts as an adapter delivering specific amino acids to ribosomes according to matching mRNA codons during translation?",
+      "options": [
+        "tRNA (Transfer RNA)",
+        "rRNA (Ribosomal RNA)",
+        "snRNA (Small Nuclear RNA)",
+        "siRNA (Small Interfering RNA)"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "tRNA molecules feature an anticodon triplet and an esterified cognate amino acid, deciphering genetic codons on the mRNA transcript.",
+      "hint": "tRNA molecules feature an anticodon triplet and an esterified cognate amino acid, deciphering genetic codons on the mRNA transcript."
+    },
+    {
+      "id": "bio_medium_003",
+      "category": "Biology",
+      "difficulty": "medium",
+      "tags": [
+        "physiology",
+        "homeostasis"
+      ],
+      "question": "How does the hormone insulin regulate glucose homeostasis following meal ingestion in humans?",
+      "options": [
+        "It promotes cellular glucose uptake and glycogen synthesis in muscle and liver tissues",
+        "It triggers hepatic gluconeogenesis and glycogenolysis into systemic circulation",
+        "It stimulates beta-oxidation of adipose triglycerides while blocking cellular glycolysis",
+        "It halts all renal glucose reabsorption, forcing urinary elimination of sugars"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Insulin binds to receptor tyrosine kinases, mobilizing GLUT4 transporters to cell surfaces and stimulating glycogenesis in liver and skeletal muscles.",
+      "hint": "Insulin binds to receptor tyrosine kinases, mobilizing GLUT4 transporters to cell surfaces and stimulating glycogenesis in liver and skeletal muscles."
+    },
+    {
+      "id": "bio_medium_004",
+      "category": "Biology",
+      "difficulty": "medium",
+      "tags": [
+        "immunology",
+        "antibodies"
+      ],
+      "question": "Which immunoglobulin isotype is most abundant in human serum and provides passive immunity across the maternal placenta?",
+      "options": [
+        "IgG",
+        "IgA",
+        "IgM",
+        "IgE"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Immunoglobulin G (IgG) constitutes roughly 75% of total serum antibodies and uniquely crosses the human placenta via the FcRn receptor.",
+      "hint": "Consider the role and functionality associated with immunology."
+    },
+    {
+      "id": "bio_hard_001",
+      "category": "Biology",
+      "difficulty": "hard",
+      "tags": [
+        "molecular-biology",
+        "epigenetics"
+      ],
+      "question": "What functional effect does promoter DNA hypermethylation typically exert on eukaryotic gene transcription?",
+      "options": [
+        "Transcriptional repression by inhibiting transcription factor binding and recruiting histone deacetylases",
+        "Constitutive transcriptional activation via open euchromatin conformation recruitment",
+        "Enhanced splicing accuracy by increasing affinity for ribonucleoprotein spliceosomes",
+        "Direct elongation acceleration through stabilization of RNA Polymerase II active sites"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Cytosine methylation in CpG islands condenses chromatin and recruits methyl-CpG-binding proteins that mediate histone deacetylation, silencing transcription."
+    },
+    {
+      "id": "bio_hard_002",
+      "category": "Biology",
+      "difficulty": "hard",
+      "tags": [
+        "biochemistry",
+        "enzymology"
+      ],
+      "question": "In Michaelis-Menten enzyme kinetics, how does a purely competitive inhibitor alter Vmax and Km parameters?",
+      "options": [
+        "Vmax remains unaltered while apparent Km increases",
+        "Vmax decreases while apparent Km remains unchanged",
+        "Both Vmax and apparent Km decrease proportionally",
+        "Both Vmax and apparent Km increase significantly"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Competitive inhibitors compete directly with substrate for active sites; sufficiently high substrate concentrations overcome inhibition (unchanged Vmax), increasing the required substrate concentration for half-velocity (increased Km)."
+    },
+    {
+      "id": "bio_hard_003",
+      "category": "Biology",
+      "difficulty": "hard",
+      "tags": [
+        "neurobiology",
+        "electrophysiology"
+      ],
+      "question": "What ionic mechanism is directly responsible for the absolute refractory period following a neuronal action potential?",
+      "options": [
+        "Inactivation gate closure of voltage-gated sodium channels",
+        "Sustained hyperpolarization driven by delayed rectifier potassium channels",
+        "Temporary saturation of the sodium-potassium ATPase transport pumps",
+        "Excess calcium influx activating inhibitory post-synaptic potentials"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "During the absolute refractory period, voltage-gated Na+ channels remain in an inactivated conformational state and cannot reopen until membrane repolarization resets them."
+    },
+    {
+      "id": "hist_easy_001",
+      "category": "World History",
+      "difficulty": "easy",
+      "tags": [
+        "ancient-history",
+        "civilizations"
+      ],
+      "question": "Which ancient civilization constructed the Great Pyramids of Giza along the Nile River?",
+      "options": [
+        "Ancient Egypt",
+        "Mesopotamia",
+        "Ancient Rome",
+        "Indus Valley"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Great Pyramids were commissioned by Old Kingdom Egyptian pharaohs as royal mortuary monuments during the 3rd millennium BCE.",
+      "hint": "The Great Pyramids were commissioned by Old Kingdom Egyptian pharaohs as royal mortuary monuments during the 3rd millennium BCE."
+    },
+    {
+      "id": "hist_easy_002",
+      "category": "World History",
+      "difficulty": "easy",
+      "tags": [
+        "renaissance",
+        "europe"
+      ],
+      "question": "In which European country did the cultural movement known as the Renaissance originate during the 14th century?",
+      "options": [
+        "Italy",
+        "France",
+        "England",
+        "Germany"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Renaissance began in wealthy Italian city-states like Florence, driven by banking prosperity and revived interest in classical antiquity.",
+      "hint": "The Renaissance began in wealthy Italian city-states like Florence, driven by banking prosperity and revived interest in classical antiquity."
+    },
+    {
+      "id": "hist_easy_003",
+      "category": "World History",
+      "difficulty": "easy",
+      "tags": [
+        "modern-history",
+        "ww2"
+      ],
+      "question": "Which catastrophic global conflict took place primarily between the years 1939 and 1945?",
+      "options": [
+        "World War II",
+        "World War I",
+        "The Cold War",
+        "The Napoleonic Wars"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "World War II commenced in September 1939 with the invasion of Poland and concluded in 1945 following Allied victories in Europe and the Pacific.",
+      "hint": "Consider the role and functionality associated with modern-history."
+    },
+    {
+      "id": "hist_easy_004",
+      "category": "World History",
+      "difficulty": "easy",
+      "tags": [
+        "americas",
+        "revolution"
+      ],
+      "question": "In what year was the United States Declaration of Independence formally adopted?",
+      "options": [
+        "1776",
+        "1789",
+        "1812",
+        "1765"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Continental Congress officially ratified the Declaration of Independence on July 4, 1776, severing colonial ties with Great Britain.",
+      "hint": "Consider the role and functionality associated with americas."
+    },
+    {
+      "id": "hist_medium_001",
+      "category": "World History",
+      "difficulty": "medium",
+      "tags": [
+        "modern-history",
+        "treaties"
+      ],
+      "question": "Which international agreement officially concluded World War I and imposed heavy reparations and territorial concessions on Germany?",
+      "options": [
+        "Treaty of Versailles",
+        "Treaty of Utrecht",
+        "Peace of Westphalia",
+        "Treaty of Ghent"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Signed in 1919 at the Paris Peace Conference, the Treaty of Versailles reassigned German borders and levied extensive financial reparations.",
+      "hint": "Consider the role and functionality associated with modern-history."
+    },
+    {
+      "id": "hist_medium_002",
+      "category": "World History",
+      "difficulty": "medium",
+      "tags": [
+        "enlightenment",
+        "revolutions"
+      ],
+      "question": "Which pivotal event in 1789 is widely regarded as the symbolic opening flashpoint of the French Revolution?",
+      "options": [
+        "The Storming of the Bastille",
+        "The Reign of Terror",
+        "The Flight to Varennes",
+        "The Execution of Louis XVI"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "On July 14, 1789, Parisian insurgents seized the royal fortress prison of the Bastille, symbolizing defiance against royal absolutism.",
+      "hint": "On July 14, 1789, Parisian insurgents seized the royal fortress prison of the Bastille, symbolizing defiance against royal absolutism."
+    },
+    {
+      "id": "hist_medium_003",
+      "category": "World History",
+      "difficulty": "medium",
+      "tags": [
+        "asian-history",
+        "trade"
+      ],
+      "question": "Which ancient trans-Eurasian trade network connected East Asia with the Mediterranean basin for commerce in silk and spices?",
+      "options": [
+        "The Silk Road",
+        "The Amber Road",
+        "The Hanseatic Network",
+        "The Royal Road of Persia"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Silk Road established maritime and overland exchange routes spanning Eurasia, facilitating commerce, culture, and technological exchange.",
+      "hint": "Consider the role and functionality associated with asian-history."
+    },
+    {
+      "id": "hist_hard_001",
+      "category": "World History",
+      "difficulty": "hard",
+      "tags": [
+        "diplomacy",
+        "17th-century"
+      ],
+      "question": "Why is the Peace of Westphalia (1648) recognized as the foundational cornerstone of the modern international relations framework?",
+      "options": [
+        "It codified the principle of state sovereignty and mutual non-interference in domestic affairs",
+        "It formed the first multinational parliamentary assembly with binding military enforcement",
+        "It outlawed offensive warfare and instituted universal human rights charters across Europe",
+        "It unified the Holy Roman Empire into a single centralized federal republic"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Westphalian treaties concluded the Thirty Years' War and established modern diplomatic sovereignty: each sovereign prince governed religion and politics within defined territorial borders."
+    },
+    {
+      "id": "hist_hard_002",
+      "category": "World History",
+      "difficulty": "hard",
+      "tags": [
+        "cold-war",
+        "geopolitics"
+      ],
+      "question": "What strategic compromise resolved the 1962 Cuban Missile Crisis between the United States and the Soviet Union?",
+      "options": [
+        "Soviet removal of Cuban missiles in exchange for US non-invasion assurances and quiet withdrawal of Jupiter missiles from Turkey",
+        "The partition of Cuba into demilitarized northern and southern administrative protectorates",
+        "Immediate installation of United Nations peacekeeping garrisons throughout the Caribbean Sea",
+        "Full US military occupation of Havana coupled with unilateral Soviet airbase concessions in Berlin"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Khrushchev agreed to dismantle Soviet missile sites in Cuba in return for Kennedy's public pledge not to invade Cuba and a secret pledge to dismantle US missiles in Turkey."
+    },
+    {
+      "id": "phys_easy_001",
+      "category": "Physics",
+      "difficulty": "easy",
+      "tags": [
+        "mechanics",
+        "newton"
+      ],
+      "question": "According to Newton's Second Law of Motion, what is the fundamental mathematical relationship between Force (F), Mass (m), and Acceleration (a)?",
+      "options": [
+        "F = m * a",
+        "F = m / a",
+        "F = m + a",
+        "F = a / m"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Newton's Second Law states that net force applied to a body is directly proportional to its mass multiplied by resulting acceleration.",
+      "hint": "Newton's Second Law states that net force applied to a body is directly proportional to its mass multiplied by resulting acceleration."
+    },
+    {
+      "id": "phys_easy_002",
+      "category": "Physics",
+      "difficulty": "easy",
+      "tags": [
+        "optics",
+        "electromagnetism"
+      ],
+      "question": "What is the approximate speed of light in a vacuum, commonly denoted by the constant c?",
+      "options": [
+        "300,000 km/s (3 × 10^8 m/s)",
+        "150,000 km/s (1.5 × 10^8 m/s)",
+        "30,000 km/s (3 × 10^7 m/s)",
+        "3,000,000 km/s (3 × 10^9 m/s)"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The speed of light in vacuum is an invariant fundamental physical constant defined exactly as 299,792,458 meters per second.",
+      "hint": "The speed of light in vacuum is an invariant fundamental physical constant defined exactly as 299,792,458 meters per second."
+    },
+    {
+      "id": "phys_easy_003",
+      "category": "Physics",
+      "difficulty": "easy",
+      "tags": [
+        "energy",
+        "conservation"
+      ],
+      "question": "Which fundamental physical law asserts that energy can neither be created nor destroyed, only transformed between states?",
+      "options": [
+        "Law of Conservation of Energy (First Law of Thermodynamics)",
+        "Second Law of Thermodynamics (Entropy Increase)",
+        "Hooke's Law of Elastic Deformation",
+        "Coulomb's Inverse Square Law"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The First Law of Thermodynamics dictates that total energy in an isolated system remains constant over time regardless of transformations.",
+      "hint": "The First Law of Thermodynamics dictates that total energy in an isolated system remains constant over time regardless of transformations."
+    },
+    {
+      "id": "phys_medium_001",
+      "category": "Physics",
+      "difficulty": "medium",
+      "tags": [
+        "thermodynamics",
+        "entropy"
+      ],
+      "question": "What state variable increases monotonically over time in any spontaneous, irreversible process occurring within an isolated system?",
+      "options": [
+        "Entropy",
+        "Enthalpy",
+        "Internal Energy",
+        "Temperature"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Second Law of Thermodynamics dictates that entropy (a measure of molecular disorder and thermal dispersion) always increases in irreversible processes.",
+      "hint": "Consider the role and functionality associated with thermodynamics."
+    },
+    {
+      "id": "phys_medium_002",
+      "category": "Physics",
+      "difficulty": "medium",
+      "tags": [
+        "electromagnetism",
+        "induction"
+      ],
+      "question": "According to Faraday's Law of Electromagnetic Induction, what produces an electromotive force (EMF) across an electrical conductor?",
+      "options": [
+        "A time-varying magnetic flux linking the conducting circuit",
+        "A uniform, static electrostatic field surrounding the conductor",
+        "Mechanical friction generated between conductor atoms",
+        "Cooling the conductor toward absolute zero temperature"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Faraday's law demonstrates that any temporal variation in magnetic flux penetrating a closed wire loop induces a proportional voltage.",
+      "hint": "Faraday's law demonstrates that any temporal variation in magnetic flux penetrating a closed wire loop induces a proportional voltage."
+    },
+    {
+      "id": "phys_medium_003",
+      "category": "Physics",
+      "difficulty": "medium",
+      "tags": [
+        "waves",
+        "doppler"
+      ],
+      "question": "What physical change occurs when a wave source approaches a stationary observer according to the Doppler Effect?",
+      "options": [
+        "The observed frequency increases while observed wavelength decreases",
+        "The propagation velocity of the wave through the medium increases",
+        "The intrinsic physical amplitude and wave energy diminish to zero",
+        "The observed frequency drops while observed wavelength lengthens"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "As a source moves toward an observer, wave crests are bunched together in the propagation medium, increasing the observed frequency.",
+      "hint": "As a source moves toward an observer, wave crests are bunched together in the propagation medium, increasing the observed frequency."
+    },
+    {
+      "id": "phys_hard_001",
+      "category": "Physics",
+      "difficulty": "hard",
+      "tags": [
+        "quantum-mechanics",
+        "uncertainty"
+      ],
+      "question": "According to Heisenberg's Uncertainty Principle, which conjugate pair of physical observables cannot be simultaneously measured with arbitrary precision?",
+      "options": [
+        "Position and Linear Momentum",
+        "Rest Mass and Electric Charge",
+        "Kinetic Energy and Total Volume",
+        "Spin Orientation and Gravitational Mass"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The canonical commutation relation between position (x) and momentum (p) dictates that Δx * Δp >= ħ/2, forbidding precise simultaneous measurement."
+    },
+    {
+      "id": "phys_hard_002",
+      "category": "Physics",
+      "difficulty": "hard",
+      "tags": [
+        "relativity",
+        "spacetime"
+      ],
+      "question": "In Einstein's General Theory of Relativity, how is the phenomenon of gravity fundamentally interpreted?",
+      "options": [
+        "As the geometric curvature of four-dimensional spacetime induced by mass and energy",
+        "As an instantaneous Newtonian action-at-a-distance force mediated by ether waves",
+        "As an attractive electrostatic dipole interaction between neutral subatomic leptons",
+        "As an entropic vacuum pressure gradient pushing matter outward toward infinity"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "General Relativity describes gravity not as a conventional force, but as geodesics traveled along the warped spacetime curvature forged by stress-energy tensors."
+    },
+    {
+      "id": "sci_easy_001",
+      "category": "General Science",
+      "difficulty": "easy",
+      "tags": [
+        "chemistry",
+        "water"
+      ],
+      "question": "What is the chemical formula for a standard molecule of water?",
+      "options": [
+        "H2O",
+        "CO2",
+        "NaCl",
+        "CH4"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "A water molecule consists of two hydrogen atoms covalently bonded to a single central oxygen atom.",
+      "hint": "A water molecule consists of two hydrogen atoms covalently bonded to a single central oxygen atom."
+    },
+    {
+      "id": "sci_easy_002",
+      "category": "General Science",
+      "difficulty": "easy",
+      "tags": [
+        "astronomy",
+        "solar-system"
+      ],
+      "question": "Which celestial body is positioned at the exact center of our solar system?",
+      "options": [
+        "The Sun",
+        "Jupiter",
+        "The Earth",
+        "The Moon"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Our solar system is heliocentric, meaning planetary bodies orbit around the central gravitational mass of the Sun.",
+      "hint": "Consider the role and functionality associated with astronomy."
+    },
+    {
+      "id": "sci_easy_003",
+      "category": "General Science",
+      "difficulty": "easy",
+      "tags": [
+        "chemistry",
+        "states-of-matter"
+      ],
+      "question": "What term describes the direct phase transition of a substance from solid directly into gas without passing through a liquid state?",
+      "options": [
+        "Sublimation",
+        "Condensation",
+        "Vaporization",
+        "Solidification"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Sublimation occurs when solid substances (such as dry ice / solid carbon dioxide) absorb latent heat and transition directly into vapor.",
+      "hint": "Consider the role and functionality associated with chemistry."
+    },
+    {
+      "id": "sci_medium_001",
+      "category": "General Science",
+      "difficulty": "medium",
+      "tags": [
+        "chemistry",
+        "ph"
+      ],
+      "question": "On the standard pH scale ranging from 0 to 14, which value indicates a perfectly neutral aqueous solution at 25°C?",
+      "options": [
+        "7.0",
+        "0.0",
+        "14.0",
+        "3.5"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "A pH of 7 denotes neutral equilibrium where hydronium ion concentration equals hydroxide ion concentration [H+] = [OH-] = 10^-7 M.",
+      "hint": "A pH of 7 denotes neutral equilibrium where hydronium ion concentration equals hydroxide ion concentration [H+] = [OH-] = 10^-7 M."
+    },
+    {
+      "id": "sci_medium_002",
+      "category": "General Science",
+      "difficulty": "medium",
+      "tags": [
+        "earth-science",
+        "geology"
+      ],
+      "question": "What geologic process drives the movement of Earth's lithospheric tectonic plates over the underlying asthenosphere?",
+      "options": [
+        "Mantle convection currents driven by planetary heat",
+        "Gravitational tidal pulling from lunar orbital alignment",
+        "Atmospheric Coriolis friction acting on surface ocean ridges",
+        "Centrifugal acceleration caused by Earth's daily axial rotation"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Thermal convection cells within Earth's ductile mantle circulate hot magma upward and cooler rock downward, driving lithospheric plates.",
+      "hint": "Thermal convection cells within Earth's ductile mantle circulate hot magma upward and cooler rock downward, driving lithospheric plates."
+    },
+    {
+      "id": "sci_medium_003",
+      "category": "General Science",
+      "difficulty": "medium",
+      "tags": [
+        "chemistry",
+        "periodic-table"
+      ],
+      "question": "Why are elements located in Group 18 (Noble Gases) of the periodic table generally non-reactive chemically?",
+      "options": [
+        "They possess completely filled outer valence electron shells",
+        "Their nuclear cores repel incoming valence electron charges",
+        "They exist exclusively at cryogenic boiling temperatures",
+        "Their atomic radii are too small to overlap covalent bonds"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Noble gases possess complete valence electron octets (or duplet for helium), rendering them energetically stable without sharing or transferring electrons.",
+      "hint": "Noble gases possess complete valence electron octets (or duplet for helium), rendering them energetically stable without sharing or transferring electrons."
+    },
+    {
+      "id": "sci_hard_001",
+      "category": "General Science",
+      "difficulty": "hard",
+      "tags": [
+        "chemistry",
+        "thermodynamics"
+      ],
+      "question": "Under what condition is a chemical reaction guaranteed to be thermodynamically spontaneous at all temperatures according to Gibbs Free Energy (ΔG = ΔH - TΔS)?",
+      "options": [
+        "When enthalpy change is negative (ΔH < 0) and entropy change is positive (ΔS > 0)",
+        "When enthalpy change is positive (ΔH > 0) and entropy change is negative (ΔS < 0)",
+        "When both enthalpy (ΔH) and entropy (ΔS) values are zero",
+        "When activation energy exceeds total standard Gibbs energy"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "When ΔH is exothermic (< 0) and ΔS is positive (> 0), ΔG = ΔH - TΔS is mathematically negative at every non-negative temperature, guaranteeing spontaneity."
+    },
+    {
+      "id": "math_easy_001",
+      "category": "Mathematics",
+      "difficulty": "easy",
+      "tags": [
+        "geometry",
+        "pythagorean"
+      ],
+      "question": "In Euclidean geometry, which theorem states that in a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides?",
+      "options": [
+        "Pythagorean Theorem",
+        "Euler's Polyhedral Formula",
+        "Thales' Intercept Theorem",
+        "Fermat's Last Theorem"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The Pythagorean theorem establishes that a^2 + b^2 = c^2 for right-angled triangles in Euclidean planes.",
+      "hint": "Consider the role and functionality associated with geometry."
+    },
+    {
+      "id": "math_easy_002",
+      "category": "Mathematics",
+      "difficulty": "easy",
+      "tags": [
+        "arithmetic",
+        "primes"
+      ],
+      "question": "Which integer is the only even prime number in the set of all positive integers?",
+      "options": [
+        "2",
+        "0",
+        "4",
+        "6"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "2 is the only even prime number, having exactly two distinct positive divisors: 1 and 2.",
+      "hint": "Consider the role and functionality associated with arithmetic."
+    },
+    {
+      "id": "math_medium_001",
+      "category": "Mathematics",
+      "difficulty": "medium",
+      "tags": [
+        "calculus",
+        "derivatives"
+      ],
+      "question": "What is the derivative of the natural exponential function f(x) = e^x with respect to x?",
+      "options": [
+        "e^x",
+        "x * e^(x - 1)",
+        "ln(x)",
+        "e^(2x)"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "The natural exponential function is unique in calculus as its derivative with respect to x is identical to the function itself: d/dx[e^x] = e^x.",
+      "hint": "Consider the role and functionality associated with calculus."
+    },
+    {
+      "id": "math_medium_002",
+      "category": "Mathematics",
+      "difficulty": "medium",
+      "tags": [
+        "linear-algebra",
+        "matrices"
+      ],
+      "question": "If the determinant of a square matrix A is equal to zero, what does this imply about the matrix?",
+      "options": [
+        "The matrix is singular and does not possess a multiplicative inverse",
+        "The matrix is symmetric across its main diagonal",
+        "All eigenvalues of the matrix must be strictly positive real numbers",
+        "The matrix transforms all non-zero vectors into unit identity vectors"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "A square matrix with determinant det(A) = 0 is non-invertible (singular), signifying linearly dependent rows/columns.",
+      "hint": "A square matrix with determinant det(A) = 0 is non-invertible (singular), signifying linearly dependent rows/columns."
+    },
+    {
+      "id": "math_hard_001",
+      "category": "Mathematics",
+      "difficulty": "hard",
+      "tags": [
+        "complex-analysis",
+        "euler"
+      ],
+      "question": "What remarkable mathematical equality is expressed by Euler's Identity, uniting five fundamental mathematical constants?",
+      "options": [
+        "e^(i * π) + 1 = 0",
+        "e^(2π) - i = 1",
+        "π^2 / 6 = e * i",
+        "ln(π) + e = 0"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Euler's identity e^(iπ) + 1 = 0 links the constants 0, 1, e, i, and π in a single elegant relationship derived from complex exponential analysis."
+    },
+    {
+      "id": "lit_easy_001",
+      "category": "Literature & Arts",
+      "difficulty": "easy",
+      "tags": [
+        "theatre",
+        "shakespeare"
+      ],
+      "question": "Which English playwright and poet authored the renowned tragedies 'Hamlet', 'Macbeth', and 'Othello'?",
+      "options": [
+        "William Shakespeare",
+        "Christopher Marlowe",
+        "Geoffrey Chaucer",
+        "John Milton"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "William Shakespeare wrote some of the English language's most enduring plays and sonnets during the Elizabethan and Jacobean eras.",
+      "hint": "Consider the role and functionality associated with theatre."
+    },
+    {
+      "id": "lit_medium_001",
+      "category": "Literature & Arts",
+      "difficulty": "medium",
+      "tags": [
+        "painting",
+        "renaissance"
+      ],
+      "question": "Which Renaissance master painted the iconic portrait 'Mona Lisa' and the fresco 'The Last Supper'?",
+      "options": [
+        "Leonardo da Vinci",
+        "Michelangelo Buonarroti",
+        "Raphael Sanzio",
+        "Sandro Botticelli"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Leonardo da Vinci, the quintessential Renaissance polymath, painted both the Mona Lisa and the Milanese mural The Last Supper.",
+      "hint": "Consider the role and functionality associated with painting."
+    },
+    {
+      "id": "lit_hard_001",
+      "category": "Literature & Arts",
+      "difficulty": "hard",
+      "tags": [
+        "modernism",
+        "literature"
+      ],
+      "question": "Which pioneering modernist novel by James Joyce employs stream-of-consciousness technique across a single day in Dublin?",
+      "options": [
+        "Ulysses",
+        "To the Lighthouse",
+        "The Waste Land",
+        "In Search of Lost Time"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "James Joyce's 'Ulysses' (1922) chronicles the encounters of Leopold Bloom in Dublin on June 16, 1904, employing groundbreaking modernist literary styles."
+    },
+    {
+      "id": "econ_easy_001",
+      "category": "Business & Economics",
+      "difficulty": "easy",
+      "tags": [
+        "microeconomics",
+        "markets"
+      ],
+      "question": "In basic microeconomic theory, what typically happens to market equilibrium price when consumer demand increases while supply remains constant?",
+      "options": [
+        "The equilibrium price rises",
+        "The equilibrium price drops to zero",
+        "The equilibrium price remains permanently fixed",
+        "Consumer demand immediately shifts leftward"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "When demand outpaces existing supply, competing buyers bid up prices, leading to a higher equilibrium market clearing price.",
+      "hint": "When demand outpaces existing supply, competing buyers bid up prices, leading to a higher equilibrium market clearing price."
+    },
+    {
+      "id": "econ_medium_001",
+      "category": "Business & Economics",
+      "difficulty": "medium",
+      "tags": [
+        "macroeconomics",
+        "inflation"
+      ],
+      "question": "What monetary policy tool does a central bank commonly employ to counteract surging macroeconomic inflation?",
+      "options": [
+        "Raising benchmark interest rates to tighten credit availability",
+        "Increasing quantitative easing asset purchases to flood capital liquidity",
+        "Mandating statutory wage increases for all private commercial corporations",
+        "Abolishing all reserve requirements for commercial financial institutions"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Central banks elevate interest rates to increase borrowing costs, cooling down consumer spending and capital investment to dampen inflation.",
+      "hint": "Central banks elevate interest rates to increase borrowing costs, cooling down consumer spending and capital investment to dampen inflation."
+    },
+    {
+      "id": "econ_hard_001",
+      "category": "Business & Economics",
+      "difficulty": "hard",
+      "tags": [
+        "macroeconomics",
+        "trade"
+      ],
+      "question": "According to David Ricardo's Theory of Comparative Advantage, why should two nations engage in bilateral trade even if one nation has an absolute advantage in producing all goods?",
+      "options": [
+        "Each nation should specialize in goods where its domestic opportunity cost of production is lowest",
+        "Nations must balance foreign exchange reserves to match bilateral gold standard quotas",
+        "Absolute advantages are automatically cancelled out by international transport shipping tariffs",
+        "Trading prevents domestic currency inflation from exceeding foreign monetary indices"
+      ],
+      "correctAnswerIndex": 0,
+      "explanation": "Comparative advantage proves that trade yields mutual welfare gains when nations specialize according to lower opportunity costs, maximizing global aggregate output."
+    }
+  ]
+}

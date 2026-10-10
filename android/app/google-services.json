@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "385294000922",
+    "project_id": "quickquiz-27a7c",
+    "storage_bucket": "quickquiz-27a7c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:385294000922:android:828ad3e652466fd78e42a3",
+        "android_client_info": {
+          "package_name": "com.example.quickquiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "385294000922-73p0sp9fjhv18ias1ho6nnnim0jlqc57.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quickquiz",
+            "certificate_hash": "598124fe8800e3a6cb4a78e7f2bc5219eca4767e"
+          }
+        },
+        {
+          "client_id": "385294000922-ieg61cgs271prourvslhpbkef2c6gha6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quickquiz",
+            "certificate_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+          }
+        },
+        {
+          "client_id": "385294000922-7rk0gageodfjmg4fb9pq99ktopb7k9go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgHzSabFkA-ZjlYTg_P7H0r_CxkBncFDU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "385294000922-7rk0gageodfjmg4fb9pq99ktopb7k9go.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
